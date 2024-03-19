@@ -26,8 +26,9 @@ public class StartMenu extends JFrame {
     private void configFrame() {
         setSize(WIDTH, HEIGHT);
         setLayout(new FlowLayout());
-        add(renderer.createButton("Create Server", new ServerActionListener(), 100, 50), CENTER_ALIGNMENT);
-        add(renderer.createButton("Join Server", new ClientActionListener(), 100, 50), CENTER_ALIGNMENT);
+        add(renderer.createButton("Create Server", new ServerActionListener(), 150, 50), CENTER_ALIGNMENT);
+        add(renderer.createButton("Join Server", new ClientActionListener(), 150, 50), CENTER_ALIGNMENT);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
