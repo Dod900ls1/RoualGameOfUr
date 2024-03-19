@@ -50,6 +50,10 @@ public class Tile {
         }
     }
 
+    public int getTileNum() {
+        return this.tileNum;
+    }
+
     public boolean checkRelation(int relation) {
         if (relation < 1 || relation == 13 || relation == 15 || relation == 16 || relation == 18) {
             return false;
@@ -61,7 +65,7 @@ public class Tile {
         return this.isRosette;
     }
 
-    public ArrayList getAdjoining() {
+    public ArrayList<Integer> getAdjoining() {
         return this.adjoining;
     }
 

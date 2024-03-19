@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Player {
 
@@ -21,6 +22,24 @@ public class Player {
 
     public ArrayList<Tile> getPlayerPath() {
         return this.playerPath;
+    }
+
+    public int getPieceNum() {
+        return this.pieceNum;
+    }
+
+    public void removePiece() {
+        this.pieceNum -= 1;
+    }
+
+    public void addPiece() {
+        this.pieceNum += 1;
+    }
+
+    public int rollDice() {
+        Random diceRoll = new Random();
+        int randNum = diceRoll.nextInt(4);
+        return randNum;
     }
 
     
