@@ -23,6 +23,6 @@ public class StartMenu extends JFrame {
     }
 
     public static void main(String[] args) {
-        StartMenu startMenu = new StartMenu();
+        new StartMenu();
     }
 }
