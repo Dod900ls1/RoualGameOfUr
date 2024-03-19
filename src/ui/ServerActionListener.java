@@ -23,7 +23,6 @@ public class ServerActionListener implements ActionListener {
             int socketId = parseSocketId(socketIdField.getText());
             if (socketId != -1) {
                 startServer(socketId);
-                showServerStartedMessage(socketId);
             } else {
                 showInvalidSocketIdError();
             }
@@ -48,10 +47,12 @@ public class ServerActionListener implements ActionListener {
             DataInputStream din = new DataInputStream(s.getInputStream());
             DataOutputStream dout = new DataOutputStream(s.getOutputStream());
 
+            showServerStartedMessage(socketId);
+
             String str = "", str2 = "";
             while (!str.equals("stop")) {
                 str = din.readUTF().toString();
-                System.out.println("Client says: " + str);
+                JOptionPane.showMessageDialog(null, "Client says: " + str);
                 str2 = JOptionPane.showInputDialog(null, "Enter response to client:");
                 dout.writeUTF(str2);
                 dout.flush();
