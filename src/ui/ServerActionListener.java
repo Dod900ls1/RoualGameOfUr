@@ -63,6 +63,7 @@ public class ServerActionListener implements ActionListener {
             s.close();
             ss.close();
         } catch (IOException ex) {
+            //TODO Provide user with instructions
             showServerError(ex.getMessage());
         }
     }

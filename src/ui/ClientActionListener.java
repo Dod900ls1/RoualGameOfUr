@@ -51,10 +51,10 @@ public class ClientActionListener implements ActionListener {
                 dout.close();
                 s.close();
             } catch (ConnectException ex) {
-                // Handle connection refused error
+                //TODO Handle connection refused error
                 JOptionPane.showMessageDialog(null, "An error occurred while communicating with the server: Connection refused.\nPlease make sure the server is running and try again.");
             } catch (IOException ex) {
-                // Handle other IO exceptions
+                //TODO Handle other IO exceptions
                 JOptionPane.showMessageDialog(null, "An error occurred while communicating with the server: " + ex.getMessage());
                 // TODO Provide instructions or suggestions to the user on how to resolve the issue.
                 System.err.println("Please make sure the server is running and try again.");
