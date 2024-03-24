@@ -13,34 +13,11 @@ import javax.swing.JTextField;
 
 public class ServerActionListener implements ActionListener {
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JTextField socketIdField = new JTextField();
-        Object[] message = { "Enter Socket ID:", socketIdField };
-        int option = JOptionPane.showConfirmDialog(null, message, "Socket ID", JOptionPane.OK_CANCEL_OPTION);
-
-        if (option == JOptionPane.OK_OPTION) {
-            int socketId = parseSocketId(socketIdField.getText());
-            if (socketId != -1) {
-                startServer(socketId);
-            } else {
-                showInvalidSocketIdError();
-            }
-        }
-    }
-
-    private int parseSocketId(String socketIdText) {
-        try {
-            return Integer.parseInt(socketIdText);
-        } catch (NumberFormatException ex) {
-            return -1;
-        }
-    }
-
-    private void startServer(int socketId) {
+    private void startServer(String ipAdderss, int socketId) {
         try {
             ServerSocket ss = new ServerSocket(socketId);
-            JOptionPane.showMessageDialog(null, "Server started on port " + socketId + ". Waiting for client to connect...");
+            JOptionPane.showMessageDialog(null,
+                    "Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
             Socket s = ss.accept();
             System.out.println("Client connected.");
 
@@ -63,14 +40,41 @@ public class ServerActionListener implements ActionListener {
             s.close();
             ss.close();
         } catch (IOException ex) {
-            //TODO Provide user with instructions
+            // TODO Provide user with instructions
             showServerError(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JTextField ipAddressField = new JTextField("138.251.29.207");
+        JTextField socketIdField = new JTextField();
+        Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
+        int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String ipAddress = ipAddressField.getText();
+            int socketId = parseSocketId(socketIdField.getText());
+            if (socketId != -1) {
+                startServer(ipAddress, socketId);
+            } else {
+                showInvalidSocketIdError();
+            }
+        }
+    }
+
+    private int parseSocketId(String socketIdText) {
+        try {
+            return Integer.parseInt(socketIdText);
+        } catch (NumberFormatException ex) {
+            return -1;
         }
     }
 
     private void showServerStartedMessage(int socketId) {
         JOptionPane.showMessageDialog(null,
-                "Server started on port " + socketId + ".\nClient connected.\nYou can now communicate with the client.");
+                "Server started on port " + socketId
+                        + ".\nClient connected.\nYou can now communicate with the client.");
     }
 
     private void showInvalidSocketIdError() {

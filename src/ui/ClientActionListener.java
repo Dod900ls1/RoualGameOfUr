@@ -18,7 +18,7 @@ public class ClientActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Show dialog to get host and port from user
-        JTextField hostField = new JTextField("localhost");
+        JTextField hostField = new JTextField("138.251.29.207");
         hostField.addFocusListener(new FocusListener() { // Gets rid of a default value if user clicks on a textField
             @Override
             public void focusGained(FocusEvent e) {
