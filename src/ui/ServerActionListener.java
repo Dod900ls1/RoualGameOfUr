@@ -11,6 +11,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+// TODO - Refactor some code, use factory method pattern
 public class ServerActionListener implements ActionListener {
 
     private void startServer(String ipAdderss, int socketId) {
