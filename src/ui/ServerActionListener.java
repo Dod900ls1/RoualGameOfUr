@@ -40,7 +40,7 @@ public class ServerActionListener implements ActionListener {
     private void startServer(int socketId) {
         try {
             ServerSocket ss = new ServerSocket(socketId);
-            System.out.println("Server started on port " + socketId + ". Waiting for client to connect...");
+            JOptionPane.showMessageDialog(null, "Server started on port " + socketId + ". Waiting for client to connect...");
             Socket s = ss.accept();
             System.out.println("Client connected.");
 

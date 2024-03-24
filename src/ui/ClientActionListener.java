@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,7 +18,16 @@ public class ClientActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Show dialog to get host and port from user
-        JTextField hostField = new JTextField();
+        JTextField hostField = new JTextField("localhost");
+        hostField.addFocusListener(new FocusListener() { // Gets rid of a default value if user clicks on a textField
+            @Override
+            public void focusGained(FocusEvent e) {
+                hostField.setText("");
+            }
+            @Override
+            public void focusLost(FocusEvent e) {            
+            }
+        });
         JTextField portField = new JTextField();
         Object[] message = { "Enter Host:", hostField, "Enter Port:", portField };
         int option = JOptionPane.showConfirmDialog(null, message, "Connect to Server", JOptionPane.OK_CANCEL_OPTION);
