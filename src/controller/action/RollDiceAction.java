@@ -2,6 +2,9 @@ package controller.action;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Fired when a dice is to be rolled in {@code PlayerController}
+ */
 public class RollDiceAction extends ActionEvent {
 
     public RollDiceAction(Object source, int id){
