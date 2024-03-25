@@ -1,27 +1,32 @@
 package game;
 
 
-public class UrGame {
+import board.Board;
+import player.Player;
+import player.PlayerOptions;
 
-    public static void main(String[] args) {
+public class UrGame{
 
-        Tile[] gameGrid = setupGrid();
-        
+    Board board;
+    Player[] players;
+
+    public UrGame(PlayerOptions[] playerOptions) {
+        Board board = new Board();
+        setupPlayers(playerOptions);
     }
 
-
-    public static Tile[] setupGrid() {
-        Tile[] grid = new Tile[20];
-
-        for (int i = 0; i < 20; i++) {
-            grid[i] = new Tile(i + 1);
+    private void setupPlayers(PlayerOptions[] playerOptions) {
+        this.players = new Player[playerOptions.length];
+        for (int i = 0; i < playerOptions.length; i++) {
+            players[i] = Player.createPlayerFromSetup(playerOptions[i], board.getPlayerPath(playerOptions[i].playerColour()));
         }
-
-        return grid;
     }
 
-    public static void setupPlayer() {
-        
+    public Player[] getPlayers() {
+        return this.players;
     }
 
+    public Board getBoard() {
+        return this.board;
+    }
 }

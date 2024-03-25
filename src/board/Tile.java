@@ -1,12 +1,28 @@
-package game;
+package board;
+
+import player.Piece;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Tile {
+    public static final int LIGHT_INDICATOR=1;
+    public static final int DARK_INDICATOR=2;
+    public static final int SHARED_INDICATOR= LIGHT_INDICATOR+DARK_INDICATOR;
     private boolean isRosette;
     private ArrayList<Integer> adjoining = new ArrayList<>(4);
     private int tileNum;
+    private int tileType;
 
+    private Set<Piece> piecesOnTile;
+
+    public Tile(int tileNum, int tileType){
+        this.tileNum=tileNum;
+        this.tileType = tileType;
+        this.piecesOnTile=new HashSet<>();
+    }
+/**
     public Tile(int tileNum) {
         this.tileNum = tileNum;
 
@@ -49,7 +65,7 @@ public class Tile {
             }
         }
     }
-
+*/
     public int getTileNum() {
         return this.tileNum;
     }
@@ -69,4 +85,11 @@ public class Tile {
         return this.adjoining;
     }
 
+    public void removePiece(Piece piece) {
+        piecesOnTile.remove(piece);
+    }
+
+    public void addPiece(Piece piece){
+        piecesOnTile.add(piece);
+    }
 }
