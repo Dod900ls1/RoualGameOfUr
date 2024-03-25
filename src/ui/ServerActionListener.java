@@ -11,9 +11,22 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-// TODO - Refactor some code, use factory method pattern
+// TODO - Refactor some code, use observer pattern
+/**
+ * ActionListener implementation for starting a server.
+ */
 public class ServerActionListener implements ActionListener {
-
+    /**
+     * Starts a server with the specified IP address and socket ID.
+     * 
+     * @param ipAddress the IP address to bind the server to
+     * @param socketId the port number to listen for connections
+     */    /**
+     * Parses the socket ID from a string.
+     * 
+     * @param socketIdText the string representation of the socket ID
+     * @return the parsed socket ID, or -1 if parsing fails
+     */
     private void startServer(String ipAdderss, int socketId) {
         try {
             ServerSocket ss = new ServerSocket(socketId);
@@ -64,6 +77,12 @@ public class ServerActionListener implements ActionListener {
         }
     }
 
+    /**
+     * Parses the socket ID from a string.
+     * 
+     * @param socketIdText the string representation of the socket ID
+     * @return the parsed socket ID, or -1 if parsing fails
+     */
     private int parseSocketId(String socketIdText) {
         try {
             return Integer.parseInt(socketIdText);
@@ -72,16 +91,29 @@ public class ServerActionListener implements ActionListener {
         }
     }
 
+    /**
+     * Displays a message indicating that the server has started.
+     * 
+     * @param socketId the port number on which the server is listening
+     */
     private void showServerStartedMessage(int socketId) {
         JOptionPane.showMessageDialog(null,
                 "Server started on port " + socketId
                         + ".\nClient connected.\nYou can now communicate with the client.");
     }
 
+    /**
+     * Displays an error message for an invalid socket ID.
+     */
     private void showInvalidSocketIdError() {
         JOptionPane.showMessageDialog(null, "Invalid socket ID entered. Please enter a valid integer.");
     }
 
+    /**
+     * Displays an error message for a server-related error.
+     * 
+     * @param errorMessage the error message to display
+     */
     private void showServerError(String errorMessage) {
         JOptionPane.showMessageDialog(null, "An error occurred: " + errorMessage);
         JOptionPane.showMessageDialog(null,
