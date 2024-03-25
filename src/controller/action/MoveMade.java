@@ -5,6 +5,9 @@ import player.Piece;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Fired when player has made their move with moved {@code Piece} as source
+ */
 public class MoveMade extends ActionEvent {
 
     public MoveMade(Piece movedPiece, int id){

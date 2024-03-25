@@ -11,7 +11,7 @@ public class UrGame{
     Player[] players;
 
     public UrGame(PlayerOptions[] playerOptions) {
-        Board board = new Board();
+        board = new Board();
         setupPlayers(playerOptions);
     }
 

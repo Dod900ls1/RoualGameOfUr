@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents tile on board
+ */
 public class Tile {
     public static final int LIGHT_INDICATOR=1;
     public static final int DARK_INDICATOR=2;
