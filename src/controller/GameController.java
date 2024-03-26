@@ -6,6 +6,7 @@ import controller.action.RollDiceAction;
 import game.UrGame;
 import player.Piece;
 import player.Player;
+import player.PlayerOptions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,15 +63,39 @@ public class GameController implements ActionListener {
     /**
      * {@code UrGame} model for this controller
      */
-    private final UrGame game;
+    private UrGame game;
+
+    /**
+     * {@code GameController} reports to {@link MainController}.
+     * If event needs to be responded to from whole system scale, it is reported to {@code MainController}
+     */
+    private final MainController parentListener;
+
+
 
     /**
      * Controller for {@code UrGame} model.
      * Contains all other controllers for game entities
-     * @param game {@code UrGame} model entity
+     * @param parentListener Attached listener who is step above in command chain, can fire events to this listener who can respond from higher order or fire to their parent etc.
      */
-    public GameController(UrGame game){
-        this.game = game;
+    public GameController(MainController parentListener){
+        this.parentListener = parentListener;
+
+    }
+
+    /**
+     * Creates new {@code UrGame} as model component for ths controller
+     * @param playerOptions {@code PlayerOptions} collection of {@code Player} setup parameters to create new players from.
+     */
+    public void createGame(PlayerOptions[] playerOptions){
+        this.game = new UrGame(playerOptions);
+        initialiseGameEntityControllers();
+    }
+
+    /**
+     * Creates controllers for game entities for new {@code UrGame}
+     */
+    private void initialiseGameEntityControllers(){
         this.boardController=new BoardController(game.getBoard(), this);
         this.playerControllers = new ArrayList<>();
         for (Player player:game.getPlayers()) {
@@ -79,6 +104,9 @@ public class GameController implements ActionListener {
         this.playerControllerIterator = getControllerIterator(playerControllers);
         this.activePlayerController=playerControllerIterator.next();
     }
+
+
+
 
     /**
      * {@code ActionListener} override. Responds to events fired from game components and entity controllers that require game scope to respond to.
@@ -96,7 +124,7 @@ public class GameController implements ActionListener {
     }
 
     /**
-     * Called at end of a players turn.
+     * Called at end of a player's turn.
      * Updates board to reflect moved piece.
      * Switches active player
      * @param pieceMoved {@code Piece} object moved last turn
