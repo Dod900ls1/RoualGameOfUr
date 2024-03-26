@@ -1,9 +1,7 @@
 package controller;
 
-import board.Board;
 import board.Tile;
 import controller.action.TileSelected;
-import player.Piece;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

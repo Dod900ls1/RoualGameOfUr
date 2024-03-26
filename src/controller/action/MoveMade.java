@@ -1,6 +1,5 @@
 package controller.action;
 
-import board.Tile;
 import player.Piece;
 
 import java.awt.event.ActionEvent;

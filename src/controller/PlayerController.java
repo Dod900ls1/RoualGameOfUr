@@ -1,6 +1,5 @@
 package controller;
 
-import board.Board;
 import board.Tile;
 import controller.action.MoveMade;
 import controller.action.MoveSelected;

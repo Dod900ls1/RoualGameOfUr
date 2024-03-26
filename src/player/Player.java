@@ -1,13 +1,13 @@
 package player;
 
-import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-
 import board.Board;
 import board.Tile;
 import exceptions.IllegalMoveException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 public abstract class Player {
 

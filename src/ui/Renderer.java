@@ -1,9 +1,8 @@
 package ui;
 
-import javax.swing.JButton;
-
-import java.awt.Dimension;
-import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * The Renderer class provides methods for creating graphical user interface components.
