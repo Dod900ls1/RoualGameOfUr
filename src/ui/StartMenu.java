@@ -1,16 +1,10 @@
 package ui;
 
-import java.awt.FlowLayout;
-
-import javax.swing.CellEditor;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import javax.swing.UIManager;
-import javax.swing.UIManager.*;
-
-import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -119,8 +113,8 @@ public class StartMenu extends JFrame{
     }*/
 
     /**
-     * choosing the stype of buttons and various other things for the window.
-     * @param nameofStyle probably best to use nimbus or metal, as those are autoinstalled on lab machines
+     * choosing the type of buttons and various other things for the window.
+     * @param nameOfStyle probably best to use nimbus or metal, as those are autoinstalled on lab machines
      */
     private void updateLookAndFeel(String nameOfStyle){
 
