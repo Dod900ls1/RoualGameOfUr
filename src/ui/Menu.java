@@ -1,5 +1,6 @@
 package ui;
 
+import controller.BoardController;
 import controller.MenuController;
 
 import javax.swing.*;
@@ -8,13 +9,12 @@ import javax.swing.*;
  * Might be good to have this as a parent class for all menus. Gives interface for {@link controller.MenuController}
  */
 public abstract class Menu extends JFrame {
-    /**
-     * Passed with {@code MenuClosedEventSource} event as {@code source}
-     * @param menu This {@code Menu} subclass instance
-     * @param params {@code Record} subclass instance with any menu input that needs to be passed back to {@code parentListener} ({@link MenuController})
-     */
-    public record MenuClosedEventSource<T extends Record>(Menu menu, T params){}
 
+
+    /**
+     * Menu action listeners report to {@link MenuController}.
+     * If event needs to be responded to from greater scale, it is reported to {@code MenuController}
+     */
     MenuController parentListener;
 
     /**

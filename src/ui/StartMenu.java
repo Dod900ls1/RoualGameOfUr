@@ -2,6 +2,7 @@ package ui;
 
 import controller.MenuController;
 import controller.action.menu.MenuClosed;
+import controller.action.menu.MenuClosed.*;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;

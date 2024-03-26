@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.menu.MenuClosed;
+import controller.action.menu.MenuClosed.MenuClosedEventSource;
 import ui.Menu;
 import ui.StartMenu;
 
@@ -37,7 +38,7 @@ public class MenuController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e instanceof MenuClosed){
-            respondToMenuClosed((Menu.MenuClosedEventSource)e.getSource());
+            respondToMenuClosed((MenuClosedEventSource)e.getSource());
         }
 
     }
@@ -52,7 +53,7 @@ public class MenuController implements ActionListener {
     }
 
 
-    private void respondToMenuClosed(Menu.MenuClosedEventSource closedMenu){
+    private void respondToMenuClosed(MenuClosedEventSource closedMenu){
         System.out.println("Menu closed");
 
     }
