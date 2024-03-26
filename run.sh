@@ -7,4 +7,4 @@ case "$(uname -sr)" in
     SEPARATOR=":"
     ;;
 esac
-java -cp "lib/*${SEPARATOR}dist" main.UrMain
+java -cp "lib/*${SEPARATOR}bin" main.UrMain

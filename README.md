@@ -1,8 +1,11 @@
-# bin folder
+# Run the programm
 
-bin folder contains compiled code which we can use to run our programm. 
-In order to compilte it, write `javac -d bin src/**/*.java` in terminal.
-In order to run it, you have to write the command `java -cp bin filepath` in terminal. 
+In order to run this program you have to wirte the following commands in a console
+```shell
+chmod +x build.sh
+chmod +x run.sh
+./run.sh
+```
 
 # id address
 
