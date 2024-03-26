@@ -16,21 +16,60 @@ The Royal Game of Ur is an ancient board game with strategic gameplay involving 
 - Players cannot stack their pieces on the same tile.
 - To remove a piece from the board, a player must roll exactly the right number.
 
-## Run the programm
+## Getting Started
 
-In order to run this program you have to wirte the following commands in a console
+### Running the Program
+To run this program, follow these steps:
 
+1. Open a terminal window.
+2. Navigate to the directory containing the program files.
+3. Make the build and run scripts executable by running the following commands:
+
+    ```shell
+    chmod +x build.sh
+    chmod +x run.sh
+    ```
+4. Execute the run script by running:
+
+    ```shell
+    ./run.sh
+    ```
+
+### Finding Your IP Address
+Before running the program, you'll might need to know the IP address of the machine where your server will run. You can find this by using the following command in the terminal:
 ```shell
-chmod +x build.sh
-chmod +x run.sh  
-./run.sh
+curl ifconfig.me
 ```
 
-## id address
+## Project Structure
 
- You need to know the IP address of the machine where your server will run. You can find this by using `curl ifconfig.me`
+### Folders Descriptions
 
- 
+The project directory structure is organized as follows:
+
+- **bin**: Contains compiled Java classes.
+- **build**: Contains build and run scripts.
+- **lib**: External libraries used in the project.
+- **src**: Source code files in Java format.
+    - **board**: Classes related to the game board.
+    - **controller**: Classes responsible for controlling game logic.
+    - **exceptions**: Custom exception classes.
+    - **game**: Classes representing the game and player logic.
+    - **main**: Main class to run the program.
+    - **player**: Classes related to player management.
+    - **ui**: User interface classes.
+- **tests**: Unit tests for the project.
+
+
+### File Descriptions
+
+- **GameRules.text**: Text file containing the rules of the game.
+- **README.md**: This file providing information about the project.
+
+<br>
+<br>
+<br>
+<br>
 
 # TODO list
 
