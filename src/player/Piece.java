@@ -17,10 +17,11 @@ public class Piece {
 
     /**
      * Constructor for new {@code Piece} instance.
-     * Initialises {@code tile} field as {@code null}
+     * Initialises {@code tile} field as {@link board.PreStartTile}
+     * @param preStartTile Player's {@code PreStartTile} for this {@code Piece} to occupy before it is boarded
      */
-    public Piece(){
-        tile = null;
+    public Piece(Tile preStartTile){
+        tile = preStartTile;
         lastTile = null;
     }
 

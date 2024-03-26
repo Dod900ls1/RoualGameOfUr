@@ -22,11 +22,19 @@ public abstract class Player {
     private List<Tile> playerPath;
 
     /**
-     * Player's pieces
+     * Player's active pieces (pieces are removed when off-boarded)
      */
     Collection<Piece> pieces;
 
+    /**
+     * {@code PreStartTile} for this player
+     */
     private Tile startPosition;
+
+    /**
+     * {@code PostEndTile} for this player
+     */
+    private Tile endPosition;
     private int pieceNum;
 
     /**
@@ -52,9 +60,11 @@ public abstract class Player {
     public Player(List<Tile> playerPath) {
         this.playerPath=playerPath;
         this.startPosition=playerPath.get(0);
+        this.endPosition=playerPath.get(playerPath.size()-1);
         this.pieces = new ArrayList<>();
+
         for (int i = 0; i < PIECE_START_COUNT; i++) {
-            pieces.add(new Piece());
+            pieces.add(new Piece(startPosition));
         }
     }
 
@@ -112,6 +122,9 @@ public abstract class Player {
         }
         else{
             movePiece.move(toMoveTo);
+            if (movePiece.getTile().equals(endPosition)){
+                this.pieces.remove(movePiece);
+            }
         }
         return movePiece;
     }

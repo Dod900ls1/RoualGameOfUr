@@ -1,5 +1,6 @@
 package controller;
 
+import controller.action.game.GameStarted;
 import controller.action.game.MoveMade;
 import controller.action.game.MoveSelected;
 import controller.action.game.RollDiceAction;

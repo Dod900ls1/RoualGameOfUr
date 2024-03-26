@@ -21,7 +21,6 @@ public class Board {
                     "111"+
                     "010"+
                     "010"+
-                    "010"+
                     "111"+
                     "111",
                     2), //navigable tiles
@@ -65,18 +64,20 @@ public class Board {
         this.tiles = new HashSet<>();
         int tileCount = 1;
         this.layout = boardLayouts.get(layoutNumber);
-        Long tilePositions = Long.reverse(layout.tiles()); //board layout stored with msb at top left, easiest to access bits starting from lsb therefore reverse bits long
+        int shift = Long.numberOfLeadingZeros(layout.tiles());
+        Long tilePositions = Long.divideUnsigned(Long.reverse(layout.tiles()), 1<<(shift));
         while (tilePositions>0){
             addNextTile(layout, tileCount);
-            tilePositions >>= 1L;
+            tilePositions = Long.divideUnsigned(tilePositions, 2L);
             tileCount++; //increment count even if tile not added
         }
     }
 
+
     /**
      * Creates next tile in board as described by {@code layout} and adds to {@code tiles} collection
      * @param layout Layout used to create board
-     * @param tileNumber Number of tile to create -- this may not be the number of last tile created as non-walkable bord spaces are still given numbers
+     * @param tileNumber Number of tile to create -- this may not be the number of last tile created as non-walkable bord spaces are still given numbers and may occur as {@code PreStartTile} or {@code PostEndTile} in {@code tiles}
      */
     private void addNextTile(BoardLayout layout, int tileNumber) {
         boolean nextTileWalkable = (layout.tiles() & 1) == 1;
@@ -101,6 +102,16 @@ public class Board {
                 tiles.add(new Tile(tileNumber, tileType));
             }
 
+        }else{ //Add non-walkable tiles to set if they are PreStartTile or PostEndTile
+            if (tileNumber == layout.lightPath()[0]){
+                tiles.add(new PreStartTile(tileNumber, Tile.LIGHT_INDICATOR));
+            } else if (tileNumber == layout.darkPath()[0]) {
+                tiles.add(new PreStartTile(tileNumber, Tile.LIGHT_INDICATOR));
+            } else if (tileNumber == layout.lightPath()[layout.lightPath().length-1]) {
+                tiles.add(new PostEndTile(tileNumber, Tile.LIGHT_INDICATOR));
+            } else if (tileNumber == layout.darkPath()[layout.darkPath().length-1]) {
+                tiles.add(new PostEndTile(tileNumber, Tile.DARK_INDICATOR));
+            }
         }
 
 
@@ -109,8 +120,8 @@ public class Board {
 
     /**
      * Returns the sequence of {@code Tile} objects in player's path as described by {@code layout}
-     * @param playerColour
-     * @return
+     * @param playerColour Colour of player. One of {@link Player#LIGHT_PLAYER}={@link Tile#LIGHT_INDICATOR} or {@link Player#DARK_PLAYER}={@link Tile#DARK_INDICATOR}
+     * @return List of {@code Tile} objects in player's path
      */
     public List<Tile> getPlayerPath(int playerColour) {
         int[] pathTileNumbers;
@@ -127,4 +138,7 @@ public class Board {
         return pathTiles;
     }
 
+    public BoardLayout getLayout() {
+        return this.layout;
+    }
 }
