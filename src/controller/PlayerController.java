@@ -3,13 +3,14 @@ package controller;
 import board.Tile;
 import controller.action.game.MoveMade;
 import controller.action.game.MoveSelected;
-import controller.action.game.RollDiceAction;
+import controller.action.game.RollDice;
 import exceptions.IllegalMoveException;
 import player.Piece;
 import player.Player;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Controller for {@code Player} objects. Links {@code Player} model entity to view
@@ -56,7 +57,7 @@ public class PlayerController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e instanceof MoveSelected){
             makeMove((Tile)e.getSource());
-        } else if (e instanceof RollDiceAction) {
+        } else if (e instanceof RollDice) {
             rollDice();
         }
     }
@@ -82,7 +83,7 @@ public class PlayerController implements ActionListener {
     }
 
     /**
-     * Starts a new thread to roll dice using {@link Player#rollDice()}.
+     * Rolls dice using {@link Player#rollDice()}.
      * Sets the dice value as {@code lastRoll}
      * May need to fire new event to {@link GameController} to provide roll value to view??
      */
@@ -98,6 +99,50 @@ public class PlayerController implements ActionListener {
     private void fireMoveMade(Piece movedPiece){
         this.parentListener.actionPerformed(new MoveMade(movedPiece, movedPiece.getTileNumber()));
     }
+
+    /**
+     * Find {@code Tile} objects that player can move to in this turn (for current value of {@code lastRoll})
+     * @return List of {@code Tile} instances that are valid, potential move options
+     */
+    public List<Tile> getValidTilesForMove(){
+        return player.findPotentialMoves(lastRoll);
+    }
+
+
+    /**
+     * Find {@code TileController} for {@code Tile} objects that player can move to in this turn (for current value of {@code lastRoll})
+     * @return List of {@code TileController} for {@code Tile} instances that are valid, potential move options
+     */
+    public List<TileController> getValidTileControllersForMove(){
+        return parentListener.getControllersForTiles(getValidTilesForMove());
+    }
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are on the board (occupying a {@code Tile} that is not Player's {@code PreStartTile} or {@code PostEndTile})
+     * @return Number of pieces on board for player
+     */
+    public int getPlayerPieceOnBoardCount(){
+        return player.getPieceOnBoardCount();
+    }
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are pre-board (occupying player's {@code PreStartTile} tile)
+     * @return Number of pieces pre-board for player
+     */
+    public int getPlayerPiecePreBoardCount(){
+        return player.getPiecePreBoardCount();
+    }
+
+
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are post-board (occupying {@code PostEndTile} tile)
+     * @return Number of pieces post-board for player
+     */
+    public int getPiecePostBoardCount() {
+        return player.getPiecePostBoardCount();
+    }
+
 
 
     public void endTurn() {

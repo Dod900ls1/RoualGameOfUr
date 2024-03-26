@@ -78,14 +78,14 @@ Create events for the UI: Clara
 
 A list of controls:  Yehor/Emma/Ryan?
 
- - move piece 
- - roll dice
+ - move piece : Set up so TileController fires TileSelected to BoardController who fires MoveSelected to GameController who fires to PlayerController who then processes move. TileController should be added anyway as event listener for tile view object but adding as listener means anytime tile is pressed event is fired (make sure tile button disengaged when not selecting move/tile is not valid move)
+ - roll dice : Fire RollDice to GameController (e.g. from roll dice button), picked up in PlayerController which makes Player model roll dice. Value stored in PlayerController.lastRoll
  - gamestate call (like check the current state of the game)
- - number of pieces taht have gotten out
- - location of local pieces 
- - let player a started tile 
- - number of pieces that are still in
- - class where you can acsess all controlers 
+ - number of pieces taht have gotten out : PlayerController.getPiecePostBoardCount()
+ - location of local pieces : Sorry, can't remember what this means?
+ - let player a started tile : Can do so by adjusting first number in BoardLayout.lightPath/darkPath
+ - number of pieces that are still in : PlayerController.getPlayerPieceOnBoardCount()
+ - class where you can acsess all controlers : Can get to all through MainController via control tree (see below) but may need to add accessor methods etc
 
 Random stuff:
  - Update README.md Yehor - today!
@@ -96,3 +96,13 @@ Logic is done already
 Controls:
 	If we define them and then just create buttons – it would be nice
  	
+
+Controller Tree
+
+                            [MainController]
+                           /               \
+              [MenuController]              [GameController]
+                   |                       /              \
+    [internal menu action listeners]   [BoardContoller] [PlayerController]
+                                            |
+                                    `  [TileController]

@@ -1,9 +1,9 @@
 package controller;
 
-import controller.action.game.GameStarted;
+import board.Tile;
 import controller.action.game.MoveMade;
 import controller.action.game.MoveSelected;
-import controller.action.game.RollDiceAction;
+import controller.action.game.RollDice;
 import game.UrGame;
 import player.Piece;
 import player.Player;
@@ -11,9 +11,8 @@ import player.PlayerOptions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameController implements ActionListener {
 
@@ -117,7 +116,7 @@ public class GameController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e instanceof MoveSelected){
             this.activePlayerController.actionPerformed(e);
-        } else if (e instanceof RollDiceAction) {
+        } else if (e instanceof RollDice) {
             this.activePlayerController.actionPerformed(e);
         } else if (e instanceof MoveMade) {
             finishMove((Piece) e.getSource());
@@ -138,4 +137,14 @@ public class GameController implements ActionListener {
     }
 
 
+    /**
+     * Retrieves {@code TileController} instances controlling the {@code Tile} objects in {@code tiles} from {@link #boardController}
+     * @param tiles {@code Tile} instances to get {@code TileController} for
+     * @return Collection of {@code TileController} controllers for {@code tiles}
+     */
+    public List<TileController> getControllersForTiles(Collection<Tile> tiles) {
+        Set<TileController> tileControllers = boardController.tileControllers;
+        return tileControllers.stream().filter(tileController -> tiles.contains(tileController.getTile())).collect(Collectors.toList());
+
+    }
 }

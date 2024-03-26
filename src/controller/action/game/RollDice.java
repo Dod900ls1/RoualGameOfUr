@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 /**
  * Fired when a dice is to be rolled in {@code PlayerController}
  */
-public class RollDiceAction extends ActionEvent {
+public class RollDice extends ActionEvent {
 
-    public RollDiceAction(Object source, int id){
+    public RollDice(Object source, int id){
         this(source, id, "Roll Dice");
     }
-    public RollDiceAction(Object source, int id, String command) {
+    public RollDice(Object source, int id, String command) {
         super(source, id, command);
     }
 

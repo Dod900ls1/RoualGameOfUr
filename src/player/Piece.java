@@ -16,13 +16,20 @@ public class Piece {
     private Tile lastTile;
 
     /**
+     * {@code Player} instance to whom piece belongs
+     */
+    private Player player;
+
+    /**
      * Constructor for new {@code Piece} instance.
      * Initialises {@code tile} field as {@link board.PreStartTile}
      * @param preStartTile Player's {@code PreStartTile} for this {@code Piece} to occupy before it is boarded
+     * @param player {@code Player} instance to whom piece belongs
      */
-    public Piece(Tile preStartTile){
+    public Piece(Tile preStartTile, Player player){
         tile = preStartTile;
         lastTile = null;
+        this.player=player;
     }
 
     /**
@@ -65,5 +72,13 @@ public class Piece {
         setTile(toMoveTo);
         lastTile.removePiece(this);
         tile.addPiece(this);
+    }
+
+    /**
+     * Accessor for this piece's {@code Player}
+     * @return {@link #player} instance
+     */
+    public Player getPlayer() {
+        return this.player;
     }
 }

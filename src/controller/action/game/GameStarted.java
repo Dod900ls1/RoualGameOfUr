@@ -1,6 +1,5 @@
 package controller.action.game;
 
-import controller.MenuController;
 import player.PlayerOptions;
 
 import java.awt.event.ActionEvent;
@@ -23,4 +22,5 @@ public class GameStarted extends ActionEvent {
     public GameStarted(Object source, int id, String command) {
         super(source, id, command);
     }
+
 }

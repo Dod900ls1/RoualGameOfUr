@@ -25,8 +25,8 @@ public class Board {
                     "111",
                     2), //navigable tiles
                 new int[]{1, 3, 11, 15, 17}, //rosette tiles
-                new int[]{10, 7, 4, 1, 2, 5, 8, 11, 14, 17, 20, 23, 22, 19}, //light path
-                new int[]{12, 9, 6, 3, 2, 5, 8, 11, 14, 17, 20, 23, 24, 21} //dark path
+                new int[]{13, 10, 7, 4, 1, 2, 5, 8, 11, 14, 17, 20, 23, 22, 19, 16}, //light path
+                new int[]{15, 12, 9, 6, 3, 2, 5, 8, 11, 14, 17, 20, 23, 24, 21, 18} //dark path
             )
         );
     }
@@ -65,9 +65,10 @@ public class Board {
         int tileCount = 1;
         this.layout = boardLayouts.get(layoutNumber);
         int shift = Long.numberOfLeadingZeros(layout.tiles());
-        Long tilePositions = Long.divideUnsigned(Long.reverse(layout.tiles()), 1<<(shift));
+        Long tilePositions = Long.divideUnsigned(Long.reverse(layout.tiles()), 1L<<(shift));
         while (tilePositions>0){
-            addNextTile(layout, tileCount);
+            boolean nextTileWalkable = (tilePositions & 1) == 1;
+            addNextTile(layout, nextTileWalkable, tileCount);
             tilePositions = Long.divideUnsigned(tilePositions, 2L);
             tileCount++; //increment count even if tile not added
         }
@@ -77,11 +78,12 @@ public class Board {
     /**
      * Creates next tile in board as described by {@code layout} and adds to {@code tiles} collection
      * @param layout Layout used to create board
+     * @param isWalkable Indicator if next tile will be walkable (i.e. instance of {@code Tile} or {@code Rosette}) or not (i.e. possible an instance of {@code PreStartTile} or {@code PostEndTile})
      * @param tileNumber Number of tile to create -- this may not be the number of last tile created as non-walkable bord spaces are still given numbers and may occur as {@code PreStartTile} or {@code PostEndTile} in {@code tiles}
      */
-    private void addNextTile(BoardLayout layout, int tileNumber) {
-        boolean nextTileWalkable = (layout.tiles() & 1) == 1;
-        if (nextTileWalkable){
+    private void addNextTile(BoardLayout layout, boolean isWalkable, int tileNumber) {
+
+        if (isWalkable){
             boolean isRosette=false;
             int tileType = 0;
             if (Arrays.stream(layout.rosettes()).anyMatch(t->t==tileNumber)){

@@ -6,6 +6,7 @@ import org.junit.Assert;
 import player.Player;
 import player.PlayerOptions;
 
+import java.util.List;
 
 
 public class BoardTest extends TestCase {
@@ -28,12 +29,19 @@ public class BoardTest extends TestCase {
     }
 
     public void testGetPlayerPath() {
-        int[] lightPathNumbers = board.getPlayerPath(Player.LIGHT_PLAYER).stream().mapToInt(Tile::getTileNum).toArray();
+        List<Tile> lightPath = board.getPlayerPath(Player.LIGHT_PLAYER);
+        int[] lightPathNumbers = lightPath.stream().mapToInt(Tile::getTileNum).toArray();
         int[] expectedLightPathNumbers = board.getLayout().lightPath();
         Assert.assertArrayEquals(expectedLightPathNumbers, lightPathNumbers);
+        assertTrue(lightPath.get(0) instanceof PreStartTile);
+        assertTrue(lightPath.get(lightPath.size()-1) instanceof PostEndTile);
 
-        int[] darkPathNumbers = board.getPlayerPath(Player.DARK_PLAYER).stream().mapToInt(Tile::getTileNum).toArray();
+        List<Tile> darkPath = board.getPlayerPath(Player.DARK_PLAYER);
+        int[] darkPathNumbers = darkPath.stream().mapToInt(Tile::getTileNum).toArray();
         int[] expectedDarkPathNumbers = board.getLayout().darkPath();
         Assert.assertArrayEquals(expectedDarkPathNumbers, darkPathNumbers);
+        assertTrue(darkPath.get(0) instanceof PreStartTile);
+        assertTrue(darkPath.get(darkPath.size()-1) instanceof PostEndTile);
+
     }
 }

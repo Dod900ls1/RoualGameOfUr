@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public abstract class Player {
 
@@ -37,6 +38,8 @@ public abstract class Player {
     private Tile endPosition;
     private int pieceNum;
 
+    private int piecesOnBoardCount;
+
     /**
      * Creates a {@code Player} instance from the {@code PlayerOptions} parameters.
      * @param playerOption Configuration of new {@code Player}
@@ -62,9 +65,9 @@ public abstract class Player {
         this.startPosition=playerPath.get(0);
         this.endPosition=playerPath.get(playerPath.size()-1);
         this.pieces = new ArrayList<>();
-
+        this.piecesOnBoardCount=0;
         for (int i = 0; i < PIECE_START_COUNT; i++) {
-            pieces.add(new Piece(startPosition));
+            pieces.add(new Piece(startPosition, this));
         }
     }
 
@@ -124,8 +127,49 @@ public abstract class Player {
             movePiece.move(toMoveTo);
             if (movePiece.getTile().equals(endPosition)){
                 this.pieces.remove(movePiece);
+                piecesOnBoardCount--;
+            }
+            if (movePiece.getLastTile().equals(startPosition)){
+                piecesOnBoardCount++;
             }
         }
         return movePiece;
     }
+
+
+    /**
+     * Finds all {@code Tile} instances in {@code playerPath} that would be valid end points for a move of {@code spacesToMove} (i.e are {@code spacesToMove} tiles on path from a {@code Tile} containing a {@code Piece} belonging to this player)
+     * @param spacesToMove Number of tiles a {@code Piece} must move in this turn
+     * @return Valid {@code Tile} options on {@code playerPath} for move
+     */
+    public List<Tile> findPotentialMoves(int spacesToMove){
+        return pieces.stream().map(piece -> piece.getTile()).filter(startTile -> (playerPath.indexOf(startTile)+spacesToMove)<= playerPath.size()).map(startTile -> playerPath.get((playerPath.indexOf(startTile)+spacesToMove))).collect(Collectors.toList());
+    }
+
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are on the board (occupying a {@code Tile} that is not {@link #startPosition} or {@link #endPosition})
+     * @return Number of pieces on board for player
+     */
+    public int getPieceOnBoardCount() {
+        return this.piecesOnBoardCount;
+    }
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are pre-board (occupying {@link #startPosition} tile)
+     * @return Number of pieces pre-board for player
+     */
+    public int getPiecePreBoardCount() {
+        return this.pieces.size()-piecesOnBoardCount;
+    }
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are post-board (occupying {@link #endPosition} tile)
+     * @return Number of pieces post-board for player
+     */
+    public int getPiecePostBoardCount() {
+        return Player.PIECE_START_COUNT-pieces.size();
+    }
+
+
 }
