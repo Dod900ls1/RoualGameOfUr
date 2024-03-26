@@ -1,4 +1,4 @@
-package controller.action;
+package controller.action.game;
 
 import player.Piece;
 

@@ -2,8 +2,8 @@ package controller;
 
 import board.Board;
 import board.Tile;
-import controller.action.MoveSelected;
-import controller.action.TileSelected;
+import controller.action.game.MoveSelected;
+import controller.action.game.TileSelected;
 import player.Piece;
 
 import java.awt.event.ActionEvent;

@@ -1,5 +1,7 @@
 package controller;
 
+import controller.action.menu.MenuClosed;
+import ui.Menu;
 import ui.StartMenu;
 
 import java.awt.event.ActionEvent;
@@ -34,7 +36,9 @@ public class MenuController implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+        if (e instanceof MenuClosed){
+            respondToMenuClosed((Menu.MenuClosedEventSource)e.getSource());
+        }
 
     }
 
@@ -42,7 +46,16 @@ public class MenuController implements ActionListener {
      * Creates and shows start menu in a new thread
      */
     public void showStartMenu() {
-        Thread startMenuThread = new Thread(() -> new StartMenu());
+        Thread startMenuThread = new Thread(() -> new StartMenu(this));
         startMenuThread.start();
+
     }
+
+
+    private void respondToMenuClosed(Menu.MenuClosedEventSource closedMenu){
+        System.out.println("Menu closed");
+
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package controller.action;
+package controller.action.game;
 
 import java.awt.event.ActionEvent;
 

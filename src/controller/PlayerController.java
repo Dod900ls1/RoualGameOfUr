@@ -1,9 +1,9 @@
 package controller;
 
 import board.Tile;
-import controller.action.MoveMade;
-import controller.action.MoveSelected;
-import controller.action.RollDiceAction;
+import controller.action.game.MoveMade;
+import controller.action.game.MoveSelected;
+import controller.action.game.RollDiceAction;
 import exceptions.IllegalMoveException;
 import player.Piece;
 import player.Player;

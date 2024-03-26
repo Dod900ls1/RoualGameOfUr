@@ -1,5 +1,8 @@
 package ui;
 
+import controller.MenuController;
+import controller.action.menu.MenuClosed;
+
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
@@ -10,7 +13,7 @@ import java.awt.event.ActionListener;
  * StartMenu class ought to create start menu for the player where they would be
  * able to connect to a server or to start an offline session with AI or their friend.
  */
-public class StartMenu extends JFrame{
+public class StartMenu extends Menu{
     private Renderer renderer = new Renderer();
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
@@ -19,10 +22,19 @@ public class StartMenu extends JFrame{
     private JPanel menu = new JPanel();
 
     /**
-     * Constructor of StartMenu class runs a configFrame() method
-     * that configurates our StartMenu frame.
+     * Example of {@link MenuClosedEventSource#params() MenuClosedEventSource.params} action field
+     * //TODO figure out what information about play needs to be passed back so game can be created
+     * @param playOnline e.g. Is play online?
      */
-    public StartMenu() {
+    record StartMenuClosed(boolean playOnline){}
+
+    /**
+     * Constructor of StartMenu class runs a configFrame() method
+     * that configures our StartMenu frame.
+     * @param parentListener Attached listener who is step above in command chain, can fire events to this listener who can respond from higher order or fire to their parent etc.
+     */
+    public StartMenu(MenuController parentListener) {
+        super(parentListener);
         updateLookAndFeel("Nimbus");
         configFrame();
         configMenu();
@@ -59,10 +71,21 @@ public class StartMenu extends JFrame{
         menu.add(playOnline);
 
         ActionListener playListener = new ActionListener() {
+
             public void actionPerformed(ActionEvent e){
                 if(menuOpen){
                     playOnline.setVisible(false);
                     menuOpen = false;
+
+                    //#region Example of menu closed event
+                    parentListener.actionPerformed(
+                        new MenuClosed(
+                            new MenuClosedEventSource(StartMenu.this, new StartMenuClosed(false))
+                        )
+                    );
+                    //#endregion
+
+
                 }else{
                     playOnline.setVisible(true);
                     menuOpen = true;
