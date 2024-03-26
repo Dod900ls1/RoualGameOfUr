@@ -18,8 +18,8 @@ public class StartMenu extends Menu{
     private Renderer renderer = new Renderer();
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
-    private boolean menuOpen = true;
-    private boolean onlineMenuOpen = true;
+    private boolean menuOpen = false;
+    private boolean onlineMenuOpen = false;
     private JPanel menu = new JPanel();
 
     /**
@@ -49,69 +49,101 @@ public class StartMenu extends Menu{
 
     private void configMenu() {
 
+        //these button need to be manually created as the actionlisteners are self-referential;
+        JButton play = new JButton("Play");
+        JButton back = new JButton("Back");
+        JButton playOnline = new JButton("Play Online");
+        JButton playAgainstAI = new JButton("Play Against AI");
+        JButton playLocally = new JButton("Play Locally");
+
         JButton createServer = renderer.createButton("Create Server", new ServerActionListener(), 150, 50);
-        menu.add(createServer);
         JButton joinServer = renderer.createButton("Join Server", new ClientActionListener(), 150, 50);
-        menu.add(joinServer);
 
-        ActionListener playOnlineListener = new ActionListener() {
+
+        ActionListener playListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                if(onlineMenuOpen){
-                    createServer.setVisible(false);
-                    joinServer.setVisible(false);
-                    onlineMenuOpen = false;
-                }else{
-                    createServer.setVisible(true);
-                    joinServer.setVisible(true);
-                    onlineMenuOpen = true;
-                }
+                play.setVisible(false);
+                playOnline.setVisible(true);
+                playAgainstAI.setVisible(true);
+                playLocally.setVisible(true);
             }
         };
 
-        JButton playOnline = renderer.createButton("Play online", playOnlineListener, 150, 50);
-        menu.add(playOnline);
-
-        ActionListener playListener = new ActionListener() {
-
+        ActionListener playOnlineListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                if(menuOpen){
-                    playOnline.setVisible(false);
-                    menuOpen = false;
-
-                    //#region Example of menu closed event
-                    parentListener.actionPerformed(
-                        new MenuClosed(
-                            new MenuClosedEventSource(StartMenu.this, new StartMenuClosed(false))
-                        )
-                    );
-                    //#endregion
-
-
-                }else{
-                    playOnline.setVisible(true);
-                    menuOpen = true;
-                }
+                playOnline.setVisible(false);
+                playAgainstAI.setVisible(false);
+                playLocally.setVisible(false);
+                createServer.setVisible(true);
+                joinServer.setVisible(true);
+                back.setVisible(true);
             }
         };
 
-        JButton play = renderer.createButton("Play", playListener, 150,50);
-        menu.add(play);
-
-        ActionListener backListener = new ActionListener() {
+        ActionListener playAgainstAIListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                menu.setVisible(false);
-                play.setVisible(true);
+                //add AI difficulty picker
+
+                playOnline.setVisible(false);
+                playAgainstAI.setVisible(false);
+                playLocally.setVisible(false);
+                back.setVisible(true);
             }
         };
 
-        JButton back = renderer.createButton("Back", backListener, 150, 50);
+        ActionListener backListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                
+                playOnline.setVisible(true);
+                playAgainstAI.setVisible(true);
+                playLocally.setVisible(true);
 
-        add(menu);
-        add(playOnline, CENTER_ALIGNMENT);
+                //add any other objects shown in playAgainst AI, playLocally and Play Online
+                createServer.setVisible(false);
+                joinServer.setVisible(false);
+                back.setVisible(false);
+            }
+        };
+
+        ActionListener playLocallyListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //add action to start local game
+
+                playOnline.setVisible(false);
+                playAgainstAI.setVisible(false);
+                playLocally.setVisible(false);
+                back.setVisible(true);
+            }
+        };
+
+        play.addActionListener(playListener);
+        back.addActionListener(backListener);
+        playOnline.addActionListener(playOnlineListener);
+        playAgainstAI.addActionListener(playAgainstAIListener);
+        playLocally.addActionListener(playLocallyListener);
+
+        play.setPreferredSize(new Dimension(150,50));
+        back.setPreferredSize(new Dimension(150,50));
+        playOnline.setPreferredSize(new Dimension(150,50));
+        playAgainstAI.setPreferredSize(new Dimension(150,50));
+        playLocally.setPreferredSize(new Dimension(150,50));
+
+        play.setVisible(true);
+        back.setVisible(false);
+        playOnline.setVisible(false);
+        playAgainstAI.setVisible(false);
+        playLocally.setVisible(false);
+        createServer.setVisible(false);
+        joinServer.setVisible(false);
+
+        add(back, CENTER_ALIGNMENT);
         add(play,CENTER_ALIGNMENT);
+        add(playOnline, CENTER_ALIGNMENT);
+        add(playAgainstAI,CENTER_ALIGNMENT);
+        add(playLocally, CENTER_ALIGNMENT);
         add(createServer, CENTER_ALIGNMENT);
         add(joinServer, CENTER_ALIGNMENT);
-        add(back, CENTER_ALIGNMENT);
+
 
         setVisible(true);
     }
