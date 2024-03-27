@@ -5,7 +5,8 @@ package board;
  */
 public class PreStartTile extends Tile{
 
-    public PreStartTile(int tileNum, int tileType) {
-        super(tileNum, tileType);
+    public PreStartTile(Board board, int tileNum, int tileType) {
+        super(board, tileNum, tileType);
+        canContainMultiplePieces=true;
     }
 }

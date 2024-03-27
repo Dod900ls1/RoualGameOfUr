@@ -5,7 +5,7 @@ package board;
  */
 public class Rosette extends Tile{
 
-    public Rosette(int tileNum, int tileType) {
-        super(tileNum, tileType);
+    public Rosette(Board board, int tileNum, int tileType) {
+        super(board, tileNum, tileType);
     }
 }

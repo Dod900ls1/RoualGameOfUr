@@ -5,7 +5,8 @@ package board;
  */
 public class PostEndTile extends Tile{
 
-    public PostEndTile(int tileNum, int tileType) {
-        super(tileNum, tileType);
+    public PostEndTile(Board board, int tileNum, int tileType) {
+        super(board, tileNum, tileType);
+        canContainMultiplePieces=true;
     }
 }

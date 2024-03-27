@@ -1,6 +1,7 @@
 package player;
 
 import board.Tile;
+import exceptions.IllegalMoveException;
 
 /**
  * Models piece on board belonging to a particular {@code Player}
@@ -68,7 +69,7 @@ public class Piece {
      * Removes self from {@code lastTile} and adds self to {@code tile=toMoveTo}
      * @param toMoveTo {@code Tile} instance to move piece to
      */
-    public void move(Tile toMoveTo) {
+    public void move(Tile toMoveTo) throws IllegalMoveException {
         setTile(toMoveTo);
         lastTile.removePiece(this);
         tile.addPiece(this);
