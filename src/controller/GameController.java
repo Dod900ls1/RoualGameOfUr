@@ -3,6 +3,7 @@ package controller;
 import board.Tile;
 import controller.action.game.MoveMade;
 import controller.action.game.MoveSelected;
+import controller.action.game.NoMovePossible;
 import controller.action.game.RollDice;
 import game.UrGame;
 import player.Piece;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class GameController implements ActionListener {
 
 
+    volatile private boolean moveInProgress;
+    volatile private boolean play;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -93,13 +96,51 @@ public class GameController implements ActionListener {
     }
 
     /**
+     * Begins game by calling {@link PlayerController#startTurn()} on {@code activePlayerController}
+     */
+//    public void beginGame(){
+//        Thread t = new Thread(){
+//            @Override
+//            public void run() {
+//                runMoveCycle();
+//            }
+//        };
+//        t.start();
+//
+//    }
+
+
+    public void beginGame(){
+        play=true;
+        while (play){
+            try {
+                if (moveInProgress){
+                    synchronized (this){
+                        while (moveInProgress){
+                            wait();
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            moveInProgress = true;
+            //Thread t = new Thread(()->activePlayerController.startTurn());
+            //t.start();
+            activePlayerController.startTurn();
+        }
+    }
+
+
+
+    /**
      * Creates controllers for game entities for new {@code UrGame}
      */
     private void initialiseGameEntityControllers(){
         this.boardController=new BoardController(game.getBoard(), this);
         this.playerControllers = new ArrayList<>();
         for (Player player:game.getPlayers()) {
-            playerControllers.add(new PlayerController(player, this));
+            playerControllers.add(PlayerController.getControllerForPlayer(player, this));
         }
         this.playerControllerIterator = getControllerIterator(playerControllers);
         this.activePlayerController=playerControllerIterator.next();
@@ -120,6 +161,8 @@ public class GameController implements ActionListener {
             this.activePlayerController.actionPerformed(e);
         } else if (e instanceof MoveMade) {
             finishMove((Piece) e.getSource());
+        } else if (e instanceof NoMovePossible) {
+            finishMove(null);
         }
     }
 
@@ -130,10 +173,13 @@ public class GameController implements ActionListener {
      * @param pieceMoved {@code Piece} object moved last turn
      */
     public void finishMove(Piece pieceMoved){
-        this.boardController.updateBoard(pieceMoved);
-        activePlayerController.endTurn();
+        if (pieceMoved!=null) {
+            this.boardController.updateBoard(pieceMoved);
+        }
+        play = activePlayerController.endTurn();
         activePlayerController = playerControllerIterator.next();
-        activePlayerController.startTurn();
+        moveInProgress=false;
+        //activePlayerController.startTurn();
     }
 
 

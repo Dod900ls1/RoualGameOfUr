@@ -19,6 +19,7 @@ public class UrGame{
         this.players = new Player[playerOptions.length];
         for (int i = 0; i < playerOptions.length; i++) {
             players[i] = Player.createPlayerFromSetup(playerOptions[i], board.getPlayerPath(playerOptions[i].playerColour()));
+            System.out.println(playerOptions[i]);
         }
     }
 

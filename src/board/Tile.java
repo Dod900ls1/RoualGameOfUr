@@ -59,7 +59,7 @@ public class Tile {
      */
     public void addPiece(Piece piece) throws IllegalMoveException {
         if (canAddPieceForPlayer(piece.getPlayer())){
-            addPiece(piece);
+            piecesOnTile.add(piece);
         }else{
             throw new IllegalMoveException();
         }

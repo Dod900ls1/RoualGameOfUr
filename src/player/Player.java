@@ -72,8 +72,12 @@ public abstract class Player {
         this.endPosition=playerPath.get(playerPath.size()-1);
         this.pieces = new ArrayList<>();
         this.piecesOnBoardCount=0;
-        for (int i = 0; i < PIECE_START_COUNT; i++) {
-            pieces.add(new Piece(startPosition, this));
+        try{
+            for (int i = 0; i < PIECE_START_COUNT; i++) {
+                pieces.add(new Piece(startPosition, this));
+            }
+        }catch (IllegalMoveException e){
+            e.printStackTrace();
         }
     }
 
@@ -134,9 +138,12 @@ public abstract class Player {
             if (movePiece.getTile().equals(endPosition)){
                 this.pieces.remove(movePiece);
                 piecesOnBoardCount--;
+                System.out.printf("Player %d piece off board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), piecesOnBoardCount, pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
+
             }
-            if (movePiece.getLastTile().equals(startPosition)){
+            if (movePiece.getLastTile().equals(startPosition)&&!movePiece.getTile().equals(startPosition)){
                 piecesOnBoardCount++;
+                System.out.printf("Player %d piece on board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), piecesOnBoardCount, pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
             }
         }
         return movePiece;
@@ -151,9 +158,10 @@ public abstract class Player {
     public List<Tile> findPotentialMoves(int spacesToMove){
         return pieces.stream()
                 .map(piece -> piece.getTile())
-                .filter(t -> !t.canAddPieceForPlayer(this))
-                .filter(startTile -> (playerPath.indexOf(startTile)+spacesToMove)<= playerPath.size())
+                .filter(startTile -> (playerPath.indexOf(startTile)+spacesToMove)<playerPath.size())
                 .map(startTile -> playerPath.get((playerPath.indexOf(startTile)+spacesToMove)))
+                .distinct()
+                .filter(t -> t.canAddPieceForPlayer(this))
                 .collect(Collectors.toList());
     }
 

@@ -27,10 +27,11 @@ public class Piece {
      * @param preStartTile Player's {@code PreStartTile} for this {@code Piece} to occupy before it is boarded
      * @param player {@code Player} instance to whom piece belongs
      */
-    public Piece(Tile preStartTile, Player player){
+    public Piece(Tile preStartTile, Player player) throws IllegalMoveException {
         tile = preStartTile;
         lastTile = null;
         this.player=player;
+        tile.addPiece(this);
     }
 
     /**
@@ -71,8 +72,10 @@ public class Piece {
      */
     public void move(Tile toMoveTo) throws IllegalMoveException {
         setTile(toMoveTo);
-        lastTile.removePiece(this);
-        tile.addPiece(this);
+        if (this.tile!=toMoveTo) {
+            lastTile.removePiece(this);
+            tile.addPiece(this);
+        }
     }
 
     /**
