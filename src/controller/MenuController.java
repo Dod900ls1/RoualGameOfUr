@@ -1,8 +1,8 @@
 package controller;
 
+import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
 import controller.action.menu.MenuClosed.MenuClosedEventSource;
-import ui.Menu;
 import ui.StartMenu;
 
 import java.awt.event.ActionEvent;
@@ -39,6 +39,8 @@ public class MenuController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e instanceof MenuClosed){
             respondToMenuClosed((MenuClosedEventSource)e.getSource());
+        }else if (e instanceof GameStarted){
+            parentListener.actionPerformed(e);
         }
 
     }

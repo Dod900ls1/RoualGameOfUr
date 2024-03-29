@@ -8,5 +8,6 @@ public class PostEndTile extends Tile{
     public PostEndTile(Board board, int tileNum, int tileType) {
         super(board, tileNum, tileType);
         canContainMultiplePieces=true;
+        isNonWalkable=true;
     }
 }

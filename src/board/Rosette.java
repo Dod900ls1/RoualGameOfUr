@@ -7,5 +7,6 @@ public class Rosette extends Tile{
 
     public Rosette(Board board, int tileNum, int tileType) {
         super(board, tileNum, tileType);
+        isRosette=true;
     }
 }

@@ -72,7 +72,7 @@ public class Piece {
      */
     public void move(Tile toMoveTo) throws IllegalMoveException {
         setTile(toMoveTo);
-        if (this.tile!=toMoveTo) {
+        if (this.lastTile!=this.tile) {
             lastTile.removePiece(this);
             tile.addPiece(this);
         }

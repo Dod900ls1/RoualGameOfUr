@@ -2,7 +2,6 @@ package controller;
 
 import board.Tile;
 import controller.action.game.MoveSelected;
-import controller.action.game.RollDice;
 import player.Player;
 import player.PlayerHuman;
 
@@ -24,6 +23,7 @@ public class PlayerHumanController extends PlayerController{
      */
     public PlayerHumanController(PlayerHuman player, GameController parentListener) {
         super(player, parentListener);
+        requiresUserInput = true;
     }
 
     /**
@@ -36,8 +36,6 @@ public class PlayerHumanController extends PlayerController{
     public void actionPerformed(ActionEvent e) {
         if (e instanceof MoveSelected){
             makeMove((Tile)e.getSource());
-        } else if (e instanceof RollDice) {
-            rollDice();
         }
     }
 

@@ -2,7 +2,6 @@ package ui;
 
 import controller.MenuController;
 import controller.action.game.GameStarted;
-import controller.action.game.GameStarted.GameStartedEventSource;
 import controller.action.menu.MenuClosed;
 import player.Player;
 import player.PlayerOptions;
@@ -68,17 +67,6 @@ public class StartMenu extends Menu{
                 playAgainstAI.setVisible(true);
                 playLocally.setVisible(true);
 
-                //#region example of how to fire GameStarted from start menu
-                StartMenu.this.parentListener.actionPerformed(
-                    new GameStarted(
-                        new GameStartedEventSource(new PlayerOptions[]{
-                            new PlayerOptions(Player.LIGHT_PLAYER, true),
-                            new PlayerOptions(Player.DARK_PLAYER, true),
-
-                        })
-                    )
-                );
-                //#endregion
             }
         };
 
@@ -96,11 +84,26 @@ public class StartMenu extends Menu{
         ActionListener playAgainstAIListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 //add AI difficulty picker
-
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
                 playLocally.setVisible(false);
                 back.setVisible(true);
+
+
+
+                //#region example of how to fire GameStarted from start menu
+                StartMenu.this.parentListener.actionPerformed(
+                        new GameStarted(
+                                new GameStarted.GameStartedEventSource(new PlayerOptions[]{
+                                        new PlayerOptions(Player.LIGHT_PLAYER, true),
+                                        new PlayerOptions(Player.DARK_PLAYER, true)
+
+                                })
+                        )
+                );
+                //#endregion
+
+
             }
         };
 
@@ -120,7 +123,7 @@ public class StartMenu extends Menu{
 
         ActionListener playLocallyListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                GameInterface newGame = new GameInterface();
+                //GameInterface newGame = new GameInterface();
 
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);

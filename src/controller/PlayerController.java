@@ -21,6 +21,7 @@ public abstract class PlayerController implements ActionListener {
      * {@code Player} model for this controller
      */
     private final Player player;
+    public boolean requiresUserInput;
 
     /**
      * Value of the player's last roll.
@@ -94,9 +95,11 @@ public abstract class PlayerController implements ActionListener {
      * Rolls dice using {@link Player#rollDice()}.
      * Sets the dice value as {@code lastRoll}
      * May need to fire new event to {@link GameController} to provide roll value to view??
+     * @return Rolled value
      */
-    void rollDice(){
+     int rollDice(){
         lastRoll = player.rollDice();
+        return lastRoll;
     }
 
     /**

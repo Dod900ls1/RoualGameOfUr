@@ -3,8 +3,10 @@ package board;
 import exceptions.IllegalMoveException;
 import player.Piece;
 import player.Player;
+import states.TileState;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,8 @@ public class Tile {
     protected boolean canContainMultiplePieces;
 
     private Set<Piece> piecesOnTile;
+    boolean isRosette;
+    boolean isNonWalkable;
 
     public Tile(Board board, int tileNum, int tileType){
         this.board=board;
@@ -96,5 +100,26 @@ public class Tile {
      */
     public boolean hasPieceForPlayer(Player player) {
         return this.piecesOnTile.stream().anyMatch(piece -> piece.getPlayer().equals(player));
+    }
+
+    public TileState bundle() {
+        return new TileState(tileNum, getPiecesByPlayer());
+    }
+
+
+    public Map<Player, Integer> getPiecesByPlayer(){
+        return piecesOnTile.stream().collect(Collectors.groupingBy(
+                Piece::getPlayer, Collectors.summingInt(p->1)
+        ));
+    }
+
+
+    public boolean isRosette(){
+        return isRosette;
+    }
+
+
+    public boolean isNonWalkable() {
+        return isNonWalkable;
     }
 }

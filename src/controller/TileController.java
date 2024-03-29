@@ -2,9 +2,12 @@ package controller;
 
 import board.Tile;
 import controller.action.game.TileSelected;
+import player.Player;
+import ui.TileInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 /**
  * Controller for {@code Tile} objects. Links {@code Tile} model entity to view
@@ -22,6 +25,11 @@ public class TileController implements ActionListener {
      */
     private final Tile tile;
 
+
+    final TileInterface tileInterface;
+
+
+
     /**
      * Constructor for new {@code TileController}
      * Has access to {@link Tile} instance and view of Tile - bridges communication between objects
@@ -31,6 +39,7 @@ public class TileController implements ActionListener {
     public TileController(Tile tile, BoardController parentListener){
         this.parentListener = parentListener;
         this.tile = tile;
+        this.tileInterface = new TileInterface(this);
     }
 
     /**
@@ -62,7 +71,37 @@ public class TileController implements ActionListener {
      * Update tile view
      */
     public void updateTile(){
-        //Todo Update tile view to reflect tile.piecesOnTile set
+        tileInterface.updateTile();
     }
+
+    public boolean isRosette() {
+        return tile.isRosette();
+    }
+
+    public boolean isNonWalkable() {
+       return tile.isNonWalkable();
+    }
+
+    public int getTileNumber() {
+        return tile.getTileNum();
+    }
+
+    /**
+     * Accessor method for {@code TileInterface} field
+     * @return {@link #tileInterface} instance
+     */
+    public TileInterface getTileInterface() {
+        return tileInterface;
+    }
+
+    public void enableTile() {
+        tileInterface.enableTile();
+    }
+
+    public Map<Player, Integer> getPiecesByPlayer(){
+        return tile.getPiecesByPlayer();
+    }
+
+
 
 }

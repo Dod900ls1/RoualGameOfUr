@@ -8,5 +8,6 @@ public class PreStartTile extends Tile{
     public PreStartTile(Board board, int tileNum, int tileType) {
         super(board, tileNum, tileType);
         canContainMultiplePieces=true;
+        isNonWalkable=true;
     }
 }

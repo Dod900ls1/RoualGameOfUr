@@ -4,6 +4,7 @@ package game;
 import board.Board;
 import player.Player;
 import player.PlayerOptions;
+import states.GameState;
 
 public class UrGame{
 
@@ -42,4 +43,17 @@ public class UrGame{
     public Board getBoard() {
         return this.board;
     }
+
+
+
+    /**
+     * Returns new {@code GameState} object to encapsulate current state of game at time of method call
+     * @return new {@code GameState} representing state as known by {@code UrGame}
+     */
+    public GameState bundle(){
+        GameState currentState = new GameState();
+        currentState.boardState = board.bundle();
+        return currentState;
+    }
+
 }

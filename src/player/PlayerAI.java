@@ -15,18 +15,13 @@ public class PlayerAI extends Player{
         agent = Agent.getNewAgent(this, Agent.Agents.RANDOM, game);
     }
 
+    /**
+     * Determines and returns end {@code Tile} for next move via {@link #agent} for given value of {@code roll}
+     * @param roll Value of roll for turn
+     * @return {@code Tile} instance a {@code Piece} is to be moved to in current turn
+     */
     public Tile determineNextTile(int roll) {
-        //test with random choice
-        List<Tile> moveTiles = findPotentialMoves(roll);
-        int moves = moveTiles.size();
-        if (moves==0){ //player does not always have a valid move
-            return null;
-        }
-        else{
-            return moveTiles.get(0);
-        }
-
-
+        return agent.determineNextMove(roll);
     }
 
 

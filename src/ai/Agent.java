@@ -1,5 +1,6 @@
 package ai;
 
+import board.Tile;
 import game.UrGame;
 import player.Player;
 import player.PlayerAI;
@@ -12,11 +13,11 @@ public abstract class Agent {
     /**
      * Reference to {@code Player} instance for whom to serve as an ai agent
      */
-    private final Player player;
+    final Player player;
     /**
      * Reference to current instance of {@code UrGame} to provide access to information that may be required by {@code Agent} in choosing next move
      */
-    private final UrGame game;
+    final UrGame game;
 
     /**
      * Implemented agent types based on choosing behaviour
@@ -50,4 +51,10 @@ public abstract class Agent {
         this.player = player;
         this.game = game;
     }
+
+    public abstract Tile determineNextMove(int roll);
+
+
+
+
 }

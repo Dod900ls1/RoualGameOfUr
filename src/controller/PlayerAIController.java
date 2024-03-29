@@ -21,10 +21,14 @@ public class PlayerAIController extends PlayerController{
     public PlayerAIController(PlayerAI player, GameController parentListener) {
         super(player, parentListener);
         this.player = player;
+        requiresUserInput = false;
+
     }
 
     /**
-     * Override of parent. Automatically rolls dice by {@code rollDice} and calls {@code makeMove} with result of {@link PlayerAI#determineNextTile(int) PlayerAI.determineNextTile(roll)}
+     * Override of parent.
+     * Automatically rolls dice by {@code rollDice}.
+     * Calls {@code makeMove} with result of {@link PlayerAI#determineNextTile(int) PlayerAI.determineNextTile(roll)}
      */
     @Override
     public void startTurn(){

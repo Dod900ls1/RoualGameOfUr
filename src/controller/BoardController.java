@@ -5,12 +5,15 @@ import board.Tile;
 import controller.action.game.MoveSelected;
 import controller.action.game.TileSelected;
 import player.Piece;
+import ui.BoardInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Controller for board. Links board model to board view
@@ -31,6 +34,9 @@ public class BoardController implements ActionListener {
      */
     final GameController parentListener;
 
+
+    final BoardInterface boardInterface;
+
     /**
      * Constructor for new {@code BoardController}
      * Has access to {@link Board} instance and view of Board - bridges communication between objects
@@ -44,6 +50,9 @@ public class BoardController implements ActionListener {
         for (Tile tile : board.getTiles()) {
             tileControllers.add(new TileController(tile, this)); //this is listener for all tile events
         }
+
+
+        this.boardInterface = new BoardInterface(this);
     }
 
     /**
@@ -91,5 +100,45 @@ public class BoardController implements ActionListener {
      */
     private TileController getControllerForTile(Tile tile){
         return tileControllers.stream().filter(tc -> tc.getTile().equals(tile)).findFirst().orElse(null);
+    }
+
+    private Collection<TileController> getControllersForTiles(Collection<Tile> tiles){
+        return tileControllers.stream().filter(tc -> tiles.contains(tc.getTile())).collect(Collectors.toList());
+    }
+
+
+    public Collection<TileController> getTileControllers(){
+        return this.tileControllers;
+    }
+
+
+    /**
+     * Returns the number of rows in the board
+     * @return {@link Board#getRows()}
+     */
+    public int getRows() {
+        return board.getRows();
+    }
+
+    /**
+     * Returns the number of columns in the board
+     * @return {@link Board#getColumns()}
+     */
+    public int getColumns(){
+        return board.getColumns();
+    }
+
+    /**
+     * Accessor for {@code BoardInterface} field
+     * @return {@link #boardInterface} instance
+     */
+    public BoardInterface getBoardInterface() {
+        return this.boardInterface;
+    }
+
+    public void enableValidMoveTiles(List<Tile> validTilesForMove) {
+        boardInterface.enableBoard();
+        Collection<TileController> validTileControllers = getControllersForTiles(validTilesForMove);
+        validTileControllers.stream().forEach(TileController :: enableTile);
     }
 }

@@ -3,8 +3,10 @@ package board;
 import exceptions.IllegalMoveException;
 import player.Piece;
 import player.Player;
+import states.BoardState;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -28,6 +30,7 @@ public class Board {
                     "111"+
                     "111",
                     2), //navigable tiles
+                new int[]{8, 3}, //dims
                 new int[]{1, 3, 11, 15, 17}, //rosette tiles
                 new int[]{13, 10, 7, 4, 1, 2, 5, 8, 11, 14, 17, 20, 23, 22, 19, 16}, //light path
                 new int[]{15, 12, 9, 6, 3, 2, 5, 8, 11, 14, 17, 20, 23, 24, 21, 18} //dark path
@@ -191,5 +194,27 @@ public class Board {
             prePostTiles.add(path.get(path.size()-1));
         }
         return prePostTiles;
+    }
+
+    public BoardState bundle() {
+        BoardState currentState = new BoardState();
+        currentState.setTileStates(tiles.stream().map(t->t.bundle()).collect(Collectors.toList()));
+        return currentState;
+    }
+
+    /**
+     * Returns the number of rows in the {@code layout} for this board
+     * @return {@link BoardLayout#dimensions()} rows value
+     */
+    public int getRows() {
+        return layout.dimensions()[0];
+    }
+
+    /**
+     * Returns the number of columns in the {@code layout} for this board
+     * @return {@link BoardLayout#dimensions()} columns value
+     */
+    public int getColumns() {
+        return layout.dimensions()[1];
     }
 }
