@@ -38,6 +38,11 @@ public class GameInterface extends JFrame{
 
     public void getGameState(){
         //get the game state
+        move();
+    }
+
+    public void move(){
+        //change position of pieces && let the player make a move
     }
 
     private void configBoard() {
@@ -85,7 +90,7 @@ public class GameInterface extends JFrame{
 
         ActionListener rollListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                System.out.println(players[0].rollDice());
+                roll(players[0].rollDice());
             }
         };
 
@@ -105,5 +110,10 @@ public class GameInterface extends JFrame{
         add(roll);
         add(exit);
         setVisible(true);
+    }
+
+    private void roll(int dice){
+        System.out.println(dice);
+        
     }
 }
