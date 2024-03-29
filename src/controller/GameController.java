@@ -17,8 +17,16 @@ import java.util.stream.Collectors;
 
 public class GameController implements ActionListener {
 
+    /**
+     * Flag indicating if turn is currently in progress,
+     * State monitored in {@link #beginGame()} and used to control game's turn cycle
+     * Allows turns to be ended by different threads than those on which they are processed
+     */
+    volatile private boolean turnInProgress;
 
-    volatile private boolean moveInProgress;
+    /**
+     * Boolean indicator that game is still in play i.e. conclusion of current turn is not end of game
+     */
     volatile private boolean play;
 
     /**
@@ -97,26 +105,16 @@ public class GameController implements ActionListener {
 
     /**
      * Begins game by calling {@link PlayerController#startTurn()} on {@code activePlayerController}
+     * Sets of turn loop calling {@link PlayerController#startTurn()} on {@code activePlayerController} when previous turn ends as indicated by state of {@code turnInProgress}
      */
-//    public void beginGame(){
-//        Thread t = new Thread(){
-//            @Override
-//            public void run() {
-//                runMoveCycle();
-//            }
-//        };
-//        t.start();
-//
-//    }
-
-
-    public void beginGame(){
+    public int beginGame(){
+        int turnCount=0;
         play=true;
         while (play){
             try {
-                if (moveInProgress){
+                if (turnInProgress){
                     synchronized (this){
-                        while (moveInProgress){
+                        while (turnInProgress){
                             wait();
                         }
                     }
@@ -124,11 +122,14 @@ public class GameController implements ActionListener {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            moveInProgress = true;
+            turnInProgress = true;
             //Thread t = new Thread(()->activePlayerController.startTurn());
             //t.start();
+            turnCount++;
             activePlayerController.startTurn();
         }
+
+        return turnCount;
     }
 
 
@@ -178,7 +179,7 @@ public class GameController implements ActionListener {
         }
         play = activePlayerController.endTurn();
         activePlayerController = playerControllerIterator.next();
-        moveInProgress=false;
+        turnInProgress =false;
         //activePlayerController.startTurn();
     }
 

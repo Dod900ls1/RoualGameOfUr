@@ -8,12 +8,15 @@ import player.PlayerHuman;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Specialisation of {@link PlayerController} for use with {@link PlayerHuman} players
+ */
 public class PlayerHumanController extends PlayerController{
 
     PlayerHuman player;
 
     /**
-     * Constructor for new {@code PlayerController}
+     * Constructor for new {@code PlayerHumanController}
      * Has access to {@link Player} instance - bridges communication between Player view and model
      *
      * @param player         {@code Player} model entity

@@ -64,20 +64,6 @@ public abstract class PlayerController implements ActionListener {
         this.parentListener = parentListener;
     }
 
-//    /**
-//     * {@code ActionListener} override.
-//     * May receive events from parent {@code GameController}
-//     * May pass event up chain of command to {@link GameController} e.g. if player needs to be notified of event
-//     * @param e the event to be processed
-//     */
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        if (e instanceof MoveSelected){
-//            makeMove((Tile)e.getSource());
-//        } else if (e instanceof RollDice) {
-//            rollDice();
-//        }
-//    }
 
     /**
      * Starts a new thread to execute move in {@code Player} model.
@@ -121,9 +107,11 @@ public abstract class PlayerController implements ActionListener {
        parentListener.actionPerformed(new MoveMade(movedPiece, movedPiece.getTileNumber()));
     }
 
-
+    /**
+     * Fires {@code NoMovePossible} event with source as {@code player} to {@code parentListener} who is {@link GameController}
+     */
     private void fireNoMovePossible(){
-        parentListener.actionPerformed(new NoMovePossible());
+        parentListener.actionPerformed(new NoMovePossible(player));
     }
 
     /**

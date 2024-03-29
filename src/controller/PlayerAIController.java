@@ -4,13 +4,15 @@ import player.Player;
 import player.PlayerAI;
 
 import java.awt.event.ActionEvent;
-
+/**
+ * Specialisation of {@link PlayerController} for use with {@link PlayerAI} players
+ */
 public class PlayerAIController extends PlayerController{
 
     private final PlayerAI player;
 
     /**
-     * Constructor for new {@code PlayerController}
+     * Constructor for new {@code PlayerAIController}
      * Has access to {@link Player} instance - bridges communication between Player view and model
      *
      * @param player         {@code Player} model entity
@@ -21,6 +23,9 @@ public class PlayerAIController extends PlayerController{
         this.player = player;
     }
 
+    /**
+     * Override of parent. Automatically rolls dice by {@code rollDice} and calls {@code makeMove} with result of {@link PlayerAI#determineNextTile(int) PlayerAI.determineNextTile(roll)}
+     */
     @Override
     public void startTurn(){
         rollDice();

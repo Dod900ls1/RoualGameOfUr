@@ -3,6 +3,7 @@ package player;
 import board.Board;
 import board.Tile;
 import exceptions.IllegalMoveException;
+import game.UrGame;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,14 +49,15 @@ public abstract class Player {
      * Creates a {@code Player} instance from the {@code PlayerOptions} parameters.
      * @param playerOption Configuration of new {@code Player}
      * @param playerPath Path for new {@code Player} retrieved from {@link Board#getPlayerPath(int) Board.getPlayerPath}
+     * @param game Current instance of {@code UrGame} to be provided to {@link ai.Agent} instances
      * @return new {@code Player} instance
      */
-    public static Player createPlayerFromSetup(PlayerOptions playerOption, List<Tile> playerPath) {
+    public static Player createPlayerFromSetup(PlayerOptions playerOption, List<Tile> playerPath, UrGame game) {
         if (playerOption.isHuman()){
             return new PlayerHuman(playerOption.playerColour(), playerPath);
         }
         else{
-            return new PlayerAI(playerOption.playerColour(), playerPath);
+            return new PlayerAI(playerOption.playerColour(), playerPath, game);
         }
     }
 
@@ -152,6 +154,7 @@ public abstract class Player {
 
     /**
      * Finds all {@code Tile} instances in {@code playerPath} that would be valid end points for a move of {@code spacesToMove} (i.e are {@code spacesToMove} tiles on path from a {@code Tile} containing a {@code Piece} belonging to this player and do not themselves have a {@code Piece} belonging to this player)
+     * Note: Existence of valid move not always guaranteed - may return empty list
      * @param spacesToMove Number of tiles a {@code Piece} must move in this turn
      * @return Valid {@code Tile} options on {@code playerPath} for move
      */
