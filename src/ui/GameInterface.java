@@ -36,7 +36,9 @@ public class GameInterface extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-
+    public void getGameState(){
+        //get the game state
+    }
 
     private void configBoard() {
 
@@ -45,6 +47,7 @@ public class GameInterface extends JFrame{
                 //normal button is pressed
                 JButton button = (JButton)e.getSource();
                 button.setBackground(Color.BLACK);
+                getGameState();
             }
         };
 
@@ -52,6 +55,7 @@ public class GameInterface extends JFrame{
             public void actionPerformed(ActionEvent e){
                 JButton button = (JButton)e.getSource();
                 button.setBackground(Color.PINK);
+                getGameState();
             }
         };
 
@@ -101,9 +105,5 @@ public class GameInterface extends JFrame{
         add(roll);
         add(exit);
         setVisible(true);
-    }
-
-    public static void main(String[] args){
-        new GameInterface();
     }
 }
