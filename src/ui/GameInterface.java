@@ -8,6 +8,8 @@ import player.Player;
 import player.PlayerHuman;
 import player.PlayerOptions;
 
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -31,7 +33,7 @@ public class GameInterface extends JFrame{
     }
 
     private void configFrame() {
-        setSize(800, 600);
+        setSize(10000, 10000);
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -114,6 +116,14 @@ public class GameInterface extends JFrame{
 
     private void roll(int dice){
         System.out.println(dice);
-        
+        ImageIcon image = new ImageIcon("diceStates/0.jpg");
+        if(new File("diceStates/0.jpg").exists()){
+            System.out.println(true);
+        }
+        JLabel die1 = new JLabel(image);
+        die1.setVisible(true);
+        //die1.setPreferredSize(new Dimension(100,100));
+        add(die1);
+        setVisible(true);
     }
 }
