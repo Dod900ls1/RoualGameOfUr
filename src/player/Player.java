@@ -96,13 +96,26 @@ public abstract class Player {
 
     /**
      * Simulates dice roll
-     * @return Random integer in interval [0, 4)
+     * @return Random integer in interval [0, 4]
      */
     public int rollDice() {
         Random diceRoll = new Random();
         int randNum = 0;
         for(int i = 0; i < 4; i++){
             randNum += diceRoll.nextInt(2);
+        }
+        return randNum;
+    }
+
+    /**
+     * Simulates dice roll, returns value of each die
+     * @return array of 0 or 1
+     */
+    public int[] rollDiceGetArray() {
+        Random diceRoll = new Random();
+        int[] randNum = new int[4];
+        for(int i = 0; i < 4; i++){
+            randNum[i] = diceRoll.nextInt(2);
         }
         return randNum;
     }

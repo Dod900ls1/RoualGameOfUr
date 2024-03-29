@@ -9,6 +9,7 @@ import player.PlayerHuman;
 import player.PlayerOptions;
 
 import java.io.File;
+import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -25,6 +26,7 @@ public class GameInterface extends JFrame{
     private UrGame game = new UrGame(new PlayerOptions[] {new PlayerOptions(1, true), new PlayerOptions(1, true)});
     Player[] players = game.getPlayers(); //TODO convert from player to playerHuman
     private JPanel gamePanel = new JPanel();
+    JPanel dicePanel = new JPanel();
     private JButton[][] boardSpaces = new JButton[8][3];
 
     public GameInterface(){
@@ -92,7 +94,7 @@ public class GameInterface extends JFrame{
 
         ActionListener rollListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                roll(players[0].rollDice());
+                roll(players[0].rollDiceGetArray());
             }
         };
 
@@ -114,16 +116,24 @@ public class GameInterface extends JFrame{
         setVisible(true);
     }
 
-    private void roll(int dice){
-        System.out.println(dice);
-        ImageIcon image = new ImageIcon("diceStates/0.jpg");
-        if(new File("diceStates/0.jpg").exists()){
-            System.out.println(true);
+    private void roll(int[] dice){
+        remove(dicePanel);
+        dicePanel = new JPanel();
+        Random random = new Random();
+        for(int i = 0; i < 4; i++){
+            String location = "src/ui/diceStates/dice" + random.nextInt(3) + "_";
+            if(dice[i]==0){
+                location += 0 + ".png";
+            }else{
+                location += 1 + ".png";
+            }
+            JLabel label = new JLabel(new ImageIcon(location));
+            label.setVisible(true);
+            dicePanel.add(label);
         }
-        JLabel die1 = new JLabel(image);
-        die1.setVisible(true);
-        //die1.setPreferredSize(new Dimension(100,100));
-        add(die1);
+        dicePanel.setLayout(new GridLayout(2,2));
+        add(dicePanel);
         setVisible(true);
     }
 }
+
