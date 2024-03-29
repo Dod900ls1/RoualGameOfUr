@@ -37,6 +37,7 @@ public class GameInterface extends JFrame{
 
         ActionListener buttonListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                //normal button is pressed
                 JButton button = (JButton)e.getSource();
                 button.setBackground(Color.BLACK);
             }
@@ -74,6 +75,26 @@ public class GameInterface extends JFrame{
         gamePanel.setLayout(new GridLayout(8,3));
         add(gamePanel);
 
+        ActionListener rollListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //roll & get values
+            }
+        };
+
+        ActionListener exitListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //start new game
+            }
+        };
+
+        JButton roll = new JButton("Roll");
+        JButton exit = new JButton("Exit");
+        roll.addActionListener(rollListener);
+        exit.addActionListener(exitListener);
+        roll.setPreferredSize(new Dimension(150,50));
+        exit.setPreferredSize(new Dimension(150,50));
+        add(roll);
+        add(exit);
         setVisible(true);
     }
 
