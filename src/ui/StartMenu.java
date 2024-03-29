@@ -21,8 +21,6 @@ public class StartMenu extends Menu{
     private Renderer renderer = new Renderer();
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
-    private boolean menuOpen = false;
-    private boolean onlineMenuOpen = false;
     private JPanel menu = new JPanel();
 
     /**
@@ -122,7 +120,7 @@ public class StartMenu extends Menu{
 
         ActionListener playLocallyListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //add action to start local game
+                GameInterface newGame = new GameInterface();
 
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
@@ -162,26 +160,6 @@ public class StartMenu extends Menu{
 
         setVisible(true);
     }
-
-    /*private void configFrame() {
-        setSize(WIDTH, HEIGHT);
-        setLayout(new FlowLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JButton createServer = renderer.createButton("Create Server", new ServerActionListener(), 150, 50);
-        ActionListener listener = new Actionlistener() {
-            public void actionperformed(Actionevent e){
-                if(menuOpen){
-                    createServer.setVisible(false);
-                }
-            }
-        }
-        JButton play = rendered.createButton("Play", listener, 150,50);
-        add(play,CENTER_ALIGNMENT);
-        add(createServer, CENTER_ALIGNMENT);
-        add(renderer.createButton("Join Server", new ClientActionListener(), 150, 50), CENTER_ALIGNMENT);
-
-        setVisible(true);
-    }*/
 
     /**
      * choosing the type of buttons and various other things for the window.

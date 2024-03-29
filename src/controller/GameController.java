@@ -3,6 +3,7 @@ package controller;
 import board.Tile;
 import controller.action.game.MoveMade;
 import controller.action.game.MoveSelected;
+import controller.action.game.NoMovePossible;
 import controller.action.game.RollDice;
 import game.UrGame;
 import player.Piece;
@@ -16,7 +17,17 @@ import java.util.stream.Collectors;
 
 public class GameController implements ActionListener {
 
+    /**
+     * Flag indicating if turn is currently in progress,
+     * State monitored in {@link #beginGame()} and used to control game's turn cycle
+     * Allows turns to be ended by different threads than those on which they are processed
+     */
+    volatile private boolean turnInProgress;
 
+    /**
+     * Boolean indicator that game is still in play i.e. conclusion of current turn is not end of game
+     */
+    volatile private boolean play;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -93,13 +104,44 @@ public class GameController implements ActionListener {
     }
 
     /**
+     * Begins game by calling {@link PlayerController#startTurn()} on {@code activePlayerController}
+     * Sets of turn loop calling {@link PlayerController#startTurn()} on {@code activePlayerController} when previous turn ends as indicated by state of {@code turnInProgress}
+     */
+    public int beginGame(){
+        int turnCount=0;
+        play=true;
+        while (play){
+            try {
+                if (turnInProgress){
+                    synchronized (this){
+                        while (turnInProgress){
+                            wait();
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            turnInProgress = true;
+            //Thread t = new Thread(()->activePlayerController.startTurn());
+            //t.start();
+            turnCount++;
+            activePlayerController.startTurn();
+        }
+
+        return turnCount;
+    }
+
+
+
+    /**
      * Creates controllers for game entities for new {@code UrGame}
      */
     private void initialiseGameEntityControllers(){
         this.boardController=new BoardController(game.getBoard(), this);
         this.playerControllers = new ArrayList<>();
         for (Player player:game.getPlayers()) {
-            playerControllers.add(new PlayerController(player, this));
+            playerControllers.add(PlayerController.getControllerForPlayer(player, this));
         }
         this.playerControllerIterator = getControllerIterator(playerControllers);
         this.activePlayerController=playerControllerIterator.next();
@@ -120,6 +162,8 @@ public class GameController implements ActionListener {
             this.activePlayerController.actionPerformed(e);
         } else if (e instanceof MoveMade) {
             finishMove((Piece) e.getSource());
+        } else if (e instanceof NoMovePossible) {
+            finishMove(null);
         }
     }
 
@@ -130,10 +174,13 @@ public class GameController implements ActionListener {
      * @param pieceMoved {@code Piece} object moved last turn
      */
     public void finishMove(Piece pieceMoved){
-        this.boardController.updateBoard(pieceMoved);
-        activePlayerController.endTurn();
+        if (pieceMoved!=null) {
+            this.boardController.updateBoard(pieceMoved);
+        }
+        play = activePlayerController.endTurn();
         activePlayerController = playerControllerIterator.next();
-        activePlayerController.startTurn();
+        turnInProgress =false;
+        //activePlayerController.startTurn();
     }
 
 
