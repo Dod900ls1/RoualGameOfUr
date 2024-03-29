@@ -3,6 +3,10 @@ package ui;
 import controller.MenuController;
 import controller.action.menu.MenuClosed;
 import controller.action.menu.MenuClosed.*;
+import game.UrGame;
+import player.Player;
+import player.PlayerHuman;
+import player.PlayerOptions;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -16,7 +20,8 @@ import java.awt.event.ActionListener;
  * able to connect to a server or to start an offline session with AI or their friend.
  */
 public class GameInterface extends JFrame{
-
+    private UrGame game = new UrGame(new PlayerOptions[] {new PlayerOptions(1, true), new PlayerOptions(1, true)});
+    Player[] players = game.getPlayers(); //TODO convert from player to playerHuman
     private JPanel gamePanel = new JPanel();
     private JButton[][] boardSpaces = new JButton[8][3];
 
@@ -76,7 +81,7 @@ public class GameInterface extends JFrame{
 
         ActionListener rollListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //roll & get values
+                System.out.println(players[0].rollDice());
             }
         };
 

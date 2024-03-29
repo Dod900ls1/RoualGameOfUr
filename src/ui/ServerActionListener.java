@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-// TODO - Refactor some code, use observer pattern
+// TODO - add a default option in here and clients
 /**
  * ActionListener implementation for starting a server.
  */
