@@ -1,8 +1,11 @@
 package ui;
 
 import controller.MenuController;
+import controller.action.game.GameStarted;
+import controller.action.game.GameStarted.GameStartedEventSource;
 import controller.action.menu.MenuClosed;
-import controller.action.menu.MenuClosed.*;
+import player.Player;
+import player.PlayerOptions;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -21,7 +24,7 @@ public class StartMenu extends Menu{
     private JPanel menu = new JPanel();
 
     /**
-     * Example of {@link MenuClosedEventSource#params() MenuClosedEventSource.params} action field
+     * Example of {@link MenuClosed.MenuClosedEventSource#params() MenuClosed.MenuClosedEventSource.params} field
      * //TODO figure out what information about play needs to be passed back so game can be created
      * @param playOnline e.g. Is play online?
      */
@@ -64,6 +67,18 @@ public class StartMenu extends Menu{
                 playOnline.setVisible(true);
                 playAgainstAI.setVisible(true);
                 playLocally.setVisible(true);
+
+                //#region example of how to fire GameStarted from start menu
+                StartMenu.this.parentListener.actionPerformed(
+                    new GameStarted(
+                        new GameStartedEventSource(new PlayerOptions[]{
+                            new PlayerOptions(Player.LIGHT_PLAYER, true),
+                            new PlayerOptions(Player.DARK_PLAYER, true),
+
+                        })
+                    )
+                );
+                //#endregion
             }
         };
 

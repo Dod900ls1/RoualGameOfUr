@@ -1,5 +1,9 @@
 package controller;
 
+import controller.action.game.GameStarted;
+import controller.action.game.GameStarted.GameStartedEventSource;
+import player.PlayerOptions;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,8 +48,24 @@ public class MainController implements ActionListener {
 
 
 
+    /**
+     * {@code ActionListener} override. Responds to events fired from {@link #gameController} and {@link #menuController} instances that need to be relayed between them
+     * Root of action event tree
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e instanceof GameStarted){
+            createGame((GameStartedEventSource)e.getSource());
+        }
 
+    }
+
+    /**
+     * Creates new game via {@code GameController}
+     * @param gameStartedEventSource {@code GameStarted.source} field value. Record containing game setup information fields
+     */
+    private void createGame(GameStartedEventSource gameStartedEventSource) {
+        gameController.createGame(gameStartedEventSource.playerOptions());
     }
 }

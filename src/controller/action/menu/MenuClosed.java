@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 public class MenuClosed extends ActionEvent {
 
     /**
-     * Passed with {@code MenuClosedEventSource} event as {@code source}
+     * Passed with {@code MenuClosed} event as {@code source}
      * @param menu Closed {@code Menu} subclass instance
      * @param params {@code Record} subclass instance with any menu input that needs to be passed back to {@code parentListener} ({@link MenuController})
      */

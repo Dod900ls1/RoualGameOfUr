@@ -9,6 +9,7 @@ import player.Piece;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -69,6 +70,7 @@ public class BoardController implements ActionListener {
 
     /**
      * Updates the board tiles via {@link TileController#updateTile()} for the moved piece (update tile piece moved from and to)
+     * Updates all {@code PreStartTile} and {@code PostEndTile} on board via {@link TileController#updateTile()}
      * @param movedPiece Piece moved last turn
      */
     public void updateBoard(Piece movedPiece) {
@@ -76,6 +78,10 @@ public class BoardController implements ActionListener {
         TileController newTileController = getControllerForTile(movedPiece.getTile());
         lastTileController.updateTile();
         newTileController.updateTile();
+        List<Tile> prePostBoardTiles = board.getPrePostBoardTiles();
+        for (Tile prePostBoardTile : prePostBoardTiles) {
+            getControllerForTile(prePostBoardTile).updateTile();
+        }
     }
 
     /**

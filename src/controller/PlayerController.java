@@ -2,24 +2,25 @@ package controller;
 
 import board.Tile;
 import controller.action.game.MoveMade;
-import controller.action.game.MoveSelected;
-import controller.action.game.RollDiceAction;
+import controller.action.game.NoMovePossible;
 import exceptions.IllegalMoveException;
 import player.Piece;
 import player.Player;
+import player.PlayerAI;
+import player.PlayerHuman;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Controller for {@code Player} objects. Links {@code Player} model entity to view
  */
-public class PlayerController implements ActionListener {
+public abstract class PlayerController implements ActionListener {
 
     /**
      * {@code Player} model for this controller
      */
-    final Player player;
+    private final Player player;
 
     /**
      * Value of the player's last roll.
@@ -36,6 +37,23 @@ public class PlayerController implements ActionListener {
 
 
     /**
+     * Returns a new controller for the specified {@code player}
+     * @param player Player to create controller for
+     * parentListener Attached listener who is step above in command chain, can fire events to this listener who can respond from higher order or fire to their parent etc.
+     * @return {@code PlayerController} specialisation gven the type of {@code Player}
+     */
+    public static PlayerController getControllerForPlayer(Player player, GameController parentListener){
+        if (player instanceof PlayerHuman){
+            return new PlayerHumanController((PlayerHuman) player, parentListener);
+        } else if (player instanceof PlayerAI) {
+            return new PlayerAIController((PlayerAI) player, parentListener);
+
+        }
+        return null;
+    }
+
+
+    /**
      * Constructor for new {@code PlayerController}
      * Has access to {@link Player} instance - bridges communication between Player view and model
      * @param player {@code Player} model entity
@@ -46,20 +64,6 @@ public class PlayerController implements ActionListener {
         this.parentListener = parentListener;
     }
 
-    /**
-     * {@code ActionListener} override.
-     * May receive events from parent {@code GameController}
-     * May pass event up chain of command to {@link GameController} e.g. if player needs to be notified of event
-     * @param e the event to be processed
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e instanceof MoveSelected){
-            makeMove((Tile)e.getSource());
-        } else if (e instanceof RollDiceAction) {
-            rollDice();
-        }
-    }
 
     /**
      * Starts a new thread to execute move in {@code Player} model.
@@ -68,27 +72,31 @@ public class PlayerController implements ActionListener {
      * When move made, calls {@code fireMoveMade} to inform {@code GameController} that move has been executed
      * @param toMoveTo {@code Tile} to move {@code Piece} to
      */
-    private void makeMove(Tile toMoveTo){
-        Thread makeMoveThread = new Thread(() -> {
+    void makeMove(Tile toMoveTo){
+        if (toMoveTo==null) {
+            fireNoMovePossible();
+
+        }else{
             try {
                 Piece movedPiece = player.makeMove(lastRoll, toMoveTo);
+                //System.out.printf("Player %d: Moved piece from tile %d to %d%n", player.getPlayerColour(), movedPiece.getLastTile().getTileNum(), movedPiece.getTile().getTileNum());
                 fireMoveMade(movedPiece);
             } catch (IllegalMoveException e) {
                 e.printStackTrace(); //Shouldn't happen if we disable buttons not in valid move set for this turn so cannot fire event!
             }
-        });
-        makeMoveThread.start();
+        }
+
+
 
     }
 
     /**
-     * Starts a new thread to roll dice using {@link Player#rollDice()}.
+     * Rolls dice using {@link Player#rollDice()}.
      * Sets the dice value as {@code lastRoll}
      * May need to fire new event to {@link GameController} to provide roll value to view??
      */
-    private void rollDice(){
-        Thread rollDiceThread = new Thread(() -> lastRoll = player.rollDice());
-        rollDiceThread.start();
+    void rollDice(){
+        lastRoll = player.rollDice();
     }
 
     /**
@@ -96,13 +104,75 @@ public class PlayerController implements ActionListener {
      * @param movedPiece {@code Piece} object moved
      */
     private void fireMoveMade(Piece movedPiece){
-        this.parentListener.actionPerformed(new MoveMade(movedPiece, movedPiece.getTileNumber()));
+       parentListener.actionPerformed(new MoveMade(movedPiece, movedPiece.getTileNumber()));
+    }
+
+    /**
+     * Fires {@code NoMovePossible} event with source as {@code player} to {@code parentListener} who is {@link GameController}
+     */
+    private void fireNoMovePossible(){
+        parentListener.actionPerformed(new NoMovePossible(player));
+    }
+
+    /**
+     * Find {@code Tile} objects that player can move to in this turn (for current value of {@code lastRoll})
+     * @return List of {@code Tile} instances that are valid, potential move options
+     */
+    public List<Tile> getValidTilesForMove(){
+        return player.findPotentialMoves(lastRoll);
     }
 
 
-    public void endTurn() {
+    /**
+     * Find {@code TileController} for {@code Tile} objects that player can move to in this turn (for current value of {@code lastRoll})
+     * @return List of {@code TileController} for {@code Tile} instances that are valid, potential move options
+     */
+    public List<TileController> getValidTileControllersForMove(){
+        return parentListener.getControllersForTiles(getValidTilesForMove());
     }
 
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are on the board (occupying a {@code Tile} that is not Player's {@code PreStartTile} or {@code PostEndTile})
+     * @return Number of pieces on board for player
+     */
+    public int getPlayerPieceOnBoardCount(){
+        return player.getPieceOnBoardCount();
+    }
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are pre-board (occupying player's {@code PreStartTile} tile)
+     * @return Number of pieces pre-board for player
+     */
+    public int getPlayerPiecePreBoardCount(){
+        return player.getPiecePreBoardCount();
+    }
+
+
+
+    /**
+     * Gets number of {@code Piece} objects for {@code Player} that are post-board (occupying {@code PostEndTile} tile)
+     * @return Number of pieces post-board for player
+     */
+    public int getPiecePostBoardCount() {
+        return player.getPiecePostBoardCount();
+    }
+
+
+    /**
+     * Called at end of player's turn
+     */
+    public boolean endTurn() {
+        if (player.getPieceOnBoardCount()==0 && player.getPiecePreBoardCount()==0){
+            System.out.println("Game done");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Called at start of player's turn
+     */
     public void startTurn() {
+
     }
 }

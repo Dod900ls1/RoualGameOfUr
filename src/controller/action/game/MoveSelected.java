@@ -16,4 +16,5 @@ public class MoveSelected extends ActionEvent {
     public MoveSelected(Tile source, int id, String command) {
         super(source, id, command);
     }
+
 }
