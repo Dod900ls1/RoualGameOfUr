@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
  */
 public class GameInterface extends JFrame{
     private UrGame game = new UrGame(new PlayerOptions[] {new PlayerOptions(1, true), new PlayerOptions(1, true)});
-    Player[] players = game.getPlayers();
+    Player[] players = game.getPlayers(); //TODO convert from player to playerHuman
     private JPanel gamePanel = new JPanel();
     private JButton[][] boardSpaces = new JButton[8][3];
 
