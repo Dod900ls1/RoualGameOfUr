@@ -87,7 +87,8 @@ public class GameInterface extends JFrame{
 
         ActionListener exitListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //start new game
+                setVisible(false);
+                dispose();
             }
         };
 
