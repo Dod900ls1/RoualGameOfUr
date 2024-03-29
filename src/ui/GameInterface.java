@@ -53,7 +53,6 @@ public class GameInterface extends JFrame{
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
                 if((i == 2 || i == 3) && (j == 0 || j == 2)){
-                    System.out.println(i + " : " + j);
                     gamePanel.add(new JLabel("out box"));
                 }else if((i==4 && j==1) || (( i == 1 || i == 7) && ( j == 0 || j == 2))){
                     boardSpaces[i][j] = new JButton("✯");

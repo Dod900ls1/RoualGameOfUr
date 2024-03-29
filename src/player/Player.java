@@ -100,7 +100,10 @@ public abstract class Player {
      */
     public int rollDice() {
         Random diceRoll = new Random();
-        int randNum = diceRoll.nextInt(4);
+        int randNum = 0;
+        for(int i = 0; i < 4; i++){
+            randNum += diceRoll.nextInt(2);
+        }
         return randNum;
     }
 
