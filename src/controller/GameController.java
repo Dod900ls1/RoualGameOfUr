@@ -131,12 +131,12 @@ public class GameController implements ActionListener {
                 throw new RuntimeException(e);
             }
             gameInterface.resetForNewTurn(activePlayerController.requiresUserInput);
-            //turnInProgress = true;
+            turnInProgress = true;
             turnCount++;
             activePlayerController.startTurn();
-            turnInProgress=true;
+            //turnInProgress=true;
         }
-
+        System.out.println("game done");
         return turnCount;
     }
 

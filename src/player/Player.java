@@ -43,7 +43,7 @@ public abstract class Player {
     private Tile endPosition;
     private int pieceNum;
 
-    private int piecesOnBoardCount;
+    //private int piecesOnBoardCount;
 
     /**
      * Creates a {@code Player} instance from the {@code PlayerOptions} parameters.
@@ -73,7 +73,7 @@ public abstract class Player {
         this.startPosition=playerPath.get(0);
         this.endPosition=playerPath.get(playerPath.size()-1);
         this.pieces = new ArrayList<>();
-        this.piecesOnBoardCount=0;
+        //this.piecesOnBoardCount=0;
         try{
             for (int i = 0; i < PIECE_START_COUNT; i++) {
                 pieces.add(new Piece(startPosition, this));
@@ -155,13 +155,13 @@ public abstract class Player {
             movePiece.move(toMoveTo);
             if (movePiece.getTile().equals(endPosition)){
                 this.pieces.remove(movePiece);
-                piecesOnBoardCount--;
-                System.out.printf("Player %d piece off board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), piecesOnBoardCount, pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
+                //piecesOnBoardCount--;
+                System.out.printf("Player %d piece off board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), getPieceOnBoardCount(), pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
 
             }
             if (movePiece.getLastTile().equals(startPosition)&&!movePiece.getTile().equals(startPosition)){
-                piecesOnBoardCount++;
-                System.out.printf("Player %d piece on board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), piecesOnBoardCount, pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
+                //piecesOnBoardCount++;
+                System.out.printf("Player %d piece on board. OnBoard count %d Active Count %d total %d%n", getPlayerColour(), getPieceOnBoardCount(), pieces.size(), getPieceOnBoardCount()+getPiecePreBoardCount()+getPiecePostBoardCount());
             }
         }
         return movePiece;
@@ -190,7 +190,8 @@ public abstract class Player {
      * @return Number of pieces on board for player
      */
     public int getPieceOnBoardCount() {
-        return this.piecesOnBoardCount;
+        //return this.piecesOnBoardCount;
+        return (PIECE_START_COUNT-getPiecePreBoardCount()-getPiecePostBoardCount());
     }
 
     /**
@@ -198,7 +199,8 @@ public abstract class Player {
      * @return Number of pieces pre-board for player
      */
     public int getPiecePreBoardCount() {
-        return this.pieces.size()-piecesOnBoardCount;
+        //return this.pieces.size()-piecesOnBoardCount;
+        return startPosition.getPieceCountForPlayer(this);
     }
 
     /**
@@ -206,7 +208,8 @@ public abstract class Player {
      * @return Number of pieces post-board for player
      */
     public int getPiecePostBoardCount() {
-        return Player.PIECE_START_COUNT-pieces.size();
+        //return Player.PIECE_START_COUNT-pieces.size();
+        return endPosition.getPieceCountForPlayer(this);
     }
 
 
@@ -216,5 +219,13 @@ public abstract class Player {
      */
     public int getPlayerColour() {
         return this.colour;
+    }
+
+    /**
+     * Returns if player still has pieces left in play
+     * @return {@link #pieces} size>0
+     */
+    public boolean hasPiecesLeft() {
+        return pieces.size()>0;
     }
 }

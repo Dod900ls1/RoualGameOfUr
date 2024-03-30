@@ -95,8 +95,8 @@ public class StartMenu extends Menu{
                 StartMenu.this.parentListener.actionPerformed(
                         new GameStarted(
                                 new GameStarted.GameStartedEventSource(new PlayerOptions[]{
-                                        new PlayerOptions(Player.LIGHT_PLAYER, true),
-                                        new PlayerOptions(Player.DARK_PLAYER, true)
+                                        new PlayerOptions(Player.LIGHT_PLAYER, false),
+                                        new PlayerOptions(Player.DARK_PLAYER, false)
 
                                 })
                         )

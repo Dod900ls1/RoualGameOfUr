@@ -122,4 +122,13 @@ public class Tile {
     public boolean isNonWalkable() {
         return isNonWalkable;
     }
+
+    /**
+     * Returns number of pieces on tile belonging to {@code player}
+     * @param player Player to count pieces for
+     * @return number of pieces on tile belonging to {@code player}
+     */
+    public int getPieceCountForPlayer(Player player) {
+      return (int) piecesOnTile.stream().filter(p-> p.getPlayer().equals(player)).count();
+    }
 }

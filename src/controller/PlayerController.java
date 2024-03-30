@@ -165,11 +165,12 @@ public abstract class PlayerController implements ActionListener {
      * Called at end of player's turn
      */
     public boolean endTurn() {
-        if (player.getPieceOnBoardCount()==0 && player.getPiecePreBoardCount()==0){
-            System.out.println("Game done");
-            return false;
-        }
-        return true;
+//        if (player.getPieceOnBoardCount()==0 && player.getPiecePreBoardCount()==0){
+//            System.out.println("Game done");
+//            return false;
+//        }
+//        return true;
+        return player.hasPiecesLeft();
     }
 
     /**

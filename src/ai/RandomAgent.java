@@ -29,6 +29,15 @@ public class RandomAgent extends Agent{
     public Tile determineNextMove(int roll) {
         List<Tile> moveTiles = player.findPotentialMoves(roll);
         int moves = moveTiles.size();
+
+        //sleep thread for a bit
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
         if (moves==0){ //player does not always have a valid move
             return null;
         }

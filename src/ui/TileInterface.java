@@ -24,7 +24,9 @@ public class TileInterface extends JButton{
         if (isRosette){
             text="✯";
         } else if (isNonWalkable) {
-            setVisible(false); //Button only there logically to not upset grid layout
+            //DEBUGGING VIEW
+            text= Integer.toString(controller.getTileNumber());
+            //setVisible(false); //Button only there logically to not upset grid layout
         }else{
             text= Integer.toString(controller.getTileNumber());
         }
