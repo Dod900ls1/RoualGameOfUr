@@ -27,14 +27,14 @@ public class ServerActionListener implements ActionListener {
      */
     private void startServer(String ipAdderss, int socketId) {
         try {
-            ServerSocket ss = new ServerSocket(socketId);
+            ServerSocket serverSocket = new ServerSocket(socketId);
             JOptionPane.showMessageDialog(null,
                     "Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
-            Socket s = ss.accept();
+            Socket clientSocket = serverSocket.accept();
             System.out.println("Client connected.");
 
-            DataInputStream din = new DataInputStream(s.getInputStream());
-            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            DataInputStream din = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream dout = new DataOutputStream(clientSocket.getOutputStream());
 
             showServerStartedMessage(socketId);
 
@@ -49,8 +49,8 @@ public class ServerActionListener implements ActionListener {
 
             din.close();
             dout.close();
-            s.close();
-            ss.close();
+            clientSocket.close();
+            serverSocket.close();
         } catch (IOException ex) {
             // TODO Provide user with instructions
             showServerError(ex.getMessage());
