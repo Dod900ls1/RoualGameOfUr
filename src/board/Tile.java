@@ -102,8 +102,14 @@ public class Tile {
         return this.piecesOnTile.stream().anyMatch(piece -> piece.getPlayer().equals(player));
     }
 
+    /**
+     * Creates {@link TileState} instance to reflect this {@code Tile} instance
+     * @return new instance of {@code TileState} for this tile
+     */
     public TileState bundle() {
-        return new TileState(tileNum, getPiecesByPlayer());
+        TileState tileState = new TileState(tileNum, canContainMultiplePieces);
+        tileState.convertAndSetPiecesByPlayer(getPiecesByPlayer());
+        return tileState;
     }
 
 

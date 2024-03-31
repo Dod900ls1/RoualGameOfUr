@@ -1,6 +1,6 @@
 package player;
 
-import ai.Agent;
+import ai.agent.Agent;
 import board.Tile;
 import game.UrGame;
 
@@ -12,7 +12,7 @@ public class PlayerAI extends Player{
 
     public PlayerAI(int colour, List<Tile> playerPath, UrGame game) {
         super(colour, playerPath);
-        agent = Agent.getNewAgent(this, Agent.Agents.RANDOM, game);
+        agent = Agent.getNewAgent(this, Agent.Agents.EXPECTIMINIMAX, game);
     }
 
     /**

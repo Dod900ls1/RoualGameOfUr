@@ -1,5 +1,6 @@
-package ai;
+package ai.agent;
 
+import ai.metric.MaximiseAdvancement;
 import board.Tile;
 import game.UrGame;
 import player.Player;
@@ -23,7 +24,8 @@ public abstract class Agent {
      * Implemented agent types based on choosing behaviour
      */
     public enum Agents{
-        RANDOM
+        RANDOM,
+        EXPECTIMINIMAX
     }
 
     /**
@@ -38,6 +40,7 @@ public abstract class Agent {
             case RANDOM -> {
                 return new RandomAgent(playerAI, game);
             }
+            case EXPECTIMINIMAX -> {return new ExpectiminimaxAgent(playerAI, game, new MaximiseAdvancement()); }
         }
         return null;
     }

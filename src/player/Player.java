@@ -1,9 +1,11 @@
 package player;
 
+import ai.agent.Agent;
 import board.Board;
 import board.Tile;
 import exceptions.IllegalMoveException;
 import game.UrGame;
+import states.PlayerState;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +51,7 @@ public abstract class Player {
      * Creates a {@code Player} instance from the {@code PlayerOptions} parameters.
      * @param playerOption Configuration of new {@code Player}
      * @param playerPath Path for new {@code Player} retrieved from {@link Board#getPlayerPath(int) Board.getPlayerPath}
-     * @param game Current instance of {@code UrGame} to be provided to {@link ai.Agent} instances
+     * @param game Current instance of {@code UrGame} to be provided to {@link Agent} instances
      * @return new {@code Player} instance
      */
     public static Player createPlayerFromSetup(PlayerOptions playerOption, List<Tile> playerPath, UrGame game) {
@@ -227,5 +229,9 @@ public abstract class Player {
      */
     public boolean hasPiecesLeft() {
         return pieces.size()>0;
+    }
+
+    public PlayerState bundle() {
+        return new PlayerState(colour);
     }
 }
