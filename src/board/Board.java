@@ -199,6 +199,7 @@ public class Board {
     public BoardState bundle() {
         BoardState currentState = new BoardState();
         currentState.setTileStates(tiles.stream().map(t->t.bundle()).collect(Collectors.toList()));
+        currentState.convertAndSetPlayerPathsToState(this.playerPaths);
         return currentState;
     }
 
@@ -216,5 +217,9 @@ public class Board {
      */
     public int getColumns() {
         return layout.dimensions()[1];
+    }
+
+    public Tile getTileFromNumber(int tileNumber) {
+        return tiles.stream().filter(t->t.getTileNum()==tileNumber).findFirst().orElse(null);
     }
 }

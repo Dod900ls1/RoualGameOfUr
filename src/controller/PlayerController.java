@@ -179,4 +179,9 @@ public abstract class PlayerController implements ActionListener {
     public void startTurn() {
 
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
 }

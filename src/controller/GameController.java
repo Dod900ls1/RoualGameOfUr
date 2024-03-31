@@ -48,7 +48,9 @@ public class GameController implements ActionListener {
 
             @Override
             public PlayerController next() {
-                return controllers.get(currentIndex++ % controllers.size());
+                PlayerController nextController = controllers.get(currentIndex++ % controllers.size());
+                game.setActivePlayer(nextController.getPlayer());
+                return nextController;
             }
         };
     }
@@ -235,7 +237,6 @@ public class GameController implements ActionListener {
      */
     public GameState getGameState() {
         GameState gameState =  game.bundle();
-        gameState.activePlayerController = this.activePlayerController;
         return gameState;
     }
 

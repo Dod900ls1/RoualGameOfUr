@@ -2,18 +2,30 @@ package game;
 
 
 import board.Board;
+import board.Tile;
 import player.Player;
 import player.PlayerOptions;
 import states.GameState;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UrGame{
 
     Board board;
-    Player[] players;
+    List<Player> players;
+
+    private Player activePlayer;
 
     public UrGame(PlayerOptions[] playerOptions) {
         board = new Board();
         setupPlayers(playerOptions);
+    }
+
+    public void setActivePlayer(Player player){
+        this.activePlayer = player;
     }
 
     /**
@@ -21,18 +33,18 @@ public class UrGame{
      * @param playerOptions Collection of configuration records of players to be created
      */
     private void setupPlayers(PlayerOptions[] playerOptions) {
-        this.players = new Player[playerOptions.length];
+        this.players = new ArrayList<>();
         for (int i = 0; i < playerOptions.length; i++) {
-            players[i] = Player.createPlayerFromSetup(playerOptions[i], board.getPlayerPath(playerOptions[i].playerColour()), this);
+            players.add(Player.createPlayerFromSetup(playerOptions[i], board.getPlayerPath(playerOptions[i].playerColour()), this));
             System.out.println(playerOptions[i]);
         }
     }
 
     /**
      * Returns collection of {@code Player} instances for game
-     * @return {@link #players} array
+     * @return {@link #players} collection
      */
-    public Player[] getPlayers() {
+    public Collection<Player> getPlayers() {
         return this.players;
     }
 
@@ -52,8 +64,19 @@ public class UrGame{
      */
     public GameState bundle(){
         GameState currentState = new GameState();
-        currentState.boardState = board.bundle();
+        currentState.setPlayerStates(
+                players.stream().map(player -> player.bundle()).collect(Collectors.toList()),
+                activePlayer.getPlayerColour()
+        );
+        currentState.setBoardState(board.bundle());
         return currentState;
     }
 
+    public double[] getRollProbabilities() {
+        return new double[]{0.0625, 0.25, 0.375, 0.25, 0.0625};
+    }
+
+    public Tile getTileFromNumber(int tileNumber) {
+        return board.getTileFromNumber(tileNumber);
+    }
 }

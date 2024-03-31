@@ -1,5 +1,6 @@
-package ai;
+package ai.agent;
 
+import ai.agent.Agent;
 import board.Tile;
 import game.UrGame;
 import player.PlayerAI;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * AI agent who determines next tile by random selection
  */
-public class RandomAgent extends Agent{
+public class RandomAgent extends Agent {
 
     /**
      * Constructor for new {@code RandomAgent}
