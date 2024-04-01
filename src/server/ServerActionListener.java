@@ -21,7 +21,7 @@ import java.net.Socket;
  * ActionListener implementation for starting a server.
  */
 public class ServerActionListener extends Menu implements ActionListener {
-    private MenuController parentListener;
+  
     private DataInputStream din;
     private DataOutputStream dout;
     private ServerSocket serverSocket;
@@ -35,6 +35,7 @@ public class ServerActionListener extends Menu implements ActionListener {
      */
     public ServerActionListener(MenuController parentListener) {
         super(parentListener);
+
     }
 
     /**
@@ -106,12 +107,12 @@ public class ServerActionListener extends Menu implements ActionListener {
                 serverColor = Player.LIGHT_PLAYER;
             }
 
-            new GameStarted(
+            GameStarted gameStartedEvent = new GameStarted(
                     new GameStarted.GameStartedEventSource(new PlayerOptions[] {
-                            new PlayerOptions(clientColor, false),
-                            new PlayerOptions(serverColor, false)
-
-                    }));
+                            new PlayerOptions(clientColor, true),
+                            new PlayerOptions(serverColor, true)})
+            );
+            this.parentListener.actionPerformed(gameStartedEvent);
 
             dout.writeUTF("game has started");
             dout.flush();

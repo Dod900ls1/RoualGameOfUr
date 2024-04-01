@@ -15,7 +15,7 @@ public abstract class Menu extends JFrame {
      * Menu action listeners report to {@link MenuController}.
      * If event needs to be responded to from greater scale, it is reported to {@code MenuController}
      */
-    MenuController parentListener;
+    public MenuController parentListener;
 
     /**
      * Abstract super constructor for Menu instances

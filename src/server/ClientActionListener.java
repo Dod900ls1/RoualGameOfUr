@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientActionListener implements ActionListener {
-
+    private DataInputStream din;
+    private DataOutputStream dout;
+    private Socket socket;
     private MenuController parentListener;
 
     /**
@@ -60,8 +62,9 @@ public class ClientActionListener implements ActionListener {
             }
 
             try {
-                Socket socket = new Socket(host, port);
+                socket = new Socket(host, port);
                 new PlayerSelectionWindow(socket); // Create PlayerSelectionWindow when connected
+
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null,
                         "An error occurred while communicating with the server: " + e.getMessage());
@@ -69,5 +72,9 @@ public class ClientActionListener implements ActionListener {
                 System.err.println(e.fillInStackTrace());
             }
         }
+    }
+
+    public void start(){
+
     }
 }
