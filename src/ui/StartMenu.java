@@ -5,6 +5,8 @@ import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
 import player.Player;
 import player.PlayerOptions;
+import server.ClientActionListener;
+import server.ServerActionListener;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -56,8 +58,8 @@ public class StartMenu extends Menu{
         JButton playAgainstAI = new JButton("Play Against AI");
         JButton playLocally = new JButton("Play Locally");
 
-        JButton createServer = renderer.createButton("Create Server", new ServerActionListener(), 150, 50);
-        JButton joinServer = renderer.createButton("Join Server", new ClientActionListener(), 150, 50);
+        JButton createServer = renderer.createButton("Create Server", new ServerActionListener(parentListener), 150, 50);
+        JButton joinServer = renderer.createButton("Join Server", new ClientActionListener(parentListener), 150, 50);
 
 
         ActionListener playListener = new ActionListener(){
