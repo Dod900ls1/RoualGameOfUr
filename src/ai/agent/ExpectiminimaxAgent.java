@@ -13,15 +13,66 @@ import java.util.stream.IntStream;
 
 public class ExpectiminimaxAgent extends Agent {
 
-    private static final int DEFAULT_DEPTH = 3;
+    /**
+     * Depth of tree to explore by EASY difficulty agent
+     */
+    private static final int EASY_DEPTH = 2;
+    /**
+     * Depth of tree to explore by HARD difficulty agent
+     */
+    private static final int HARD_DEPTH =4;
 
+    /**
+     * Factory method for new {@code ExpectminimaxAgent} a specified difficulty in {@code level}
+     * @param player Reference to {@code Player} instance for whom to serve as an ai agent
+     * @param game   Reference to current instance of {@code UrGame} to provide access to information that may be required by {@code Agent} in choosing next move
+     * @param metric Metric to be used to evaluate game states
+     * @param level Diffuculty level of opponent to be converted to depth of search (game tree)
+     * @return new instance of {@code ExpectiminimaxAgent}
+     */
+    public static Agent createAgent(PlayerAI player, UrGame game, Metric metric, Level level) {
+        switch (level){
+            case EASY -> {
+                return new ExpectiminimaxAgent(player, game, metric, EASY_DEPTH);
+            }case HARD -> {
+                return new ExpectiminimaxAgent(player, game, metric, HARD_DEPTH);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Difficulty level of agent. Corresponds to depth of game tree used in expectiminimax algorithm.
+     */
+    public enum Level{
+        EASY, HARD
+    }
+
+    /**
+     * Depth of game tree used by expectiminimax
+     */
     private final int DEPTH;
+    /**
+     * Colour of this ai player
+     */
     private final int playerColour;
 
+    /**
+     * Probability roll value at index
+     */
     private final double[] rollProbabilities;
 
+    /**
+     * Metric to be used to evaluate game state
+     */
     private final Metric metric;
 
+    /**
+     * Metric scores with 'good' state for light player being larger value and 'good' state for dark player being smaller value
+     * algorithm implemented with goal of maximising state for the current player.
+     * Therefore, if {@code playerColour} is {@link Player#DARK_PLAYER}, must apply multiplier -1 to scores from {@code metric} such that maximising the score by the algorithm will find best state for dark player not light player
+     * If {@code playerColour} is {@link Player#LIGHT_PLAYER}, multiplier is 1
+     */
     private final int METRIC_MULTIPLIER;
 
     /**
@@ -40,13 +91,6 @@ public class ExpectiminimaxAgent extends Agent {
         this.metric = metric;
         this.METRIC_MULTIPLIER = playerColour == Player.LIGHT_PLAYER? 1: -1;
     }
-
-    public ExpectiminimaxAgent(PlayerAI player, UrGame game, Metric metric) {
-        this(player, game,metric, DEFAULT_DEPTH);
-    }
-
-
-
 
 
     /**
@@ -78,10 +122,18 @@ public class ExpectiminimaxAgent extends Agent {
     }
 
 
+    /**
+     * Executes expectiminimax recursively, each no-base case recursion includes chance node and min/max nodes
+     * @param current Current state of game - just as the last player has moved
+     * @param depth Depth of tree reached (0 being deeper than 1 deeper than 2 etc.) Depth of 0 is terminal, base case depth
+     * @return If base case: evaluation of {@code current} for agent's {@code metric} with {@code METRIC_MULTIPLIER} applied
+     *         If backtracking through tree: The value of chance node which is weighted average of the roll weights.
+     *                                       The roll weights are the max/min value of the base case's game states resulting from further recursion of current state for each of the valid moves for a particular roll value
+     */
    private double expectiminimax(GameState current, int depth){
         //begins with state being just after last player has moved
         if (depth == 0){
-            return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state for active player of current
+            return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state
         } else{
 
             current.incrementActivePlayer(); //evaluating for next turn
@@ -105,10 +157,6 @@ public class ExpectiminimaxAgent extends Agent {
             }
             return IntStream.range(0, weightByRoll.length).mapToDouble(rollValue -> weightByRoll[rollValue]*rollProbabilities[rollValue]).sum();
         }
-
-
-
-
 
    }
 

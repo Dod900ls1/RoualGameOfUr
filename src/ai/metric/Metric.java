@@ -2,6 +2,9 @@ package ai.metric;
 
 import states.GameState;
 
+/**
+ * Abstract class. Implementors will model a metric that assigns value to a {@link GameState} instance based on some parameters
+ */
 public abstract class Metric {
 
 

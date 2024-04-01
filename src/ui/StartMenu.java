@@ -97,7 +97,7 @@ public class StartMenu extends Menu{
                         new GameStarted(
                                 new GameStarted.GameStartedEventSource(new PlayerOptions[]{
                                         new PlayerOptions(Player.LIGHT_PLAYER, false, Agent.Agents.RANDOM),
-                                        new PlayerOptions(Player.DARK_PLAYER, false, Agent.Agents.EXPECTIMINIMAX)
+                                        new PlayerOptions(Player.DARK_PLAYER, false, Agent.Agents.EXPECTIMINIMAX_EASY)
 
                                 })
                         )

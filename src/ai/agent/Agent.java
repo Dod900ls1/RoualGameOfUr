@@ -25,22 +25,24 @@ public abstract class Agent {
      */
     public enum Agents{
         RANDOM,
-        EXPECTIMINIMAX
+        EXPECTIMINIMAX_EASY,
+        EXPECTIMINIMAX_HARD,
+        GREEDY
     }
 
     /**
      * Constructs new {@code Agent} specialisation described by {@code agents} parameter for the given player and game context
      * @param playerAI  Reference to {@code Player} instance for whom to serve as an ai agent
-     * @param agents Type of agent to be created
+     * @param agent Type of agent to be created
      * @param game Reference to current instance of {@code UrGame} to provide access to information that may be required by {@code Agent} in choosing next move
      * @return Specalisation of {@code Agent} for {@code playerAI} in context of {@code game}
      */
-    public static Agent getNewAgent(PlayerAI playerAI, Agents agents, UrGame game) {
-        switch (agents){
+    public static Agent getNewAgent(PlayerAI playerAI, Agents agent, UrGame game) {
+        switch (agent){
             case RANDOM -> {
                 return new RandomAgent(playerAI, game);
             }
-            case EXPECTIMINIMAX -> {return new ExpectiminimaxAgent(playerAI, game, new MaximiseAdvancement()); }
+            case EXPECTIMINIMAX_EASY -> {return ExpectiminimaxAgent.createAgent(playerAI, game, new MaximiseAdvancement(), ExpectiminimaxAgent.Level.EASY); }
         }
         return null;
     }
@@ -55,6 +57,11 @@ public abstract class Agent {
         this.game = game;
     }
 
+    /**
+     * Determines and returns end {@code Tile} for next move via agent's selection method for given value of {@code roll}
+     * @param roll Value of roll for turn
+     * @return {@code Tile} instance a {@code Piece} is to be moved to in current turn
+     */
     public abstract Tile determineNextMove(int roll);
 
 

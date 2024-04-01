@@ -9,15 +9,19 @@ import java.util.stream.Collectors;
 public class TileState{
     private final int tileNum;
     private final boolean canHaveMultiplePieces;
+
+    final boolean isRosette;
+
     /**
      * Map of number of player pieces on this tile. Key is player number (as in {@code Player.colour}, value is number of pieces belonging to player on this tile.
      * NB: easier to use integers to indicate player as {@code Integer} immutable so can more easily deep-copy {@code TileState} object
      */
     private Map<Integer, Integer> piecesByPlayer;
 
-    public TileState(int tileNum, boolean canContainMultiplePieces) {
+    public TileState(int tileNum, boolean canContainMultiplePieces, boolean isRosette) {
         this.tileNum = tileNum;
         this.canHaveMultiplePieces = canContainMultiplePieces;
+        this.isRosette = isRosette;
         this.piecesByPlayer = new HashMap<>();
     }
 
@@ -48,7 +52,7 @@ public class TileState{
 
     public TileState copyState() {
         Map<Integer, Integer> copyPieces = piecesByPlayer.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
-        TileState copy = new TileState(tileNum, canHaveMultiplePieces);
+        TileState copy = new TileState(tileNum, canHaveMultiplePieces, isRosette);
         copy.setPiecesByPlayer(copyPieces);
         return copy;
     }

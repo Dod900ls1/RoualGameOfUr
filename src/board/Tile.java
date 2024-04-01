@@ -29,7 +29,7 @@ public class Tile {
      */
     protected boolean canContainMultiplePieces;
 
-    private Set<Piece> piecesOnTile;
+    Set<Piece> piecesOnTile;
     boolean isRosette;
     boolean isNonWalkable;
 
@@ -107,7 +107,7 @@ public class Tile {
      * @return new instance of {@code TileState} for this tile
      */
     public TileState bundle() {
-        TileState tileState = new TileState(tileNum, canContainMultiplePieces);
+        TileState tileState = new TileState(tileNum, canContainMultiplePieces, isRosette);
         tileState.convertAndSetPiecesByPlayer(getPiecesByPlayer());
         return tileState;
     }
