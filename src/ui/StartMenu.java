@@ -189,12 +189,4 @@ public class StartMenu extends Menu{
         }
     }
 
-
-
-    /*
-    public static void main(String[] args) {
-        new StartMenu();
-    }
-    */
-
 }

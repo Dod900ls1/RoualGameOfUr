@@ -88,13 +88,14 @@ public class ServerActionListener extends Menu implements ActionListener {
                 serverColor = Player.LIGHT_PLAYER;
             }
             
-        //     new GameStarted(
-        //         new GameStarted.GameStartedEventSource(new PlayerOptions[]{
-        //                 new PlayerOptions(Player.LIGHT_PLAYER, false),
-        //                 new PlayerOptions(Player.DARK_PLAYER, false)
+            new GameStarted(
+                new GameStarted.GameStartedEventSource(new PlayerOptions[]{
+                        new PlayerOptions(Player.LIGHT_PLAYER, false),
+                        new PlayerOptions(Player.DARK_PLAYER, false)
 
-        //         })
-        // );
+                })
+            );
+            
             dout.writeUTF("game has started");
             dout.flush();
 
