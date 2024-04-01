@@ -138,7 +138,7 @@ public class GameController implements ActionListener {
             activePlayerController.startTurn();
             //turnInProgress=true;
         }
-        System.out.println("game done");
+        System.out.println("Player "+activePlayerController.getPlayer().getPlayerColour()+ " won");
         return turnCount;
     }
 
@@ -212,7 +212,9 @@ public class GameController implements ActionListener {
             this.boardController.updateBoard(pieceMoved);
         }
         play = activePlayerController.endTurn();
-        activePlayerController = playerControllerIterator.next();
+        if(play) {
+            activePlayerController = playerControllerIterator.next();
+        }
         turnInProgress =false;
         notifyAll();
         //activePlayerController.startTurn();

@@ -1,16 +1,17 @@
 package ai.agent;
 
-import ai.agent.Agent;
 import board.Tile;
 import game.UrGame;
 import player.PlayerAI;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * AI agent who determines next tile by random selection
  */
 public class RandomAgent extends Agent {
+    private Random random;
 
     /**
      * Constructor for new {@code RandomAgent}
@@ -19,6 +20,7 @@ public class RandomAgent extends Agent {
      */
     public RandomAgent(PlayerAI player, UrGame game) {
         super(player, game);
+        random = new Random();
     }
 
     /**
@@ -43,7 +45,7 @@ public class RandomAgent extends Agent {
             return null;
         }
         else{
-            return moveTiles.get(0);
+            return moveTiles.get(random.nextInt(moveTiles.size()));
         }
     }
 }
