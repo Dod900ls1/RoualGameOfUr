@@ -1,5 +1,6 @@
 package ai.metric;
 
+import game.UrGame;
 import player.Player;
 import states.BoardState;
 import states.GameState;
@@ -12,6 +13,14 @@ import java.util.stream.IntStream;
  * Metric asses how far down player's path player's most advanced piece is.
  */
 public class MaximiseAdvancement extends Metric{
+
+    public MaximiseAdvancement(UrGame game) {
+        super(
+         game.getBoard().getPlayerPath(Player.LIGHT_PLAYER).size(),
+        -game.getBoard().getPlayerPath(Player.DARK_PLAYER).size()
+        );
+    }
+
     /**
      * Evaluates the {@code gameState} and gives it a score based on the criteria of this metric.
      * Metric asses how far down player's path player's most advanced piece is.
@@ -31,4 +40,5 @@ public class MaximiseAdvancement extends Metric{
         int lastIndexForDark = IntStream.range(1, darkPath.size()-2).filter(index -> darkPath.get(index).hasPieceForPlayer(Player.DARK_PLAYER)).max().orElse(darkPath.size());
         return lastIndexForLight-lastIndexForDark;
     }
+
 }

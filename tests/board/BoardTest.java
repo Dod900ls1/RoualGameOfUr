@@ -19,8 +19,8 @@ public class BoardTest {
     @Before
     public void setUp() throws Exception {
         UrGame game = new UrGame(new PlayerOptions[]{
-                new PlayerOptions(Player.LIGHT_PLAYER, true),
-                new PlayerOptions(Player.DARK_PLAYER, true)
+                new PlayerOptions(Player.LIGHT_PLAYER, true, null, null),
+                new PlayerOptions(Player.DARK_PLAYER, true, null, null)
         });
 
         board = game.getBoard();

@@ -96,10 +96,10 @@ public class ExpectiminimaxAgent extends Agent {
     /**
      * Determines and returns end {@code Tile} for next move via expectiminimax algorithm for given value of {@code roll}
      * @param roll Value of roll for turn
+     * @param usePruning Default to true via overloaded method {@link #determineNextMove(int)}. Can be set to false by calling this method directly for testing purposes.
      * @return {@code Tile} instance a {@code Piece} is to be moved to in current turn
      */
-    @Override
-    public Tile determineNextMove(int roll) {
+    public Tile determineNextMove(int roll, boolean usePruning) {
         if (roll ==0){
             return null;
         }
@@ -113,12 +113,23 @@ public class ExpectiminimaxAgent extends Agent {
         for (TileState[] possibleMove : possibleMoves) {
             GameState stateForMove = currentGameState.copyState();
             stateForMove.evolve(possibleMove);
-            moveWithWeight.put(possibleMove, expectiminimax(stateForMove, DEPTH));
+            if (usePruning){
+                moveWithWeight.put(possibleMove, expectiminimaxAlphaBeta(stateForMove, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, DEPTH, Double.NEGATIVE_INFINITY, true));
+            }
+            else{
+                moveWithWeight.put(possibleMove, expectiminimax(stateForMove, DEPTH));
+            }
+
         }
         //select maximum move from children
         TileState[] bestMove = moveWithWeight.entrySet().stream().max(Comparator.comparingDouble(Map.Entry::getValue)).orElse(null).getKey();
         return game.getTileFromNumber(bestMove[1].getTileNum());
 
+    }
+
+    @Override
+    public Tile determineNextMove(int roll){
+        return determineNextMove(roll, true);
     }
 
 
@@ -133,7 +144,7 @@ public class ExpectiminimaxAgent extends Agent {
    private double expectiminimax(GameState current, int depth){
         //begins with state being just after last player has moved
         if (depth == 0){
-            return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state
+            return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state ->
         } else{
 
             current.incrementActivePlayer(); //evaluating for next turn
@@ -159,5 +170,75 @@ public class ExpectiminimaxAgent extends Agent {
         }
 
    }
+
+
+
+    private double expectiminimaxAlphaBeta(GameState current, double alpha, double beta, int depth, double bestWeightForParentSoFar, boolean parentIsMaximiser){
+        //begins with state being just after last player has moved
+        if (depth == 0){
+            return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state
+        } else{
+
+            current.incrementActivePlayer(); //evaluating for next turn
+            double bestMetricValueForParent = (parentIsMaximiser?metric.getMaxValue():metric.getMinValue()); //move leading to chance node will not be chosen unless it has the 'best' expected value (best for parent: if parent is maximiser then 'best' chance node has highest value, if parent is minimiser then 'best' chance node has lowest value)
+            Map<Integer, Double> weightByRoll = new HashMap<>(){{IntStream.range(0, rollProbabilities.length).forEach(roll -> put(roll, bestMetricValueForParent));}};
+            for (int i = 0; i < rollProbabilities.length; i++) { //function starts at chance node, examines each roll possibility
+                List<TileState[]> possibleMovesForRoll = current.getMovesForPlayerForState(i); //gets possible moves to transition from current game state to next state given a particular value for roll
+                if (possibleMovesForRoll.isEmpty()){ //if there are no possible moves for the value of roll - we effectively have rolled 0
+                    weightByRoll.put(i, weightByRoll.get(0)); //should be safe as always have potential moves when roll 0
+                    //must make sure that roll 0 is always evaluated first! so can be used in cases of other rolls not having any valid moves
+                }
+                else {
+                    boolean maximise = current.getActivePlayer() == this.playerColour;
+                    double bestWeight = (maximise?Double.NEGATIVE_INFINITY:Double.POSITIVE_INFINITY);
+
+
+                    for (TileState[] possibleMoveForRoll : possibleMovesForRoll) { //children of chance node (maximiser or minimiser) :examine each of these possible new states that result from potential move - pick the 'best' as the value for this roll
+                        GameState stateForMove = current.copyState();
+                        stateForMove.evolve(possibleMoveForRoll);
+                        double rollMoveWeight= expectiminimaxAlphaBeta(stateForMove, alpha, beta,depth - 1, bestWeight, maximise);
+
+                        if (maximise){
+                            bestWeight = Double.max(bestWeight, rollMoveWeight);
+                            alpha = Double.max(alpha, bestWeight);
+                            if (beta<=alpha){break;}
+                        }
+                        else{
+                            bestWeight = Double.min(bestWeight, rollMoveWeight);
+                            beta = Double.min(beta, bestWeight);
+                            if (alpha<=beta){break;}
+                        }
+                    }
+                    //double rollWeight = maximise ? weightsForMovesForRoll.stream().max(Double::compare).get() : weightsForMovesForRoll.stream().min(Double::compare).get();
+                    weightByRoll.put(i, bestWeight);
+
+                    //#region CHANCE NODE PRUNING: USES INFO ABOUT PARENT/CHANCE NODE SIBLINGS TO PRUNE SELF
+
+                    //best possible value for this chance node given the rolls already evaluated
+                    // i.e. if this parent's move's unevaluated rolls are the best value of metric , then what is value of chance node
+                    // importantly if it is not better than the best for parent so far, then stop.
+                     double bestExpectedForChanceNode = weightByRoll.entrySet().stream()
+                                     .mapToDouble(rollWeightEntry-> rollWeightEntry.getValue()*rollProbabilities[rollWeightEntry.getKey()])
+                                             .sum();
+                    if (parentIsMaximiser){
+                        if (bestExpectedForChanceNode<=bestWeightForParentSoFar){return Double.NEGATIVE_INFINITY; }//this node cannot possibly be better for parent (bigger value as parent is maximiser) than that for a different move - so stop looking at how good this node is
+                    }
+                    else{
+                        if (bestExpectedForChanceNode>=bestWeightForParentSoFar){return Double.POSITIVE_INFINITY;} //this node cannot possibly be better for parent (lower value as parent is minimiser) than that for a different move - so stop looking at how good this node is
+                    }
+
+                    //#endregion
+                }
+            }
+            return weightByRoll.entrySet().stream()
+                    .mapToDouble(rollWeightEntry-> rollWeightEntry.getValue()*rollProbabilities[rollWeightEntry.getKey()])
+                    .sum();
+        }
+
+    }
+
+
+
+
 
 }

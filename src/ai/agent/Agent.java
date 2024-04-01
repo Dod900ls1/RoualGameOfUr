@@ -1,6 +1,6 @@
 package ai.agent;
 
-import ai.metric.MaximiseAdvancement;
+import ai.metric.Metric;
 import board.Tile;
 import game.UrGame;
 import player.Player;
@@ -37,12 +37,18 @@ public abstract class Agent {
      * @param game Reference to current instance of {@code UrGame} to provide access to information that may be required by {@code Agent} in choosing next move
      * @return Specalisation of {@code Agent} for {@code playerAI} in context of {@code game}
      */
-    public static Agent getNewAgent(PlayerAI playerAI, Agents agent, UrGame game) {
+    public static Agent getNewAgent(PlayerAI playerAI, Agents agent, UrGame game, Metric metric) {
         switch (agent){
             case RANDOM -> {
                 return new RandomAgent(playerAI, game);
             }
-            case EXPECTIMINIMAX_EASY -> {return ExpectiminimaxAgent.createAgent(playerAI, game, new MaximiseAdvancement(), ExpectiminimaxAgent.Level.EASY); }
+            case EXPECTIMINIMAX_EASY -> {return ExpectiminimaxAgent.createAgent(playerAI, game, metric, ExpectiminimaxAgent.Level.EASY); }
+            case EXPECTIMINIMAX_HARD -> {
+                return ExpectiminimaxAgent.createAgent(playerAI, game , metric, ExpectiminimaxAgent.Level.HARD);
+            }
+            case GREEDY -> {
+                return new GreedyAgent(playerAI, game, metric);
+            }
         }
         return null;
     }

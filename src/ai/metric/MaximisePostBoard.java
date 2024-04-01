@@ -1,5 +1,6 @@
 package ai.metric;
 
+import game.UrGame;
 import player.Player;
 import states.GameState;
 
@@ -8,6 +9,9 @@ import states.GameState;
  */
 public class MaximisePostBoard extends Metric{
 
+    public MaximisePostBoard(UrGame game) {
+        super( Player.PIECE_START_COUNT, -Player.PIECE_START_COUNT);
+    }
 
     /**
      * Evaluates the {@code gameState} and gives it a score based on the criteria of this metric.
