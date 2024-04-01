@@ -12,12 +12,21 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * A window for selecting the player color (DARK or LIGHT) and sending the
+ * selection to the server.
+ */
 public class PlayerSelectionWindow extends JFrame {
 
     private Socket socket;
     private DataInputStream din;
     private DataOutputStream dout;
 
+    /**
+     * Constructs a new PlayerSelectionWindow with the specified socket.
+     *
+     * @param socket the socket for communication with the server
+     */
     public PlayerSelectionWindow(Socket socket) {
         this.socket = socket;
         try {
@@ -42,7 +51,7 @@ public class PlayerSelectionWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     sendPlayerColor(Player.DARK_PLAYER);
-                    
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -54,7 +63,7 @@ public class PlayerSelectionWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     sendPlayerColor(Player.LIGHT_PLAYER);
-                    
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -69,12 +78,18 @@ public class PlayerSelectionWindow extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Sends the selected player color to the server.
+     *
+     * @param playerColor the selected player color
+     * @throws IOException if an I/O error occurs while sending the color
+     */
     private void sendPlayerColor(int playerColor) throws IOException {
         dout.writeInt(playerColor);
         dout.flush();
         String message = din.readUTF();
         System.out.println("Message from server: " + message);
-        
+
         // Close the frame after sending the player color
         dispose();
     }

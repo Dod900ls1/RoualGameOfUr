@@ -1,4 +1,5 @@
 package server;
+
 import javax.swing.*;
 
 import controller.MenuController;
@@ -15,15 +16,31 @@ public class ClientActionListener implements ActionListener {
 
     private MenuController parentListener;
 
+    /**
+     * Constructs a new ClientActionListener with the specified parent listener.
+     *
+     * @param parentListener the parent MenuController
+     */
     public ClientActionListener(MenuController parentListener) {
         this.parentListener = parentListener;
     }
 
+    /**
+     * Handles the action event when the client button is clicked.
+     * Connects to the server and opens a PlayerSelectionWindow for selecting player
+     * color.
+     *
+     * @param e the action event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         connect();
     }
 
+    /**
+     * Connects to the server using the specified host and port.
+     * Shows a dialog to get the host and port from the user.
+     */
     public void connect() {
         // Show dialog to get host and port from user
         JTextField hostField = new JTextField("138.251.29.207"); // Default IP address provided

@@ -4,9 +4,7 @@ import javax.swing.*;
 
 import controller.MenuController;
 import controller.action.game.GameStarted;
-import game.UrGame;
 import player.Player;
-import player.PlayerHuman;
 import player.PlayerOptions;
 import ui.Menu;
 
@@ -28,15 +26,23 @@ public class ServerActionListener extends Menu implements ActionListener {
     private DataOutputStream dout;
     private ServerSocket serverSocket;
     private Socket clientSocket;
+    private int serverColor;
 
-
-    public ServerActionListener(MenuController parentListener){
+    /**
+     * Constructs a new ServerActionListener with the specified parent listener.
+     *
+     * @param parentListener the parent MenuController
+     */
+    public ServerActionListener(MenuController parentListener) {
         super(parentListener);
     }
 
-
-
-
+    /**
+     * Starts the server on the specified IP address and socket ID.
+     *
+     * @param ipAddress the IP address of the server
+     * @param socketId  the socket ID on which the server will listen
+     */
     private void start(String ipAdderss, int socketId) {
         try {
             serverSocket = new ServerSocket(socketId);
@@ -55,19 +61,25 @@ public class ServerActionListener extends Menu implements ActionListener {
         }
     }
 
+    /**
+     * Handles the action event when the server button is clicked.
+     * Opens a dialog for configuring the server and starts the server.
+     *
+     * @param e the action event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         JTextField ipAddressField = new JTextField("138.251.29.207");
         JTextField socketIdField = new JTextField();
         Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
         int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
-        
+
         if (option == JOptionPane.OK_OPTION) {
             String ipAddress = ipAddressField.getText();
             int socketId = parseSocketId(socketIdField.getText());
             if (socketId != -1) {
                 start(ipAddress, socketId);
-                
+
                 passInfo(this.din, this.dout);
 
                 stop();
@@ -76,26 +88,31 @@ public class ServerActionListener extends Menu implements ActionListener {
             }
         }
     }
-    
-    private void passInfo(DataInputStream din, DataOutputStream dout){
+
+    /**
+     * Passes information between client and server.
+     *
+     * @param din  the DataInputStream for reading data from the client
+     * @param dout the DataOutputStream for writing data to the client
+     */
+    private void passInfo(DataInputStream din, DataOutputStream dout) {
         try {
             int clientColor = din.readInt();
             System.out.println(clientColor);
-            int serverColor = -1;
+
             if (clientColor != Player.LIGHT_PLAYER) {
                 serverColor = Player.DARK_PLAYER;
-            }else{
+            } else {
                 serverColor = Player.LIGHT_PLAYER;
             }
-            
-            new GameStarted(
-                new GameStarted.GameStartedEventSource(new PlayerOptions[]{
-                        new PlayerOptions(Player.LIGHT_PLAYER, false),
-                        new PlayerOptions(Player.DARK_PLAYER, false)
 
-                })
-            );
-            
+            new GameStarted(
+                    new GameStarted.GameStartedEventSource(new PlayerOptions[] {
+                            new PlayerOptions(clientColor, false),
+                            new PlayerOptions(serverColor, false)
+
+                    }));
+
             dout.writeUTF("game has started");
             dout.flush();
 
@@ -104,7 +121,10 @@ public class ServerActionListener extends Menu implements ActionListener {
         }
     }
 
-    private void stop(){
+    /**
+     * Stops the server and closes resources.
+     */
+    private void stop() {
         try {
             din.close();
             dout.close();
@@ -114,6 +134,7 @@ public class ServerActionListener extends Menu implements ActionListener {
             System.err.println("An error occured while closing resources: " + e.getMessage());
         }
     }
+
     /**
      * Parses the socket ID from a string.
      * 
@@ -140,7 +161,9 @@ public class ServerActionListener extends Menu implements ActionListener {
     }
 
     /**
-     * Displays an error message for an invalid socket ID.
+     * Displays a message indicating that the server has started.
+     *
+     * @param socketId the port number on which the server is listening
      */
     private void showInvalidSocketIdError() {
         JOptionPane.showMessageDialog(null, "Invalid socket ID entered. Please enter a valid integer.");
