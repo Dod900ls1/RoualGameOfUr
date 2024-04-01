@@ -14,4 +14,9 @@ public abstract class Metric {
      * @return Score for {@code gameState} according to this metric's criteria
      */
     public abstract double scoreForState(GameState gameState);
+
+
+
+
+
 }
