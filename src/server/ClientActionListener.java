@@ -1,25 +1,26 @@
 package server;
 
+import ai.agent.Agent;
 import controller.GameController;
 import controller.MainController;
 import controller.MenuController;
+import controller.action.game.GameStartedAsClient;
+import player.PlayerOptions;
 import ui.PlayerSelectionWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientActionListener implements NetworkActionListener {
-    private DataInputStream din;
-    private DataOutputStream dout;
+public class ClientActionListener extends NetworkActionListener {
     private Socket socket;
     private MenuController parentListener;
     private MainController mainController;
 
     private GameController gameController;
+    private int colourSelected;
+
 
     /**
      * Constructs a new ClientActionListener with the specified parent listener.
@@ -68,7 +69,7 @@ public class ClientActionListener implements NetworkActionListener {
 
             try {
                 socket = new Socket(host, port);
-                new PlayerSelectionWindow(socket); // Create PlayerSelectionWindow when connected
+                new PlayerSelectionWindow(this); // Create PlayerSelectionWindow when connected
 
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null,
@@ -79,36 +80,43 @@ public class ClientActionListener implements NetworkActionListener {
         }
     }
 
-
-//todo how does this get called?
-    public void receiveMessageFromRemote(Message message){
+    @Override
+    void processMessageFromRemote(Message message) {
         switch (message.type()) {
             case READY_TO_START -> {
                 receiveReadyToStart(message);
-            }
-            case ASSIGN_COLOR -> {
             }
             case GAME_STATE -> {
                 receiveGameState(message);
             }
 
         }
-    }
-
-
-
-    private void receiveGameState(Message message) {
-        //todo
-        //receives game state - updates game, then starts turn for client as PlayerHuman
 
     }
 
+
+    /**
+     * Receives message READY_TO_START
+     * @param message
+     */
     private void receiveReadyToStart(Message message) {
 
-        mainController = new MainController();
-        mainController.createGameAsClient(message.data());
-        gameController = mainController.getGameController();
+        //todo parse message data to player options
         //flip player options - client is now human, server is remote
+
+        PlayerOptions[] playerOptions = new PlayerOptions[]{
+                new PlayerOptions(getRemoteColourFromLocalColour(colourSelected), false, Agent.Agents.REMOTE, null),
+                new PlayerOptions(colourSelected, true, null, null)
+        };
+
+        mainController = new MainController();
+        mainController.actionPerformed(
+                new GameStartedAsClient(
+                        new GameStartedAsClient.GameStartedAsClientEventSource(playerOptions, this)
+                )
+        );
+        gameController = mainController.getGameController();
+
 
 
 
@@ -121,4 +129,12 @@ public class ClientActionListener implements NetworkActionListener {
     public void start(){
 
     }
+
+    public void receiveColourSelected(int playerColour) {
+        this.colourSelected = playerColour;
+        int remoteColour = getRemoteColourFromLocalColour(colourSelected);
+        sendMessageToRemote(new Message(MessageType.ASSIGN_COLOR, remoteColour));
+    }
+
+
 }

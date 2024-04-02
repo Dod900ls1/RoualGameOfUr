@@ -2,6 +2,7 @@ package controller;
 
 import controller.action.game.GameStarted;
 import controller.action.game.GameStarted.GameStartedEventSource;
+import controller.action.game.GameStartedAsClient;
 import controller.action.game.GameStartedWithServer;
 
 import java.awt.event.ActionEvent;
@@ -59,6 +60,8 @@ public class MainController implements ActionListener {
             createGame((GameStartedEventSource)e.getSource());
         }else if (e instanceof GameStartedWithServer){
             createGameAsServer((GameStartedWithServer.GameStartedWithServerEventSource)e.getSource());
+        }else if (e instanceof  GameStartedAsClient){
+            createGameAsClient((GameStartedAsClient.GameStartedAsClientEventSource)e.getSource());
         }
 
     }
@@ -79,8 +82,8 @@ public class MainController implements ActionListener {
         gameController.createGame(gameStartedEventSource.playerOptions());
     }
 
-    public void createGameAsClient(Object gameInitData) {
-        gameController.createGameAsClient(gameInitData);
+    public void createGameAsClient(GameStartedAsClient.GameStartedAsClientEventSource gameStartedAsClientEventSource) {
+        gameController.createGameAsClient(gameStartedAsClientEventSource);
     }
 
 
@@ -89,4 +92,7 @@ public class MainController implements ActionListener {
     }
 
 
+    public GameController getGameController() {
+        return gameController;
+    }
 }

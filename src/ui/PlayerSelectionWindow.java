@@ -1,9 +1,9 @@
 package ui;
 
-import javax.swing.*;
-
 import player.Player;
+import server.ClientActionListener;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,19 +22,23 @@ public class PlayerSelectionWindow extends JFrame {
     private DataInputStream din;
     private DataOutputStream dout;
 
+    private ClientActionListener clientActionListener;
+
     /**
      * Constructs a new PlayerSelectionWindow with the specified socket.
      *
      * @param socket the socket for communication with the server
      */
-    public PlayerSelectionWindow(Socket socket) {
-        this.socket = socket;
-        try {
-            din = new DataInputStream(socket.getInputStream());
-            dout = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public PlayerSelectionWindow(ClientActionListener clientActionListener) {
+        this.clientActionListener = clientActionListener;
+
+//        this.socket = socket;
+//        try {
+//            din = new DataInputStream(socket.getInputStream());
+//            dout = new DataOutputStream(socket.getOutputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         setTitle("Player Selection");
         setSize(300, 150);
@@ -85,10 +89,12 @@ public class PlayerSelectionWindow extends JFrame {
      * @throws IOException if an I/O error occurs while sending the color
      */
     private void sendPlayerColor(int playerColor) throws IOException {
-        dout.writeInt(playerColor);
-        dout.flush();
-        String message = din.readUTF();
-        System.out.println("Message from server: " + message);
+//            dout.writeInt(playerColor);
+//            dout.flush();
+//            String message = din.readUTF();
+//            System.out.println("Message from server: " + message);
+
+        clientActionListener.receiveColourSelected(playerColor);
 
         // Close the frame after sending the player color
         dispose();
