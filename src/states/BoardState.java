@@ -56,7 +56,10 @@ public class BoardState {
         TileState to =potentialMove[1];
         from.removePieceForPlayer(player);
         to.addPieceForPlayer(player);
-        sendPiecesToPreBoard(to, player);
+        if (!to.isRosette){ //rosette does not send pieces back to preboard
+            sendPiecesToPreBoard(to, player);
+        }
+
     }
 
     /**

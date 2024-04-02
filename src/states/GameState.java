@@ -1,8 +1,14 @@
 package states;
 
+import game.UrGame;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * For use by {@link ai.agent.Agent}
+ * Light(er)-weight encapsulation of {@link UrGame} instance to operate on {@code state} package objects
+ */
 public class GameState {
     private BoardState boardState;
 
@@ -20,6 +26,9 @@ public class GameState {
         this.activePlayer = activePlayer;
     }
 
+    /**
+     * Advances colour number of {@code activePlayer} in turn loop
+     */
     public void incrementActivePlayer(){
         //THE MODULO AND INCREMENT OPERATIONS ARE INTENTIONALLY SWAPPED HERE. THIS IS BECAUSE PLAYER COLOUR NUMBERS START AT 1 NOT 0!
         this.activePlayer%=playerStates.size();
@@ -27,6 +36,10 @@ public class GameState {
     }
 
 
+    /**
+     * Progresses this state by applying {@code potentialMove} (translated to be in terms of {@code TileState} objects of this game state's {@link #boardState}) for the {@code activePlayer}
+     * @param potentialMove
+     */
     public void evolve(TileState[] potentialMove) {
         TileState[] potentialMoveInThisState = new TileState[]{ //translates potential move in terms of tile state instances in parent game state to tile state instances in this game state
                 boardState.getTileStateByTileNumber(potentialMove[0].getTileNum()),
@@ -37,6 +50,10 @@ public class GameState {
     }
 
 
+    /**
+     * Performs deep-copy of this game state and its attributes
+     * @return
+     */
     public GameState copyState(){
         GameState copyState = new GameState();
         copyState.setPlayerStates(copyPlayerStates(), activePlayer);
@@ -76,7 +93,7 @@ public class GameState {
         return this.activePlayer;
     }
 
-    public double getPiecesPostBoardForPlayer(int player) {
+    public int getPiecesPostBoardForPlayer(int player) {
         return boardState.getPiecesPostBoardForPlayer(player);
     }
 }

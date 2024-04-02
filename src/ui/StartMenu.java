@@ -1,6 +1,7 @@
 package ui;
 
 import ai.agent.Agent;
+import ai.metric.Metric;
 import controller.MenuController;
 import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
@@ -98,8 +99,8 @@ public class StartMenu extends Menu{
                 StartMenu.this.parentListener.actionPerformed(
                         new GameStarted(
                                 new GameStarted.GameStartedEventSource(new PlayerOptions[]{
-                                        new PlayerOptions(Player.LIGHT_PLAYER, false, Agent.Agents.RANDOM),
-                                        new PlayerOptions(Player.DARK_PLAYER, false, Agent.Agents.EXPECTIMINIMAX)
+                                        new PlayerOptions(Player.LIGHT_PLAYER, false, Agent.Agents.GREEDY, Metric.Metrics.MAXIMISE_ADVANCEMENT),
+                                        new PlayerOptions(Player.DARK_PLAYER, false, Agent.Agents.EXPECTIMINIMAX_HARD, Metric.Metrics.MAXIMISE_POSTBOARD)
 
                                 })
                         )

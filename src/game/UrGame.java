@@ -48,6 +48,12 @@ public class UrGame{
         return this.players;
     }
 
+
+    public Player getPlayerByColour(int colour){
+        return players.stream().filter(p -> p.getPlayerColour()==colour).findFirst().orElse(null);
+    }
+
+
     /**
      * Returns the {@code Board} at current state for game
      * @return {@link #board} object
