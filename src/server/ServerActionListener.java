@@ -10,7 +10,6 @@ import ui.Menu;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -21,7 +20,7 @@ import java.net.Socket;
 /**
  * ActionListener implementation for starting a server.
  */
-public class ServerActionListener extends Menu implements ActionListener {
+public class ServerActionListener extends Menu implements NetworkActionListener {
 
     private final ClientActionListener clientActionListener;
     private DataInputStream din;
@@ -178,7 +177,7 @@ public class ServerActionListener extends Menu implements ActionListener {
 
     private void receivePlayerMove(Object data){
         // endTurn in PlayerRemoteController
-        playerRemoteController.endTurn(data);
+        playerRemoteController.endTurnFromRemote(data);
     }
 
 

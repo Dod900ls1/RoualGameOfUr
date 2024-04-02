@@ -1,23 +1,25 @@
 package server;
 
+import controller.GameController;
 import controller.MainController;
 import controller.MenuController;
 import ui.PlayerSelectionWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientActionListener implements ActionListener {
+public class ClientActionListener implements NetworkActionListener {
     private DataInputStream din;
     private DataOutputStream dout;
     private Socket socket;
     private MenuController parentListener;
     private MainController mainController;
+
+    private GameController gameController;
 
     /**
      * Constructs a new ClientActionListener with the specified parent listener.
@@ -78,8 +80,8 @@ public class ClientActionListener implements ActionListener {
     }
 
 
-
-    private void receiveMessageFromServer(Message message){
+//todo how does this get called?
+    public void receiveMessageFromRemote(Message message){
         switch (message.type()) {
             case READY_TO_START -> {
                 receiveReadyToStart(message);
@@ -87,21 +89,30 @@ public class ClientActionListener implements ActionListener {
             case ASSIGN_COLOR -> {
             }
             case GAME_STATE -> {
+                receiveGameState(message);
             }
-            case PLAYER_MOVE -> {
-            }
-            case START_TURN -> {
-                
-            }
+
         }
+    }
+
+
+
+    private void receiveGameState(Message message) {
+        //todo
+        //receives game state - updates game, then starts turn for client as PlayerHuman
+
     }
 
     private void receiveReadyToStart(Message message) {
 
         mainController = new MainController();
         mainController.createGameAsClient(message.data());
+        gameController = mainController.getGameController();
+        //flip player options - client is now human, server is remote
 
 
+
+        //TODO add a listening thread, otherwise client ends when createGameAsClientReturns
 
 
     }

@@ -82,4 +82,11 @@ public class MainController implements ActionListener {
     public void createGameAsClient(Object gameInitData) {
         gameController.createGameAsClient(gameInitData);
     }
+
+
+    public void startTurnAsClient(){
+        gameController.switchPlayerToHuman();
+    }
+
+
 }

@@ -149,7 +149,10 @@ public class GameController implements ActionListener {
         remoteController.startTurn(); //will send message back to server about game state which wll be picked up in endTurn() for client (who is RemotePlayer on server)
     }
 
-
+    public void switchPlayerToHuman() {
+        PlayerHumanController humanController = getHumanPlayerController();
+        humanController.startTurn();
+    }
 
 
 
@@ -256,6 +259,12 @@ public class GameController implements ActionListener {
     }
 
 
+    private List<BoardController.PlayerPieceOnTile> getPiecesForPlayersOnBoard(){
+        return boardController.getPiecesForPlayersOnBoard();
+    }
+
+
+
     /**
      * Retrieves {@code TileController} instances controlling the {@code Tile} objects in {@code tiles} from {@link #boardController}
      * @param tiles {@code Tile} instances to get {@code TileController} for
@@ -290,6 +299,7 @@ public class GameController implements ActionListener {
         PlayerOptions[] playerOptions = gameStartedWithServerEventSource.playerOptions();
         this.game = new UrGame(playerOptions);
         initialiseGameEntityControllersWithRemote(gameStartedWithServerEventSource.serverListener(), gameStartedWithServerEventSource.clientListener());
+        getRemotePlayerController().intialiseRemote();
         this.gameInterface = new GameInterface(this);
         Thread gameThread = new Thread( () -> this.beginGame());
         gameThread.start();
@@ -302,9 +312,11 @@ public class GameController implements ActionListener {
      * @param gameSetupMessageFromServer
      */
     public void createGameAsClient(Object gameSetupMessageFromServer){
+        //TODO
         //use READY_TO_START message received from server to create a new game, gameInterface
         this.game = new UrGame(); //PLayer options parsed for gameSetupMessageFromServer
         this.gameInterface= new GameInterface(this);
+        initialiseGameEntityControllersWithRemote();
     }
 
 
@@ -330,11 +342,19 @@ public class GameController implements ActionListener {
         return (PlayerRemoteController) playerControllers.stream().filter(pc -> pc instanceof PlayerRemoteController).findFirst().orElse(null);
     }
 
+    private PlayerHumanController getHumanPlayerController() {
+        return (PlayerHumanController) playerControllers.stream().filter(pc -> pc instanceof PlayerHumanController).findFirst().orElse(null);
+
+    }
+
+
+
     /**
      * Called when {@link PlayerRemoteController} is intialised - contains configuration data needed to recreate game setup on remote
      * @return
      */
     public Object getRemoteInitMessage() {
-
+         //todo
     }
+
 }

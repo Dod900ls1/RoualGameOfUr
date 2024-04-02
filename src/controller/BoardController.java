@@ -5,14 +5,12 @@ import board.Tile;
 import controller.action.game.MoveSelected;
 import controller.action.game.TileSelected;
 import player.Piece;
+import player.Player;
 import ui.BoardInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -141,4 +139,26 @@ public class BoardController implements ActionListener {
         Collection<TileController> validTileControllers = getControllersForTiles(validTilesForMove);
         validTileControllers.stream().forEach(TileController :: enableTile);
     }
+
+    public List<PlayerPieceOnTile> getPiecesForPlayersOnBoard() {
+        List<PlayerPieceOnTile> playerPiecesOnTile = new ArrayList<>();
+        for (TileController tileController : tileControllers) {
+            Map<Player, Integer> piecesOnTile = tileController.getPiecesByPlayer(); //player, num of pieces
+            for (Map.Entry<Player, Integer> playerPieceEntry : piecesOnTile.entrySet()) {
+                PlayerPieceOnTile playerPieceOnTile = new PlayerPieceOnTile(playerPieceEntry.getKey().getPlayerColour(), tileController.getTileNumber());
+                for (int i = 0; i < playerPieceEntry.getValue(); i++) {
+                  playerPiecesOnTile.add(playerPieceOnTile);
+                }
+
+            }
+        }
+
+        return playerPiecesOnTile;
+
+    }
+
+
+
+    public record PlayerPieceOnTile(Integer playerNumber, Integer tileNumberWithPlayerPiece)
+
 }

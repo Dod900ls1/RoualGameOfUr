@@ -29,7 +29,7 @@ public class PlayerRemoteController extends PlayerAIController {
         this.playerRemote = (PlayerRemote) player;
         this.serverActionListener = serverActionListener;
         this.clientActionListener = clientActionListener;
-        intialiseRemote();
+        //intialiseRemote();
     }
 
     /**
@@ -45,7 +45,7 @@ public class PlayerRemoteController extends PlayerAIController {
     /**
      * Send initial message to client with some information needed to construct game
      */
-    private void intialiseRemote(){
+    public void intialiseRemote(){
         //send game setup info so client can create gameCOntroller
         serverActionListener.setPlayerRemoteController(this);
         //create message about game
@@ -60,8 +60,7 @@ public class PlayerRemoteController extends PlayerAIController {
      * @param data
      * @return
      */
-    @Override
-    public boolean endTurn(Object data) {
+    public boolean endTurnFromRemote(Object data) {
         //get back state of game and turn made by remote and update
 
         parentListener.updateFromStash();
