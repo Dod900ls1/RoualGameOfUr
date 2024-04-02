@@ -14,6 +14,11 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 public class GameController implements ActionListener {
 
     /**
@@ -238,11 +243,45 @@ public class GameController implements ActionListener {
     /**
      * Generates a JSON string containing data about game to send to remote
      */
-    private void stashGame() {
-        gameStash = "";
-        //TODO
+    private String stashGame() {
+        String gameStash = "";
+        Collection<TileController> tileControllers = getBoardController().getTileControllers();
+        for (TileController tileController : tileControllers) {
+            JsonObject object = mapToJson(playersPieces(tileController));
+            gameStash += object.toString();
+        }
+
+        return gameStash;        
+    }
+    
+    private JsonObject mapToJson(Map<Integer, List<Integer>> map) {
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+        for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
+            Integer key = entry.getKey();
+            List<Integer> value = entry.getValue();
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+            for (Integer intValue : value) {
+                jsonArrayBuilder.add(intValue);
+            }
+            jsonObjectBuilder.add(key.toString(), jsonArrayBuilder.build());
+        }
+
+        return jsonObjectBuilder.build();
     }
 
+    private Map<Integer, List<Integer>> playersPieces(TileController tileController) {
+        Map<Player, Integer> piecesByPlayer = tileController.getPiecesByPlayer(); // Assuming this method exists
+        
+        // Transform Map<Player, Integer> to Map<Integer, List<Integer>>
+        Map<Integer, List<Integer>> piecesByPlayerId = piecesByPlayer.entrySet().stream()
+                .collect(Collectors.groupingBy(
+                        entry -> entry.getKey().getPlayerColour(), // Get player ID
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Get list of pieces
+                ));
+
+        return piecesByPlayerId;
+    }
 
     /**
      * Parse JSON string and update game/players on local with stash data from remote
