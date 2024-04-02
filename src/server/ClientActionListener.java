@@ -1,10 +1,10 @@
 package server;
 
-import javax.swing.*;
-
+import controller.MainController;
 import controller.MenuController;
 import ui.PlayerSelectionWindow;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -17,6 +17,7 @@ public class ClientActionListener implements ActionListener {
     private DataOutputStream dout;
     private Socket socket;
     private MenuController parentListener;
+    private MainController mainController;
 
     /**
      * Constructs a new ClientActionListener with the specified parent listener.
@@ -26,6 +27,8 @@ public class ClientActionListener implements ActionListener {
     public ClientActionListener(MenuController parentListener) {
         this.parentListener = parentListener;
     }
+
+
 
     /**
      * Handles the action event when the client button is clicked.
@@ -73,6 +76,33 @@ public class ClientActionListener implements ActionListener {
             }
         }
     }
+
+
+
+    private void receiveMessageFromServer(Message message){
+        switch (message.type()) {
+            case READY_TO_START -> {
+                receiveReadyToStart(message);
+            }
+            case ASSIGN_COLOR -> {
+            }
+            case GAME_STATE -> {
+            }
+            case PLAYER_MOVE -> {
+            }
+        }
+    }
+
+    private void receiveReadyToStart(Message message) {
+
+        mainController = new MainController();
+        mainController.createGameAsClient(message.data());
+
+
+
+
+    }
+
 
     public void start(){
 

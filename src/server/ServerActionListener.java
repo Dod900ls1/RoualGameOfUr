@@ -1,13 +1,14 @@
 package server;
 
-import javax.swing.*;
-
+import ai.agent.Agent;
 import controller.MenuController;
-import controller.action.game.GameStarted;
+import controller.PlayerRemoteController;
+import controller.action.game.GameStartedWithServer;
 import player.Player;
 import player.PlayerOptions;
 import ui.Menu;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -21,20 +22,28 @@ import java.net.Socket;
  * ActionListener implementation for starting a server.
  */
 public class ServerActionListener extends Menu implements ActionListener {
-  
+
+    private final ClientActionListener clientActionListener;
     private DataInputStream din;
     private DataOutputStream dout;
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int serverColor;
 
+    private PlayerRemoteController playerRemoteController;
+
+    public void setPlayerRemoteController(PlayerRemoteController playerRemoteController) {
+        this.playerRemoteController = playerRemoteController;
+    }
+
     /**
      * Constructs a new ServerActionListener with the specified parent listener.
      *
      * @param parentListener the parent MenuController
      */
-    public ServerActionListener(MenuController parentListener) {
+    public ServerActionListener(MenuController parentListener, ClientActionListener clientActionListener) {
         super(parentListener);
+        this.clientActionListener = clientActionListener;
 
     }
 
@@ -107,10 +116,10 @@ public class ServerActionListener extends Menu implements ActionListener {
                 serverColor = Player.LIGHT_PLAYER;
             }
 
-            GameStarted gameStartedEvent = new GameStarted(
-                    new GameStarted.GameStartedEventSource(new PlayerOptions[] {
-                            new PlayerOptions(clientColor, true),
-                            new PlayerOptions(serverColor, true)})
+            GameStartedWithServer gameStartedEvent = new GameStartedWithServer(
+                    new GameStartedWithServer.GameStartedWithServerEventSource(new PlayerOptions[] {
+                            new PlayerOptions(clientColor, false, Agent.Agents.REMOTE, null),
+                            new PlayerOptions(serverColor, true, null, null )}, this, clientActionListener)
             );
             this.parentListener.actionPerformed(gameStartedEvent);
 
@@ -121,6 +130,47 @@ public class ServerActionListener extends Menu implements ActionListener {
             System.err.println("An error occured while communicating with client: " + e.getMessage());
         }
     }
+
+
+
+    public void sendMessageToClient(Message messageToClient){
+        switch (messageToClient.type()){
+            case READY_TO_START:
+                sendReadyToStart(messageToClient);
+                break;
+            case ASSIGN_COLOR:
+                break;
+            case GAME_STATE:
+                break;
+            case PLAYER_MOVE:
+                break;
+
+        }
+
+    }
+
+    private void sendReadyToStart(Message readyToStartMessage){
+        //send ready to start message with message data as a string with game info - readyToStartMessage needs data field to be this string
+    }
+
+
+    private void receiveMessageFromClient(Message message){
+        switch (message.type()){
+
+            case PLAYER_MOVE -> {
+                receivePlayerMove(message.data());
+            }
+        }
+
+    }
+
+
+    private void receivePlayerMove(Object data){
+        // endTurn in PlayerRemoteController
+        playerRemoteController.endTurn(data);
+    }
+
+
 
     /**
      * Stops the server and closes resources.
@@ -180,4 +230,6 @@ public class ServerActionListener extends Menu implements ActionListener {
         JOptionPane.showMessageDialog(null,
                 "Please make sure the specified port is available and try again.");
     }
+
+
 }

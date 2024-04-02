@@ -41,4 +41,6 @@ public class PlayerAIController extends PlayerController{
     public void actionPerformed(ActionEvent e) {
 
     }
+
+    public abstract boolean endTurn(Object data);
 }

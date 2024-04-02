@@ -1,14 +1,11 @@
 package controller;
 
 import board.Tile;
-import controller.action.game.MoveMade;
-import controller.action.game.MoveSelected;
-import controller.action.game.NoMovePossible;
-import controller.action.game.RollDice;
+import controller.action.game.*;
 import game.UrGame;
-import player.Piece;
-import player.Player;
-import player.PlayerOptions;
+import player.*;
+import server.ClientActionListener;
+import server.ServerActionListener;
 import states.GameState;
 import ui.GameInterface;
 
@@ -31,6 +28,7 @@ public class GameController implements ActionListener {
      */
     volatile private boolean play;
     private GameInterface gameInterface;
+    private Object lastMoveStash;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -143,6 +141,18 @@ public class GameController implements ActionListener {
     }
 
 
+    /**
+     * Called on Client {@link PlayerHumanController} to start turn in {@link PlayerRemoteController} to send message back to server
+     */
+    public void switchToPlayerRemote(){
+        PlayerRemoteController remoteController = getRemotePlayerController();
+        remoteController.startTurn(); //will send message back to server about game state which wll be picked up in endTurn() for client (who is RemotePlayer on server)
+
+    }
+
+
+
+
 
     /**
      * Creates controllers for game entities for new {@code UrGame}
@@ -211,6 +221,9 @@ public class GameController implements ActionListener {
         if (pieceMoved!=null) {
             this.boardController.updateBoard(pieceMoved);
         }
+
+        stashLastMove();
+
         play = activePlayerController.endTurn();
         if(play) {
             activePlayerController = playerControllerIterator.next();
@@ -218,6 +231,27 @@ public class GameController implements ActionListener {
         turnInProgress =false;
         notifyAll();
         //activePlayerController.startTurn();
+    }
+
+    /**
+     * Generates a JSON string containing data about game to send to remote
+     */
+    private void stashLastMove() {
+        lastMoveStash = "";
+    }
+
+
+    /**
+     * Parse JSON string and update game/players on local with stash data from remote
+     */
+    public void updateFromStash(){
+    }
+
+
+
+
+    public Object getLastTurnInformation() {
+        return lastMoveStash;
     }
 
 
@@ -251,4 +285,55 @@ public class GameController implements ActionListener {
     }
 
 
+    public void createGameAsServer(GameStartedWithServer.GameStartedWithServerEventSource gameStartedWithServerEventSource) {
+        PlayerOptions[] playerOptions = gameStartedWithServerEventSource.playerOptions();
+        this.game = new UrGame(playerOptions);
+        initialiseGameEntityControllersWithRemote(gameStartedWithServerEventSource.serverListener(), gameStartedWithServerEventSource.clientListener());
+        this.gameInterface = new GameInterface(this);
+        Thread gameThread = new Thread( () -> this.beginGame());
+        gameThread.start();
+
+    }
+
+    /**
+     * Called in client with message sent from {@link PlayerRemoteController#initialiseRemote()} from server.
+     * Use data to create client's game.
+     * @param gameSetupMessageFromServer
+     */
+    public void createGameAsClient(Object gameSetupMessageFromServer){
+        //use READY_TO_START message received from server to create a new game, gameInterface
+        this.game = new UrGame(); //PLayer options parsed for gameSetupMessageFromServer
+        this.gameInterface= new GameInterface(this);
+    }
+
+
+    /**
+     * Creates player controllers for local player as {@link PlayerHumanController} and remote as {@link PlayerRemoteController}
+     * @param serverActionListener
+     * @param clientActionListener
+     */
+    public void initialiseGameEntityControllersWithRemote(ServerActionListener serverActionListener, ClientActionListener clientActionListener){
+        this.boardController=new BoardController(game.getBoard(), this);
+        this.playerControllers = new ArrayList<>();
+        PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerRemote).findFirst().orElse(null);
+        PlayerHuman localPlayer = (PlayerHuman) game.getPlayers().stream().filter(p->p instanceof PlayerHuman).findFirst().orElse(null);
+        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, serverActionListener, clientActionListener));
+        this.playerControllers.add(new PlayerHumanController(localPlayer, this));
+        this.playerControllerIterator = getControllerIterator(playerControllers);
+        this.activePlayerController=playerControllerIterator.next();
+    }
+
+
+    public PlayerRemoteController getRemotePlayerController()
+    {
+        return (PlayerRemoteController) playerControllers.stream().filter(pc -> pc instanceof PlayerRemoteController).findFirst().orElse(null);
+    }
+
+    /**
+     * Called when {@link PlayerRemoteController} is intialised - contains configuration data needed to recreate game setup on remote
+     * @return
+     */
+    public Object getRemoteInitMessage() {
+
+    }
 }

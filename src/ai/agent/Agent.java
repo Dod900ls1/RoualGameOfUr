@@ -27,7 +27,8 @@ public abstract class Agent {
         RANDOM,
         EXPECTIMINIMAX_EASY,
         EXPECTIMINIMAX_HARD,
-        GREEDY
+        GREEDY, REMOTE
+
     }
 
     /**

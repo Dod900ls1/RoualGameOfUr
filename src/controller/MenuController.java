@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.game.GameStarted;
+import controller.action.game.GameStartedWithServer;
 import controller.action.menu.MenuClosed;
 import controller.action.menu.MenuClosed.MenuClosedEventSource;
 import ui.StartMenu;
@@ -41,6 +42,9 @@ public class MenuController implements ActionListener {
             respondToMenuClosed((MenuClosedEventSource)e.getSource());
         }else if (e instanceof GameStarted){
             parentListener.actionPerformed(e);
+        } else if (e instanceof GameStartedWithServer) {
+            parentListener.actionPerformed(e);
+
         }
 
     }
