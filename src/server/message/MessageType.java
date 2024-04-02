@@ -1,4 +1,4 @@
-package server;
+package server.message;
 
 public enum MessageType {
     READY_TO_START,

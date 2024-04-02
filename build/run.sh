@@ -1,4 +1,3 @@
-
 ./build/build.sh
 case "$(uname -sr)" in
     CYGWIN*|MINGW*|MINGW32*|MSYS*)

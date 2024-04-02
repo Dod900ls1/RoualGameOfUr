@@ -3,14 +3,24 @@ package server;
 import controller.GameController;
 import controller.PlayerRemoteController;
 import player.Player;
+import server.message.GameStash;
+import server.message.Message;
+import server.message.MessageUtilities;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 public abstract class NetworkActionListener implements ActionListener {
     protected PlayerRemoteController playerRemoteController;
+
+    protected Socket remoteSocket;
 
     protected DataInputStream din;
     protected DataOutputStream dout;
@@ -23,17 +33,26 @@ public abstract class NetworkActionListener implements ActionListener {
     void receiveMessageFromRemote(){
         //parse JSON to Message
         //todo listening thread?
-        String messageString;
-        Message fromRemote = MessageUtilities.parseMessageJSON(messageString);
-        processMessageFromRemote(fromRemote);
+        String messageString = null;
+        try (JsonReader inReader = Json.createReader(getDin())){
+            JsonObject messageJSON = inReader.readObject();
+            Message fromRemote = MessageUtilities.parseMessageJSON(messageJSON);
+            processMessageFromRemote(fromRemote);
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void sendMessageToRemote(Message message){
         //generate JSON message
-        String jsonText = MessageUtilities.writeMessageJSON(message);
-        try {
-            dout.writeUTF(jsonText);
-            dout.flush();
+
+        JsonObject messageJSON = MessageUtilities.writeMessageJSON(message);
+
+        try (JsonWriter outWriter = Json.createWriter(getDout())){
+            outWriter.writeObject(messageJSON);
+//            dout.writeUTF(jsonText);
+//            dout.flush();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -59,10 +78,22 @@ public abstract class NetworkActionListener implements ActionListener {
      * ends move for remote player and begins turn for local player
      * @param remoteStash
      */
-    protected void receiveGameState(Message remoteStash) {
+    protected void receiveGameState(Message remoteStashMessage) {
         //todo
         //receives game state - updates game, then starts turn for client as PlayerHuman
+        GameStash remoteStash = (GameStash) remoteStashMessage.data();
         playerRemoteController.endTurnFromRemote(remoteStash);
     }
+
+
+    protected DataOutputStream getDout() throws IOException {
+        return new DataOutputStream(remoteSocket.getOutputStream());
+    }
+
+    protected DataInputStream getDin() throws IOException {
+        return new DataInputStream(remoteSocket.getInputStream());
+    }
+
+
 
 }

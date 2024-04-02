@@ -6,6 +6,8 @@ import controller.MainController;
 import controller.MenuController;
 import controller.action.game.GameStartedAsClient;
 import player.PlayerOptions;
+import server.message.Message;
+import server.message.MessageType;
 import ui.PlayerSelectionWindow;
 
 import javax.swing.*;

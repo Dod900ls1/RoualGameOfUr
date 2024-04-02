@@ -5,6 +5,7 @@ import controller.action.game.*;
 import game.UrGame;
 import player.*;
 import server.NetworkActionListener;
+import server.message.GameStash;
 import states.GameState;
 import ui.GameInterface;
 
@@ -12,11 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 public class GameController implements ActionListener {
 
@@ -32,7 +28,7 @@ public class GameController implements ActionListener {
      */
     volatile private boolean play;
     private GameInterface gameInterface;
-    private Object gameStash;
+    private GameStash gameStash;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -224,11 +220,12 @@ public class GameController implements ActionListener {
      * @param pieceMoved {@code Piece} object moved last turn
      */
     public synchronized void finishMove(Piece pieceMoved){
+        PieceMoveForStash pieceMovesForStash = null;
         if (pieceMoved!=null) {
-            this.boardController.updateBoard(pieceMoved);
+            pieceMovesForStash = this.boardController.updateBoard(pieceMoved);
         }
 
-        stashGame();
+        stashGame(pieceMovesForStash);
 
         play = activePlayerController.endTurn();
         if(play) {
@@ -240,64 +237,49 @@ public class GameController implements ActionListener {
     }
 
     /**
-     * Generates a JSON string containing data about game to send to remote
+     * Creates {@link GameStash} record containing information about last turn played on local.
+     * Stores this {@code GameStash} in {@link #gameStash} so can be accessed in {@link #getStash()} to be sent to remote
+     * @param pieceMovesForStash Record containing piece move data for last turn. Record to be added to {@code GameStash} to be sent to remote
      */
-    private String stashGame() {
-        String gameStash = "";
-        Collection<TileController> tileControllers = getBoardController().getTileControllers();
-        for (TileController tileController : tileControllers) {
-            JsonObject object = mapToJson(playersPieces(tileController));
-            gameStash += object.toString();
-        }
+    private void stashGame(PieceMoveForStash pieceMovesForStash) {
 
-        return gameStash;        
-    }
-    
-    private JsonObject mapToJson(Map<Integer, List<Integer>> map) {
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+        gameStash = new GameStash(activePlayerController.lastRoll, pieceMovesForStash);
 
-        for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
-            Integer key = entry.getKey();
-            List<Integer> value = entry.getValue();
-            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-            for (Integer intValue : value) {
-                jsonArrayBuilder.add(intValue);
-            }
-            jsonObjectBuilder.add(key.toString(), jsonArrayBuilder.build());
-        }
 
-        return jsonObjectBuilder.build();
-    }
-
-    private Map<Integer, List<Integer>> playersPieces(TileController tileController) {
-        Map<Player, Integer> piecesByPlayer = tileController.getPiecesByPlayer(); // Assuming this method exists
-        
-        // Transform Map<Player, Integer> to Map<Integer, List<Integer>>
-        Map<Integer, List<Integer>> piecesByPlayerId = piecesByPlayer.entrySet().stream()
-                .collect(Collectors.groupingBy(
-                        entry -> entry.getKey().getPlayerColour(), // Get player ID
-                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Get list of pieces
-                ));
-
-        return piecesByPlayerId;
-    }
-
-    /**
-     * Parse JSON string and update game/players on local with stash data from remote
-     * @return Tile for {@link PlayerRemoteController} to move piece to.
-     */
-    public Tile updateFromStash(String remoteStash) {
-        //TODO
-        int tileNumberToMoveTo = 1; //todo get this from remoteStash
-        return boardController.getTileFromNumber(tileNumberToMoveTo);
+//        String gameStash = "";
+//        Collection<TileController> tileControllers = getBoardController().getTileControllers();
+//        for (TileController tileController : tileControllers) {
+//            JsonObject object = mapToJson(playersPieces(tileController));
+//            gameStash += object.toString();
+//        }
+//
+//        return gameStash;
     }
 
 
-
-
-    public Object getStash() {
+    public GameStash getStash() {
         return gameStash;
     }
+
+
+
+//    private Map<Integer, List<Integer>> playersPieces(TileController tileController) {
+//        Map<Integer, Integer> piecesByPlayer = boardController.getPiecesForPlayersOnBoard();//.getPiecesByPlayer(); // Assuming this method exists
+//
+//        // Transform Map<Player, Integer> to Map<Integer, List<Integer>>
+//        Map<Integer, List<Integer>> piecesByPlayerId = piecesByPlayer.entrySet().stream()
+//                .collect(Collectors.groupingBy(
+//                        entry -> entry, // Get player ID
+//                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Get list of pieces
+//                ));
+//
+//        return piecesByPlayerId;
+//    }
+
+    private Player getPlayerByColour(Integer colourToFind) {
+        return playerControllers.stream().map(PlayerController::getPlayer).filter(player -> player.getPlayerColour()==colourToFind).findFirst().orElse(null);
+    }
+
 
 
     private List<BoardController.PlayerPieceOnTile> getPiecesForPlayersOnBoard(){
@@ -358,6 +340,8 @@ public class GameController implements ActionListener {
         this.game = new UrGame(gameStartedAsClientEventSource.playerOptions()); //PLayer options parsed for gameSetupMessageFromServer
         this.gameInterface= new GameInterface(this);
         initialiseGameEntityControllersWithRemote(gameStartedAsClientEventSource.clientActionListener());
+        Thread gameThread = new Thread( () -> this.beginGame());
+        gameThread.start();
     }
 
 
@@ -396,5 +380,14 @@ public class GameController implements ActionListener {
          //todo
         return null;
     }
+
+    public Tile getTileFromNumber(int tileNumber) {
+        return boardController.getTileFromNumber(tileNumber);
+    }
+
+
+    public record PieceMoveForStash(int player, int fromTileNumber, int toTileNumber){}
+
+
 
 }

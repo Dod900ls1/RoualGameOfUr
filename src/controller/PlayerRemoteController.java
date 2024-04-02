@@ -5,6 +5,9 @@ import player.Player;
 import player.PlayerAI;
 import player.PlayerRemote;
 import server.*;
+import server.message.GameStash;
+import server.message.Message;
+import server.message.MessageType;
 
 public class PlayerRemoteController extends PlayerAIController {
 
@@ -54,12 +57,16 @@ public class PlayerRemoteController extends PlayerAIController {
      * @param remoteStash Game stash received from {@link GameController#getStash()} called on remote machine and passed over network to local
      * @return
      */
-    public boolean endTurnFromRemote(Object remoteStash) {
+    public void endTurnFromRemote(GameStash remoteStash) {
         //get back state of game and turn made by remote and update
         //TODO
-        Tile toMoveTo = parentListener.updateFromStash(remoteStash);
-        makeMove(toMoveTo);
-        return playerRemote.hasPiecesLeft();
+
+        Tile fromTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().fromTileNumber());
+        Tile toTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().toTileNumber());
+        lastRoll = remoteStash.lastRoll();
+        makeMove(toTile);
+
+        //Tile toMoveTo = parentListener.updateFromStash(remoteStash);
 
     }
 

@@ -5,6 +5,7 @@ import controller.MenuController;
 import controller.action.game.GameStartedWithServer;
 import player.Player;
 import player.PlayerOptions;
+import server.message.Message;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 // TODO - add a default option in here and clients
 /**
@@ -23,7 +23,6 @@ public class ServerActionListener extends NetworkActionListener {
     private final ClientActionListener clientActionListener;
     private final MenuController parentListener;
     private ServerSocket serverSocket;
-    private Socket clientSocket;
     private int serverColor;
 
     /**
@@ -40,7 +39,6 @@ public class ServerActionListener extends NetworkActionListener {
     /**
      * Starts the server on the specified IP address and socket ID.
      *
-     * @param ipAddress the IP address of the server
      * @param socketId  the socket ID on which the server will listen
      */
     private void start(String ipAdderss, int socketId) {
@@ -48,11 +46,11 @@ public class ServerActionListener extends NetworkActionListener {
             serverSocket = new ServerSocket(socketId);
             JOptionPane.showMessageDialog(null,
                     "Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
-            clientSocket = serverSocket.accept();
+            remoteSocket = serverSocket.accept();
             System.out.println("Client connected.");
 
-            din = new DataInputStream(clientSocket.getInputStream());
-            dout = new DataOutputStream(clientSocket.getOutputStream());
+            din = new DataInputStream(remoteSocket.getInputStream());
+            dout = new DataOutputStream(remoteSocket.getOutputStream());
 
             showServerStartedMessage(socketId);
         } catch (IOException ex) {
@@ -168,16 +166,16 @@ public class ServerActionListener extends NetworkActionListener {
     void processMessageFromRemote(Message message) {
         switch (message.type()){
             case ASSIGN_COLOR -> {
-                receiveRemoteColourAssignment(message.data());
+                receiveRemoteColourAssignment(message);
             }
             case GAME_STATE -> {
-                receivePlayerMove(message.data());
+                receiveGameState(message);
             }
         }
     }
 
-    private void receiveRemoteColourAssignment(Object data) {
-        serverColor = data; //todo parse data to int
+    private void receiveRemoteColourAssignment(Message remoteColourAssignmentMessage) {
+        serverColor = (Integer)remoteColourAssignmentMessage.data(); //todo parse data to int
         int clientColor;
         if (serverColor == Player.LIGHT_PLAYER){
             clientColor = Player.DARK_PLAYER;
@@ -196,12 +194,6 @@ public class ServerActionListener extends NetworkActionListener {
     }
 
 
-    private void receivePlayerMove(Object data){
-        // endTurn in PlayerRemoteController
-        playerRemoteController.endTurnFromRemote(data);
-    }
-
-
 
     /**
      * Stops the server and closes resources.
@@ -211,7 +203,7 @@ public class ServerActionListener extends NetworkActionListener {
             din.close();
             dout.close();
             serverSocket.close();
-            clientSocket.close();
+            remoteSocket.close();
         } catch (IOException e) {
             System.err.println("An error occured while closing resources: " + e.getMessage());
         }
@@ -243,9 +235,7 @@ public class ServerActionListener extends NetworkActionListener {
     }
 
     /**
-     * Displays a message indicating that the server has started.
-     *
-     * @param socketId the port number on which the server is listening
+     * Displays a message indicating that the socket id entered is not valid
      */
     private void showInvalidSocketIdError() {
         JOptionPane.showMessageDialog(null, "Invalid socket ID entered. Please enter a valid integer.");
