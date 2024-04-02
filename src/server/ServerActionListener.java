@@ -141,6 +141,7 @@ public class ServerActionListener extends Menu implements ActionListener {
             case ASSIGN_COLOR:
                 break;
             case GAME_STATE:
+                sendGameState(messageToClient);
                 break;
             case PLAYER_MOVE:
                 break;
@@ -149,9 +150,19 @@ public class ServerActionListener extends Menu implements ActionListener {
 
     }
 
+    private void sendGameState(Message messageToClient) {
+        //TODO
+        //sends message wth current game state stash (JSON) to client - client updates their game from stash and then plays their turn
+    }
+
     private void sendReadyToStart(Message readyToStartMessage){
+        //TODO
         //send ready to start message with message data as a string with game info - readyToStartMessage needs data field to be this string
     }
+
+
+
+
 
 
     private void receiveMessageFromClient(Message message){

@@ -38,9 +38,8 @@ public class PlayerRemoteController extends PlayerAIController {
     @Override
     public void startTurn() {
         //send message to remote client saying turn started what happened in last turn.
-        Object lastTurnData = parentListener.getLastTurnInformation();
-        serverActionListener.sendMessageToClient(new Message(MessageType.GAME_STATE, lastTurnData));
-
+        Object gameStash = parentListener.getStash();
+        serverActionListener.sendMessageToClient(new Message(MessageType.GAME_STATE, gameStash));
     }
 
     /**
@@ -66,6 +65,8 @@ public class PlayerRemoteController extends PlayerAIController {
         //get back state of game and turn made by remote and update
 
         parentListener.updateFromStash();
+
+        //TODO
 
         Tile toMoveTo; //figure out which tile from data - need tile number
         makeMove(toMoveTo);

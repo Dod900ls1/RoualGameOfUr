@@ -63,6 +63,10 @@ public class MainController implements ActionListener {
 
     }
 
+    /**
+     * Calls {@link GameController#createGameAsServer(GameStartedWithServer.GameStartedWithServerEventSource) GameController.createGameAsServer}
+     * @param gameStartedWithServerEventSource
+     */
     private void createGameAsServer(GameStartedWithServer.GameStartedWithServerEventSource gameStartedWithServerEventSource) {
         gameController.createGameAsServer(gameStartedWithServerEventSource);
     }

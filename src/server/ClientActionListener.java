@@ -90,6 +90,9 @@ public class ClientActionListener implements ActionListener {
             }
             case PLAYER_MOVE -> {
             }
+            case START_TURN -> {
+                
+            }
         }
     }
 

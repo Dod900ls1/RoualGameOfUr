@@ -28,7 +28,7 @@ public class GameController implements ActionListener {
      */
     volatile private boolean play;
     private GameInterface gameInterface;
-    private Object lastMoveStash;
+    private Object gameStash;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -147,7 +147,6 @@ public class GameController implements ActionListener {
     public void switchToPlayerRemote(){
         PlayerRemoteController remoteController = getRemotePlayerController();
         remoteController.startTurn(); //will send message back to server about game state which wll be picked up in endTurn() for client (who is RemotePlayer on server)
-
     }
 
 
@@ -222,7 +221,7 @@ public class GameController implements ActionListener {
             this.boardController.updateBoard(pieceMoved);
         }
 
-        stashLastMove();
+        stashGame();
 
         play = activePlayerController.endTurn();
         if(play) {
@@ -236,8 +235,9 @@ public class GameController implements ActionListener {
     /**
      * Generates a JSON string containing data about game to send to remote
      */
-    private void stashLastMove() {
-        lastMoveStash = "";
+    private void stashGame() {
+        gameStash = "";
+        //TODO
     }
 
 
@@ -245,13 +245,14 @@ public class GameController implements ActionListener {
      * Parse JSON string and update game/players on local with stash data from remote
      */
     public void updateFromStash(){
+        //TODO
     }
 
 
 
 
-    public Object getLastTurnInformation() {
-        return lastMoveStash;
+    public Object getStash() {
+        return gameStash;
     }
 
 
@@ -317,8 +318,8 @@ public class GameController implements ActionListener {
         this.playerControllers = new ArrayList<>();
         PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerRemote).findFirst().orElse(null);
         PlayerHuman localPlayer = (PlayerHuman) game.getPlayers().stream().filter(p->p instanceof PlayerHuman).findFirst().orElse(null);
-        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, serverActionListener, clientActionListener));
         this.playerControllers.add(new PlayerHumanController(localPlayer, this));
+        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, serverActionListener, clientActionListener));
         this.playerControllerIterator = getControllerIterator(playerControllers);
         this.activePlayerController=playerControllerIterator.next();
     }

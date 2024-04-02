@@ -42,5 +42,7 @@ public class PlayerAIController extends PlayerController{
 
     }
 
-    public abstract boolean endTurn(Object data);
+    public boolean endTurn(Object data) {
+        return false;
+    }
 }
