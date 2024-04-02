@@ -13,7 +13,9 @@ import java.util.stream.IntStream;
 
 public class ExpectiminimaxAgent extends Agent {
 
-    private final int DEPTH = 3;
+    private static final int DEFAULT_DEPTH = 3;
+
+    private final int DEPTH;
     private final int playerColour;
 
     private final double[] rollProbabilities;
@@ -27,15 +29,25 @@ public class ExpectiminimaxAgent extends Agent {
      *
      * @param player Reference to {@code Player} instance for whom to serve as an ai agent
      * @param game   Reference to current instance of {@code UrGame} to provide access to information that may be required by {@code Agent} in choosing next move
-     * @param metric
+     * @param metric Metric to be used to evaluate game states
+     * @param depth Depth of search (game tree)
      */
-    public ExpectiminimaxAgent(PlayerAI player, UrGame game, Metric metric) {
+    public ExpectiminimaxAgent(PlayerAI player, UrGame game, Metric metric, int depth) {
         super(player, game);
+        this.DEPTH = depth;
         this.playerColour = player.getPlayerColour();
         rollProbabilities = game.getRollProbabilities();
         this.metric = metric;
         this.METRIC_MULTIPLIER = playerColour == Player.LIGHT_PLAYER? 1: -1;
     }
+
+    public ExpectiminimaxAgent(PlayerAI player, UrGame game, Metric metric) {
+        this(player, game,metric, DEFAULT_DEPTH);
+    }
+
+
+
+
 
     /**
      * Determines and returns end {@code Tile} for next move via expectiminimax algorithm for given value of {@code roll}
@@ -99,10 +111,5 @@ public class ExpectiminimaxAgent extends Agent {
 
 
    }
-
-
-
-
-    record StateWithWeight(GameState gameState, double weight){}
 
 }

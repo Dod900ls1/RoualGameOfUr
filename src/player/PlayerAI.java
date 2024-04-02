@@ -10,9 +10,9 @@ public class PlayerAI extends Player{
 
     Agent agent;
 
-    public PlayerAI(int colour, List<Tile> playerPath, UrGame game) {
+    public PlayerAI(int colour, Agent.Agents agentType, List<Tile> playerPath, UrGame game) {
         super(colour, playerPath);
-        agent = Agent.getNewAgent(this, Agent.Agents.EXPECTIMINIMAX, game);
+        agent = Agent.getNewAgent(this, agentType, game);
     }
 
     /**

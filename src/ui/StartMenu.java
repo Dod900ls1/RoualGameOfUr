@@ -1,5 +1,6 @@
 package ui;
 
+import ai.agent.Agent;
 import controller.MenuController;
 import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
@@ -97,8 +98,8 @@ public class StartMenu extends Menu{
                 StartMenu.this.parentListener.actionPerformed(
                         new GameStarted(
                                 new GameStarted.GameStartedEventSource(new PlayerOptions[]{
-                                        new PlayerOptions(Player.LIGHT_PLAYER, false),
-                                        new PlayerOptions(Player.DARK_PLAYER, false)
+                                        new PlayerOptions(Player.LIGHT_PLAYER, false, Agent.Agents.RANDOM),
+                                        new PlayerOptions(Player.DARK_PLAYER, false, Agent.Agents.EXPECTIMINIMAX)
 
                                 })
                         )

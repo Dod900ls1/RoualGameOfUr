@@ -59,7 +59,7 @@ public abstract class Player {
             return new PlayerHuman(playerOption.playerColour(), playerPath);
         }
         else{
-            return new PlayerAI(playerOption.playerColour(), playerPath, game);
+            return new PlayerAI(playerOption.playerColour(), playerOption.aiType(), playerPath, game);
         }
     }
 
