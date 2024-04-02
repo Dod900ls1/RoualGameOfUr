@@ -6,7 +6,8 @@ import game.UrGame;
 import player.PlayerAI;
 
 /**
- * Greedy agent who prioritises metric at next turn
+ * Greedy agent who prioritises metric at next turn.
+ * Greedy agent is a specialisation of {@link ExpectiminimaxAgent} with {@code DEPTH} of 0
  */
 public class GreedyAgent extends ExpectiminimaxAgent{
 
@@ -19,6 +20,11 @@ public class GreedyAgent extends ExpectiminimaxAgent{
         super(player, game, metric, 0); //expectiminimax with depth 0 is greedy
     }
 
+    /**
+     * Determines and returns end {@code Tile} for next move via greedy algorithm for given value of {@code roll}
+     * @param roll Value of roll for turn
+     * @return {@code Tile} instance a {@code Piece} is to be moved to in current turn
+     */
     @Override
     public Tile determineNextMove(int roll) {
         return super.determineNextMove(roll);
