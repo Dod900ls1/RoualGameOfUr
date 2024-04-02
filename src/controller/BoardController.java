@@ -157,8 +157,10 @@ public class BoardController implements ActionListener {
 
     }
 
+    public Tile getTileFromNumber(int tileNumber) {
+       return  board.getTileFromNumber(tileNumber);
+    }
 
-
-    public record PlayerPieceOnTile(Integer playerNumber, Integer tileNumberWithPlayerPiece)
+    public record PlayerPieceOnTile(Integer playerNumber, Integer tileNumberWithPlayerPiece){}
 
 }

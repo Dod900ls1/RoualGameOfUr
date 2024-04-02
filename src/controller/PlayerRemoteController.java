@@ -1,17 +1,14 @@
 package controller;
 
 import board.Tile;
+import player.Player;
 import player.PlayerAI;
 import player.PlayerRemote;
-import server.ClientActionListener;
-import server.Message;
-import server.MessageType;
-import server.ServerActionListener;
+import server.*;
 
 public class PlayerRemoteController extends PlayerAIController {
 
-    ServerActionListener serverActionListener;
-    ClientActionListener clientActionListener;
+    NetworkActionListener networkActionListener;
 
     private PlayerRemote playerRemote;
 
@@ -21,54 +18,49 @@ public class PlayerRemoteController extends PlayerAIController {
      *
      * @param player               {@code Player} model entity
      * @param parentListener       Attached listener who is step above in command chain, can fire events to this listener who can respond from higher order or fire to their parent etc.
-     * @param serverActionListener
-     * @param clientActionListener
      */
-    public PlayerRemoteController(PlayerAI player, GameController parentListener, ServerActionListener serverActionListener, ClientActionListener clientActionListener) {
+    public PlayerRemoteController(PlayerAI player, GameController parentListener, NetworkActionListener networkActionListener) {
         super(player, parentListener);
         this.playerRemote = (PlayerRemote) player;
-        this.serverActionListener = serverActionListener;
-        this.clientActionListener = clientActionListener;
+        this.networkActionListener = networkActionListener;
         //intialiseRemote();
     }
 
     /**
-     * Update client on what has happened in the game. Turn then handled on client, will receive information from client about their turn in {@link #endTurn(Object)}
+     * Update client on what has happened in the game. Turn then handled on client, will receive information from client about their turn in {@link #endTurnFromRemote(Object)}
      */
     @Override
     public void startTurn() {
         //send message to remote client saying turn started what happened in last turn.
         Object gameStash = parentListener.getStash();
-        serverActionListener.sendMessageToClient(new Message(MessageType.GAME_STATE, gameStash));
+        networkActionListener.sendMessageToRemote(new Message(MessageType.GAME_STATE, gameStash));
     }
 
     /**
      * Send initial message to client with some information needed to construct game
      */
-    public void intialiseRemote(){
+    public void initialiseRemote(){
         //send game setup info so client can create gameCOntroller
-        serverActionListener.setPlayerRemoteController(this);
+        networkActionListener.setPlayerRemoteController(this);
         //create message about game
         Message initMessage = new Message(MessageType.READY_TO_START, parentListener.getRemoteInitMessage());
-        serverActionListener.sendMessageToClient(initMessage);
+        networkActionListener.sendMessageToRemote(initMessage);
 
     }
 
 
     /**
-     * Called from {@link ServerActionListener} when move data received from client. Use this data to update this game instance.
-     * @param data
+     * Called from {@link NetworkActionListener} when move data received from remote. Use this data to update this game instance.
+     * @param remoteStash Game stash received from {@link GameController#getStash()} called on remote machine and passed over network to local
      * @return
      */
-    public boolean endTurnFromRemote(Object data) {
+    public boolean endTurnFromRemote(Object remoteStash) {
         //get back state of game and turn made by remote and update
-
-        parentListener.updateFromStash();
-
         //TODO
-
-        Tile toMoveTo; //figure out which tile from data - need tile number
+        Tile toMoveTo = parentListener.updateFromStash(remoteStash);
         makeMove(toMoveTo);
+        return playerRemote.hasPiecesLeft();
+
     }
 
 

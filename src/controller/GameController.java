@@ -4,8 +4,7 @@ import board.Tile;
 import controller.action.game.*;
 import game.UrGame;
 import player.*;
-import server.ClientActionListener;
-import server.ServerActionListener;
+import server.NetworkActionListener;
 import states.GameState;
 import ui.GameInterface;
 
@@ -246,9 +245,12 @@ public class GameController implements ActionListener {
 
     /**
      * Parse JSON string and update game/players on local with stash data from remote
+     * @return Tile for {@link PlayerRemoteController} to move piece to.
      */
-    public void updateFromStash(){
+    public Tile updateFromStash(String remoteStash) {
         //TODO
+        int tileNumberToMoveTo = 1; //todo get this from remoteStash
+        return boardController.getTileFromNumber(tileNumberToMoveTo);
     }
 
 
@@ -298,8 +300,8 @@ public class GameController implements ActionListener {
     public void createGameAsServer(GameStartedWithServer.GameStartedWithServerEventSource gameStartedWithServerEventSource) {
         PlayerOptions[] playerOptions = gameStartedWithServerEventSource.playerOptions();
         this.game = new UrGame(playerOptions);
-        initialiseGameEntityControllersWithRemote(gameStartedWithServerEventSource.serverListener(), gameStartedWithServerEventSource.clientListener());
-        getRemotePlayerController().intialiseRemote();
+        initialiseGameEntityControllersWithRemote(gameStartedWithServerEventSource.serverListener());
+        getRemotePlayerController().initialiseRemote();
         this.gameInterface = new GameInterface(this);
         Thread gameThread = new Thread( () -> this.beginGame());
         gameThread.start();
@@ -309,29 +311,27 @@ public class GameController implements ActionListener {
     /**
      * Called in client with message sent from {@link PlayerRemoteController#initialiseRemote()} from server.
      * Use data to create client's game.
-     * @param gameSetupMessageFromServer
+     * @param gameStartedAsClientEventSource
      */
-    public void createGameAsClient(Object gameSetupMessageFromServer){
+    public void createGameAsClient(GameStartedAsClient.GameStartedAsClientEventSource gameStartedAsClientEventSource){
         //TODO
         //use READY_TO_START message received from server to create a new game, gameInterface
-        this.game = new UrGame(); //PLayer options parsed for gameSetupMessageFromServer
+        this.game = new UrGame(gameStartedAsClientEventSource.playerOptions()); //PLayer options parsed for gameSetupMessageFromServer
         this.gameInterface= new GameInterface(this);
-        initialiseGameEntityControllersWithRemote();
+        initialiseGameEntityControllersWithRemote(gameStartedAsClientEventSource.clientActionListener());
     }
 
 
     /**
      * Creates player controllers for local player as {@link PlayerHumanController} and remote as {@link PlayerRemoteController}
-     * @param serverActionListener
-     * @param clientActionListener
      */
-    public void initialiseGameEntityControllersWithRemote(ServerActionListener serverActionListener, ClientActionListener clientActionListener){
+    public void initialiseGameEntityControllersWithRemote(NetworkActionListener networkActionListenerForRemote){
         this.boardController=new BoardController(game.getBoard(), this);
         this.playerControllers = new ArrayList<>();
         PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerRemote).findFirst().orElse(null);
         PlayerHuman localPlayer = (PlayerHuman) game.getPlayers().stream().filter(p->p instanceof PlayerHuman).findFirst().orElse(null);
         this.playerControllers.add(new PlayerHumanController(localPlayer, this));
-        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, serverActionListener, clientActionListener));
+        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, networkActionListenerForRemote));
         this.playerControllerIterator = getControllerIterator(playerControllers);
         this.activePlayerController=playerControllerIterator.next();
     }
@@ -350,11 +350,12 @@ public class GameController implements ActionListener {
 
 
     /**
-     * Called when {@link PlayerRemoteController} is intialised - contains configuration data needed to recreate game setup on remote
+     * Called when {@link PlayerRemoteController} is initialised - contains configuration data needed to recreate game setup on remote
      * @return
      */
     public Object getRemoteInitMessage() {
          //todo
+        return null;
     }
 
 }

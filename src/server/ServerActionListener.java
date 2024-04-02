@@ -2,11 +2,9 @@ package server;
 
 import ai.agent.Agent;
 import controller.MenuController;
-import controller.PlayerRemoteController;
 import controller.action.game.GameStartedWithServer;
 import player.Player;
 import player.PlayerOptions;
-import ui.Menu;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,20 +18,13 @@ import java.net.Socket;
 /**
  * ActionListener implementation for starting a server.
  */
-public class ServerActionListener extends Menu implements NetworkActionListener {
+public class ServerActionListener extends NetworkActionListener {
 
     private final ClientActionListener clientActionListener;
-    private DataInputStream din;
-    private DataOutputStream dout;
+    private final MenuController parentListener;
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int serverColor;
-
-    private PlayerRemoteController playerRemoteController;
-
-    public void setPlayerRemoteController(PlayerRemoteController playerRemoteController) {
-        this.playerRemoteController = playerRemoteController;
-    }
 
     /**
      * Constructs a new ServerActionListener with the specified parent listener.
@@ -41,7 +32,7 @@ public class ServerActionListener extends Menu implements NetworkActionListener 
      * @param parentListener the parent MenuController
      */
     public ServerActionListener(MenuController parentListener, ClientActionListener clientActionListener) {
-        super(parentListener);
+        this.parentListener = parentListener;
         this.clientActionListener = clientActionListener;
 
     }
@@ -118,7 +109,8 @@ public class ServerActionListener extends Menu implements NetworkActionListener 
             GameStartedWithServer gameStartedEvent = new GameStartedWithServer(
                     new GameStartedWithServer.GameStartedWithServerEventSource(new PlayerOptions[] {
                             new PlayerOptions(clientColor, false, Agent.Agents.REMOTE, null),
-                            new PlayerOptions(serverColor, true, null, null )}, this, clientActionListener)
+                            new PlayerOptions(serverColor, true, null, null )}
+                            , this)
             );
             this.parentListener.actionPerformed(gameStartedEvent);
 
@@ -132,45 +124,74 @@ public class ServerActionListener extends Menu implements NetworkActionListener 
 
 
 
-    public void sendMessageToClient(Message messageToClient){
-        switch (messageToClient.type()){
-            case READY_TO_START:
-                sendReadyToStart(messageToClient);
-                break;
-            case ASSIGN_COLOR:
-                break;
-            case GAME_STATE:
-                sendGameState(messageToClient);
-                break;
-            case PLAYER_MOVE:
-                break;
-
-        }
-
-    }
-
-    private void sendGameState(Message messageToClient) {
-        //TODO
-        //sends message wth current game state stash (JSON) to client - client updates their game from stash and then plays their turn
-    }
-
-    private void sendReadyToStart(Message readyToStartMessage){
-        //TODO
-        //send ready to start message with message data as a string with game info - readyToStartMessage needs data field to be this string
-    }
 
 
 
+//    @Override
+//    public void sendMessageToRemote(Message message) {
+//        sendMessageToClient(message);
+//    }
+//
+//    public void sendMessageToClient(Message messageToClient){
+//        switch (messageToClient.type()){
+//            case READY_TO_START:
+//                sendReadyToStart(messageToClient);
+//                break;
+//            case ASSIGN_COLOR:
+//                break;
+//            case GAME_STATE:
+//                sendGameState(messageToClient);
+//                break;
+//            case PLAYER_MOVE:
+//                break;
+//
+//        }
+//
+//    }
+//
+//    private void sendGameState(Message messageToClient) {
+//        //TODO
+//        //sends message wth current game state stash (JSON) to client - client updates their game from stash and then plays their turn
+//    }
+//
+//    private void sendReadyToStart(Message readyToStartMessage){
+//        //TODO
+//        //send ready to start message with message data as a string with game info - readyToStartMessage needs data field to be this string
+//    }
+//
+//
+//
+//
 
 
-
-    private void receiveMessageFromClient(Message message){
+    @Override
+    void processMessageFromRemote(Message message) {
         switch (message.type()){
-
-            case PLAYER_MOVE -> {
+            case ASSIGN_COLOR -> {
+                receiveRemoteColourAssignment(message.data());
+            }
+            case GAME_STATE -> {
                 receivePlayerMove(message.data());
             }
         }
+    }
+
+    private void receiveRemoteColourAssignment(Object data) {
+        serverColor = data; //todo parse data to int
+        int clientColor;
+        if (serverColor == Player.LIGHT_PLAYER){
+            clientColor = Player.DARK_PLAYER;
+        }else{
+            clientColor = Player.LIGHT_PLAYER;
+        }
+        GameStartedWithServer gameStartedEvent = new GameStartedWithServer(
+                new GameStartedWithServer.GameStartedWithServerEventSource(new PlayerOptions[] {
+                        new PlayerOptions(serverColor, true, null, null ), //SERVER SHOULD GO FIRST
+                        new PlayerOptions(clientColor, false, Agent.Agents.REMOTE, null),
+                        }
+                        , this)
+        );
+        this.parentListener.actionPerformed(gameStartedEvent);
 
     }
 
@@ -240,6 +261,5 @@ public class ServerActionListener extends Menu implements NetworkActionListener 
         JOptionPane.showMessageDialog(null,
                 "Please make sure the specified port is available and try again.");
     }
-
 
 }
