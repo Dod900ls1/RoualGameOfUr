@@ -89,32 +89,42 @@ public abstract class MessageUtilities {
         GameStash stash = (GameStash) gameStashMessage.data();
         generator.writeStartObject()
             .write("messageType", gameStashMessage.type().toString())
-            .write("lastRoll", stash.lastRoll())
-            .writeStartObject("pieceMoved")
+            .write("lastRoll", stash.lastRoll());
+    
+        if (stash.lastRoll() != 0 && stash.pieceMoved() != null) {
+            generator.writeStartObject("pieceMoved")
                 .write("player", stash.pieceMoved().player())
                 .write("fromTileNumber", stash.pieceMoved().fromTileNumber())
                 .write("toTileNumber", stash.pieceMoved().toTileNumber())
-            .writeEnd()
-        .writeEnd();
+                .writeEnd();
+        }
+    
+        generator.writeEnd();
         generator.flush();
-
     }
+    
     private static Message readGameStateJSON(JsonObject messageJSON) {
-
-        JsonObject pieceMoved = messageJSON.getJsonObject("pieceMoved");
-
-        return new Message(
-                MessageType.GAME_STATE,
-                new GameStash(
-                        messageJSON.getInt("lastRoll"),
-                        new GameController.PieceMoveForStash(
-                                pieceMoved.getInt("player"),
-                                pieceMoved.getInt("fromTileNumber"),
-                                pieceMoved.getInt("toTileNumber")
-                        )
-                )
-        );
-
+        int lastRoll = messageJSON.getInt("lastRoll");
+    
+        if (lastRoll == 0 || !messageJSON.containsKey("pieceMoved")) {
+            return new Message(
+                    MessageType.GAME_STATE,
+                    new GameStash(lastRoll, null)
+            );
+        } else {
+            JsonObject pieceMoved = messageJSON.getJsonObject("pieceMoved");
+            return new Message(
+                    MessageType.GAME_STATE,
+                    new GameStash(
+                            lastRoll,
+                            new GameController.PieceMoveForStash(
+                                    pieceMoved.getInt("player"),
+                                    pieceMoved.getInt("fromTileNumber"),
+                                    pieceMoved.getInt("toTileNumber")
+                            )
+                    )
+            );
+        }
     }
 
     private JsonObject mapToJson(Map<Integer, List<Integer>> map) {

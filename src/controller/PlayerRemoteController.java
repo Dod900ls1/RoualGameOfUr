@@ -63,12 +63,14 @@ public class PlayerRemoteController extends PlayerAIController {
         //get back state of game and turn made by remote and update
         //TODO
 
-        Tile fromTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().fromTileNumber());
-        Tile toTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().toTileNumber());
-        lastRoll = remoteStash.lastRoll();
-        makeMove(toTile);
-
-        //Tile toMoveTo = parentListener.updateFromStash(remoteStash);
+        if (remoteStash.pieceMoved() != null) {
+            Tile fromTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().fromTileNumber());
+            Tile toTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().toTileNumber());
+            lastRoll = remoteStash.lastRoll();
+            makeMove(toTile);
+        } else {
+            makeMove(null);
+        }
 
     }
 
