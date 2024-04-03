@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -16,6 +19,7 @@ import java.awt.event.ActionListener;
 public class GameInterface extends JFrame{
     private final GameController controller;
     private JPanel gamePanel = new JPanel();
+    private JPanel dicePanel = new JPanel();
 
     private BoardInterface boardInterface;
     private JButton roll;
@@ -121,7 +125,27 @@ public class GameInterface extends JFrame{
 
     public void showRollResult(int rollResult) {
         System.out.println(rollResult);
-        //TODO show value of dice roll to interface
+        remove(dicePanel);
+        dicePanel = new JPanel();
+        ArrayList<Integer> dice = new ArrayList<Integer>();
+        for (int i = 0; i < 4; i++) {
+            if(rollResult > 0){
+                dice.add(1);
+                rollResult--;
+            }else{
+                dice.add(0);
+            }
+        }
+        Collections.shuffle(dice);
+        Random random = new Random();
+        for(Integer i : dice){
+            String location = "src/ui/diceStates/dice" + random.nextInt(3) + "_" + i.toString() + ".png";
+            JLabel label = new JLabel(new ImageIcon(location));
+            label.setVisible(true);
+            dicePanel.add(label);
+        }
+        dicePanel.setLayout(new GridLayout(2,2));
+        add(dicePanel);
     }
 
     public void disableRoll(){
