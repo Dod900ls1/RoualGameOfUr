@@ -7,6 +7,8 @@ import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
 import player.Player;
 import player.PlayerOptions;
+import server.ClientActionListener;
+import server.ServerActionListener;
 
 import javax.swing.*;
 import javax.swing.SwingConstants;
@@ -63,8 +65,12 @@ public class StartMenu extends Menu{
         JButton playAgainstAI = new JButton("Play Against AI");
         JButton playLocally = new JButton("Play Locally");
 
-        JButton createServer = renderer.createButton("Create Server", new ServerActionListener(), 150, 50);
-        JButton joinServer = renderer.createButton("Join Server", new ClientActionListener(), 150, 50);
+        ClientActionListener clientActionListener = new ClientActionListener(parentListener);
+        ServerActionListener serverActionListener = new ServerActionListener(parentListener, clientActionListener);
+
+
+        JButton createServer = renderer.createButton("Create Server", serverActionListener, 150, 50);
+        JButton joinServer = renderer.createButton("Join Server", clientActionListener, 150, 50);
 
         String[] AIDifficultySettings = {"Human Player", "Random","Greedy - Maximise Advancement","Greedy - Maximise Post Board","Easy Expectiminimax - Maximise Advancement","Easy Expectiminimax - Maximise Post Board","Hard Expectiminimax - Maximise Advancement","Hard Expectiminimax - Maximise Post Board"};
         JComboBox<String> player1AISetting = new JComboBox<String>(AIDifficultySettings);
@@ -97,7 +103,12 @@ public class StartMenu extends Menu{
                 createServer.setVisible(true);
                 joinServer.setVisible(true);
                 back.setVisible(true);
+<<<<<<< HEAD
                 textLabel.setText("either make or join a server on your network");
+=======
+
+
+>>>>>>> ad11956dd3d2e0da247a5af755d30fb11fa88e4c
             }
         };
 
@@ -360,5 +371,8 @@ public class StartMenu extends Menu{
         }
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ad11956dd3d2e0da247a5af755d30fb11fa88e4c
 }

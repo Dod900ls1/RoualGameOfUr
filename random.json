@@ -1,0 +1,8 @@
+{
+"Roll": 4,
+"Piece": {
+	"piece1": TileNumber,
+	"piece2": TileNumber
+	}
+}
+

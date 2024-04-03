@@ -11,10 +11,27 @@ public class PlayerAI extends Player{
 
     Agent agent;
 
-    public PlayerAI(int colour, Agent.Agents agentType, Metric.Metrics metricType, List<Tile> playerPath, UrGame game) {
+   public static PlayerAI getNewPlayerAI(int colour, Agent.Agents agentType, Metric.Metrics metricType, List<Tile> playerPath, UrGame game){
+       if (agentType.equals(Agent.Agents.REMOTE)){
+           return new PlayerRemote(colour, playerPath);
+       }
+       else{
+         PlayerAI player = new PlayerAI(colour, playerPath);
+         player.setAgent(Agent.getNewAgent(player, agentType, game,Metric.getNewMetric(metricType,game)));
+         return player;
+       }
+   }
+
+
+    public PlayerAI(int colour, List<Tile> playerPath) {
         super(colour, playerPath);
-        agent = Agent.getNewAgent(this, agentType, game, Metric.getNewMetric(metricType,game));
+
     }
+
+    private void setAgent(Agent agent){
+       this.agent = agent;
+    }
+
 
     /**
      * Determines and returns end {@code Tile} for next move via {@link #agent} for given value of {@code roll}

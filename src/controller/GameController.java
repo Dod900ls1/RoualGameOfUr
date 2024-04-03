@@ -1,14 +1,11 @@
 package controller;
 
 import board.Tile;
-import controller.action.game.MoveMade;
-import controller.action.game.MoveSelected;
-import controller.action.game.NoMovePossible;
-import controller.action.game.RollDice;
+import controller.action.game.*;
 import game.UrGame;
-import player.Piece;
-import player.Player;
-import player.PlayerOptions;
+import player.*;
+import server.NetworkActionListener;
+import server.message.GameStash;
 import states.GameState;
 import ui.GameInterface;
 
@@ -31,6 +28,7 @@ public class GameController implements ActionListener {
      */
     volatile private boolean play;
     private GameInterface gameInterface;
+    private GameStash gameStash;
 
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
@@ -143,6 +141,20 @@ public class GameController implements ActionListener {
     }
 
 
+    /**
+     * Called on Client {@link PlayerHumanController} to start turn in {@link PlayerRemoteController} to send message back to server
+     */
+    public void switchToPlayerRemote(){
+        PlayerRemoteController remoteController = getRemotePlayerController();
+        remoteController.startTurn(); //will send message back to server about game state which wll be picked up in endTurn() for client (who is RemotePlayer on server)
+    }
+
+    public void switchPlayerToHuman() {
+        PlayerHumanController humanController = getHumanPlayerController();
+        humanController.startTurn();
+    }
+
+
 
     /**
      * Creates controllers for game entities for new {@code UrGame}
@@ -208,9 +220,13 @@ public class GameController implements ActionListener {
      * @param pieceMoved {@code Piece} object moved last turn
      */
     public synchronized void finishMove(Piece pieceMoved){
+        PieceMoveForStash pieceMovesForStash = null;
         if (pieceMoved!=null) {
-            this.boardController.updateBoard(pieceMoved);
+            pieceMovesForStash = this.boardController.updateBoard(pieceMoved);
         }
+
+        stashGame(pieceMovesForStash);
+
         play = activePlayerController.endTurn();
         if(play) {
             activePlayerController = playerControllerIterator.next();
@@ -219,6 +235,57 @@ public class GameController implements ActionListener {
         notifyAll();
         //activePlayerController.startTurn();
     }
+
+    /**
+     * Creates {@link GameStash} record containing information about last turn played on local.
+     * Stores this {@code GameStash} in {@link #gameStash} so can be accessed in {@link #getStash()} to be sent to remote
+     * @param pieceMovesForStash Record containing piece move data for last turn. Record to be added to {@code GameStash} to be sent to remote
+     */
+    private void stashGame(PieceMoveForStash pieceMovesForStash) {
+
+        gameStash = new GameStash(activePlayerController.lastRoll, pieceMovesForStash);
+
+
+//        String gameStash = "";
+//        Collection<TileController> tileControllers = getBoardController().getTileControllers();
+//        for (TileController tileController : tileControllers) {
+//            JsonObject object = mapToJson(playersPieces(tileController));
+//            gameStash += object.toString();
+//        }
+//
+//        return gameStash;
+    }
+
+
+    public GameStash getStash() {
+        return gameStash;
+    }
+
+
+
+//    private Map<Integer, List<Integer>> playersPieces(TileController tileController) {
+//        Map<Integer, Integer> piecesByPlayer = boardController.getPiecesForPlayersOnBoard();//.getPiecesByPlayer(); // Assuming this method exists
+//
+//        // Transform Map<Player, Integer> to Map<Integer, List<Integer>>
+//        Map<Integer, List<Integer>> piecesByPlayerId = piecesByPlayer.entrySet().stream()
+//                .collect(Collectors.groupingBy(
+//                        entry -> entry, // Get player ID
+//                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Get list of pieces
+//                ));
+//
+//        return piecesByPlayerId;
+//    }
+
+    private Player getPlayerByColour(Integer colourToFind) {
+        return playerControllers.stream().map(PlayerController::getPlayer).filter(player -> player.getPlayerColour()==colourToFind).findFirst().orElse(null);
+    }
+
+
+
+    private List<BoardController.PlayerPieceOnTile> getPiecesForPlayersOnBoard(){
+        return boardController.getPiecesForPlayersOnBoard();
+    }
+
 
 
     /**
@@ -249,6 +316,79 @@ public class GameController implements ActionListener {
     public BoardController getBoardController() {
         return boardController;
     }
+
+
+    public void createGameAsServer(GameStartedWithServer.GameStartedWithServerEventSource gameStartedWithServerEventSource) {
+        PlayerOptions[] playerOptions = gameStartedWithServerEventSource.playerOptions();
+        this.game = new UrGame(playerOptions);
+        initialiseGameEntityControllersWithRemote(gameStartedWithServerEventSource.serverListener());
+        getRemotePlayerController().initialiseRemote();
+        this.gameInterface = new GameInterface(this);
+        Thread gameThread = new Thread( () -> this.beginGame());
+        gameThread.start();
+
+    }
+
+    /**
+     * Called in client with message sent from {@link PlayerRemoteController#initialiseRemote()} from server.
+     * Use data to create client's game.
+     * @param gameStartedAsClientEventSource
+     */
+    public void createGameAsClient(GameStartedAsClient.GameStartedAsClientEventSource gameStartedAsClientEventSource){
+        //TODO
+        //use READY_TO_START message received from server to create a new game, gameInterface
+        this.game = new UrGame(gameStartedAsClientEventSource.playerOptions()); //PLayer options parsed for gameSetupMessageFromServer
+        initialiseGameEntityControllersWithRemote(gameStartedAsClientEventSource.clientActionListener());
+        this.gameInterface= new GameInterface(this);
+        this.activePlayerController=playerControllerIterator.next();
+        Thread gameThread = new Thread( () -> this.beginGame());
+        gameThread.start();
+    }
+
+
+    /**
+     * Creates player controllers for local player as {@link PlayerHumanController} and remote as {@link PlayerRemoteController}
+     */
+    public void initialiseGameEntityControllersWithRemote(NetworkActionListener networkActionListenerForRemote){
+        this.boardController=new BoardController(game.getBoard(), this);
+        this.playerControllers = new ArrayList<>();
+        PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerAI).findFirst().orElse(null);
+        PlayerHuman localPlayer = (PlayerHuman) game.getPlayers().stream().filter(p->p instanceof PlayerHuman).findFirst().orElse(null);
+        this.playerControllers.add(new PlayerHumanController(localPlayer, this));
+        this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, networkActionListenerForRemote));
+        this.playerControllerIterator = getControllerIterator(playerControllers);
+        this.activePlayerController=playerControllerIterator.next();
+    }
+
+
+    public PlayerRemoteController getRemotePlayerController()
+    {
+        return (PlayerRemoteController) playerControllers.stream().filter(pc -> pc instanceof PlayerRemoteController).findFirst().orElse(null);
+    }
+
+    private PlayerHumanController getHumanPlayerController() {
+        return (PlayerHumanController) playerControllers.stream().filter(pc -> pc instanceof PlayerHumanController).findFirst().orElse(null);
+
+    }
+
+
+
+    /**
+     * Called when {@link PlayerRemoteController} is initialised - contains configuration data needed to recreate game setup on remote
+     * @return
+     */
+    public Object getRemoteInitMessage() {
+         //todo
+        return "";
+    }
+
+    public Tile getTileFromNumber(int tileNumber) {
+        return boardController.getTileFromNumber(tileNumber);
+    }
+
+
+    public record PieceMoveForStash(int player, int fromTileNumber, int toTileNumber){}
+
 
 
 }

@@ -5,14 +5,12 @@ import board.Tile;
 import controller.action.game.MoveSelected;
 import controller.action.game.TileSelected;
 import player.Piece;
+import player.Player;
 import ui.BoardInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -80,9 +78,11 @@ public class BoardController implements ActionListener {
     /**
      * Updates the board tiles via {@link TileController#updateTile()} for the moved piece (update tile piece moved from and to)
      * Updates all {@code PreStartTile} and {@code PostEndTile} on board via {@link TileController#updateTile()}
+     *
      * @param movedPiece Piece moved last turn
+     * @return
      */
-    public void updateBoard(Piece movedPiece) {
+    public GameController.PieceMoveForStash updateBoard(Piece movedPiece) {
         TileController lastTileController = getControllerForTile(movedPiece.getLastTile());
         TileController newTileController = getControllerForTile(movedPiece.getTile());
         lastTileController.updateTile();
@@ -91,6 +91,13 @@ public class BoardController implements ActionListener {
         for (Tile prePostBoardTile : prePostBoardTiles) {
             getControllerForTile(prePostBoardTile).updateTile();
         }
+
+        GameController.PieceMoveForStash pieceMovedStash = new GameController.PieceMoveForStash(movedPiece.getPlayer().getPlayerColour(), lastTileController.getTileNumber(), newTileController.getTileNumber()); //adds moved piece to stash
+            //not adding moves of captured pieces back to preboard as can be worked out when board is updated from remote stash
+
+
+
+       return pieceMovedStash;
     }
 
     /**
@@ -141,4 +148,46 @@ public class BoardController implements ActionListener {
         Collection<TileController> validTileControllers = getControllersForTiles(validTilesForMove);
         validTileControllers.stream().forEach(TileController :: enableTile);
     }
+
+    public List<PlayerPieceOnTile> getPiecesForPlayersOnBoard() {
+        List<PlayerPieceOnTile> playerPiecesOnTile = new ArrayList<>();
+        for (TileController tileController : tileControllers) {
+            Map<Player, Integer> piecesOnTile = tileController.getPiecesByPlayer(); //player, num of pieces
+            for (Map.Entry<Player, Integer> playerPieceEntry : piecesOnTile.entrySet()) {
+                PlayerPieceOnTile playerPieceOnTile = new PlayerPieceOnTile(playerPieceEntry.getKey().getPlayerColour(), tileController.getTileNumber());
+                for (int i = 0; i < playerPieceEntry.getValue(); i++) {
+                  playerPiecesOnTile.add(playerPieceOnTile);
+                }
+
+            }
+        }
+
+        return playerPiecesOnTile;
+
+    }
+
+    public Tile getTileFromNumber(int tileNumber) {
+       return  board.getTileFromNumber(tileNumber);
+    }
+
+    /**
+     * Determines if {@code Tile} in {@code tilesWithPieceForPlayer} has a different piece count for {@code player}
+     * @return Collection of {@code Tile} for whom piece count for player has changed
+     */
+    public Collection<Tile> findAlteredPlayerPieceCountTiles(Player player, List<Integer> tilesWithPieceForPlayer) {
+        List<Tile> alteredTiles = new ArrayList<>();
+        Map<Integer, Long> tileNumberWithPieceCountForPlayer = tilesWithPieceForPlayer.stream().collect(Collectors.groupingBy(tileNumber -> tileNumber, Collectors.counting()));
+        for (Map.Entry<Integer, Long> tilePieceCountEntry : tileNumberWithPieceCountForPlayer.entrySet()) {
+            Tile tileToCheck = getTileFromNumber(tilePieceCountEntry.getKey());
+            if (tileToCheck.getPieceCountForPlayer(player) == tilePieceCountEntry.getValue()) {
+                return null;
+            } else {
+                alteredTiles.add(tileToCheck);
+            }
+        }
+        return alteredTiles;
+    }
+
+    public record PlayerPieceOnTile(Integer playerNumber, Integer tileNumberWithPlayerPiece){}
+
 }
