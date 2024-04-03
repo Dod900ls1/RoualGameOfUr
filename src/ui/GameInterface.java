@@ -36,6 +36,8 @@ public class GameInterface extends JFrame{
         boardInterface.resetForNewTurn();
         if (userInputRequired){
             enableRoll();
+        }else{
+            disableRoll();
         }
    }
 

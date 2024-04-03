@@ -46,11 +46,15 @@ public class ServerActionListener extends NetworkActionListener {
             serverSocket = new ServerSocket(socketId);
             JOptionPane.showMessageDialog(null,
                     "Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
+            System.out.println("Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
             remoteSocket = serverSocket.accept();
+
             System.out.println("Client connected.");
 
             din = new DataInputStream(remoteSocket.getInputStream());
             dout = new DataOutputStream(remoteSocket.getOutputStream());
+
+            startListening();
 
             showServerStartedMessage(socketId);
         } catch (IOException ex) {
@@ -68,7 +72,7 @@ public class ServerActionListener extends NetworkActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JTextField ipAddressField = new JTextField("138.251.29.207");
-        JTextField socketIdField = new JTextField();
+        JTextField socketIdField = new JTextField("123");
         Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
         int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
 
@@ -78,9 +82,9 @@ public class ServerActionListener extends NetworkActionListener {
             if (socketId != -1) {
                 start(ipAddress, socketId);
 
-                passInfo(this.din, this.dout);
+                //passInfo(this.din, this.dout);
 
-                stop();
+                //stop();
             } else {
                 showInvalidSocketIdError();
             }
@@ -106,8 +110,8 @@ public class ServerActionListener extends NetworkActionListener {
 
             GameStartedWithServer gameStartedEvent = new GameStartedWithServer(
                     new GameStartedWithServer.GameStartedWithServerEventSource(new PlayerOptions[] {
-                            new PlayerOptions(clientColor, false, Agent.Agents.REMOTE, null),
-                            new PlayerOptions(serverColor, true, null, null )}
+                            new PlayerOptions(serverColor, true, null, null ),
+                            new PlayerOptions(clientColor, false, Agent.Agents.REMOTE, null)}
                             , this)
             );
             this.parentListener.actionPerformed(gameStartedEvent);

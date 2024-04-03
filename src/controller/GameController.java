@@ -338,8 +338,9 @@ public class GameController implements ActionListener {
         //TODO
         //use READY_TO_START message received from server to create a new game, gameInterface
         this.game = new UrGame(gameStartedAsClientEventSource.playerOptions()); //PLayer options parsed for gameSetupMessageFromServer
-        this.gameInterface= new GameInterface(this);
         initialiseGameEntityControllersWithRemote(gameStartedAsClientEventSource.clientActionListener());
+        this.gameInterface= new GameInterface(this);
+        this.activePlayerController=playerControllerIterator.next();
         Thread gameThread = new Thread( () -> this.beginGame());
         gameThread.start();
     }
@@ -351,7 +352,7 @@ public class GameController implements ActionListener {
     public void initialiseGameEntityControllersWithRemote(NetworkActionListener networkActionListenerForRemote){
         this.boardController=new BoardController(game.getBoard(), this);
         this.playerControllers = new ArrayList<>();
-        PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerRemote).findFirst().orElse(null);
+        PlayerRemote remotePlayer = (PlayerRemote) game.getPlayers().stream().filter(p->p instanceof PlayerAI).findFirst().orElse(null);
         PlayerHuman localPlayer = (PlayerHuman) game.getPlayers().stream().filter(p->p instanceof PlayerHuman).findFirst().orElse(null);
         this.playerControllers.add(new PlayerHumanController(localPlayer, this));
         this.playerControllers.add(new PlayerRemoteController(remotePlayer, this, networkActionListenerForRemote));
@@ -378,7 +379,7 @@ public class GameController implements ActionListener {
      */
     public Object getRemoteInitMessage() {
          //todo
-        return null;
+        return "";
     }
 
     public Tile getTileFromNumber(int tileNumber) {

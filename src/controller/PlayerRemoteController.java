@@ -26,6 +26,7 @@ public class PlayerRemoteController extends PlayerAIController {
         super(player, parentListener);
         this.playerRemote = (PlayerRemote) player;
         this.networkActionListener = networkActionListener;
+        this.networkActionListener.setPlayerRemoteController(this);
         //intialiseRemote();
     }
 
@@ -36,7 +37,9 @@ public class PlayerRemoteController extends PlayerAIController {
     public void startTurn() {
         //send message to remote client saying turn started what happened in last turn.
         Object gameStash = parentListener.getStash();
-        networkActionListener.sendMessageToRemote(new Message(MessageType.GAME_STATE, gameStash));
+        if (gameStash!=null){
+            networkActionListener.sendMessageToRemote(new Message(MessageType.GAME_STATE, gameStash));
+        }
     }
 
     /**
@@ -44,7 +47,6 @@ public class PlayerRemoteController extends PlayerAIController {
      */
     public void initialiseRemote(){
         //send game setup info so client can create gameCOntroller
-        networkActionListener.setPlayerRemoteController(this);
         //create message about game
         Message initMessage = new Message(MessageType.READY_TO_START, parentListener.getRemoteInitMessage());
         networkActionListener.sendMessageToRemote(initMessage);

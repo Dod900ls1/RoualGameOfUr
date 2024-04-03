@@ -53,8 +53,8 @@ public class ClientActionListener extends NetworkActionListener {
      */
     public void connect() {
         // Show dialog to get host and port from user
-        JTextField hostField = new JTextField("138.251.29.207"); // Default IP address provided
-        JTextField portField = new JTextField();
+        JTextField hostField = new JTextField("127.0.0.1"); // Default IP address provided
+        JTextField portField = new JTextField("123");
         Object[] message = { "Enter Host:", hostField, "Enter Port:", portField };
         int option = JOptionPane.showConfirmDialog(null, message, "Connect to Server", JOptionPane.OK_CANCEL_OPTION);
 
@@ -70,7 +70,8 @@ public class ClientActionListener extends NetworkActionListener {
             }
 
             try {
-                socket = new Socket(host, port);
+                remoteSocket = new Socket(host, port);
+                startListening();
                 new PlayerSelectionWindow(this); // Create PlayerSelectionWindow when connected
 
             } catch (IOException e) {

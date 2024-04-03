@@ -11,10 +11,9 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
+import javax.json.stream.JsonGenerator;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public abstract class NetworkActionListener implements ActionListener {
@@ -24,6 +23,50 @@ public abstract class NetworkActionListener implements ActionListener {
 
     protected DataInputStream din;
     protected DataOutputStream dout;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
+
+    private StringWriter jsonStringWriter;
+    private StringReader jsonStringReader;
+
+    Thread listeningThread;
+    private JsonGenerator jsonGenerator;
+    //private JsonParser jsonParser;
+
+    public void listen() throws IOException {
+            while (true){
+                if (getDin().available()>0){
+                    String message = getDin().readUTF();
+                    System.out.println(message);
+                    jsonStringReader = new StringReader(message);
+                    jsonReader = Json.createReaderFactory(null).createReader(jsonStringReader);
+                    receiveMessageFromRemote();
+                }
+            }
+    }
+
+
+    public void startListening(){
+        listeningThread = new Thread(){
+            @Override
+            public void run() {
+                try {
+                    //jsonWriter = Json.createWriterFactory(null).createWriter(getDout());
+                    jsonStringWriter = new StringWriter();
+                    jsonStringReader = new StringReader("");
+                    jsonGenerator = Json.createGenerator(jsonStringWriter);
+                    jsonReader = Json.createReaderFactory(null).createReader(jsonStringReader);
+                    //jsonParser = Json.createParser(jsonStringReader);
+                    listen();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        listeningThread.setDaemon(true);
+        listeningThread.start();
+    }
 
     public void setPlayerRemoteController(PlayerRemoteController playerRemoteController){
         this.playerRemoteController = playerRemoteController;
@@ -32,31 +75,34 @@ public abstract class NetworkActionListener implements ActionListener {
     //todo how does this get called?
     void receiveMessageFromRemote(){
         //parse JSON to Message
-        //todo listening thread?
-        String messageString = null;
-        try (JsonReader inReader = Json.createReader(getDin())){
-            JsonObject messageJSON = inReader.readObject();
-            Message fromRemote = MessageUtilities.parseMessageJSON(messageJSON);
-            processMessageFromRemote(fromRemote);
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+
+        JsonObject messageJSON = jsonReader.readObject();
+        Message fromRemote = MessageUtilities.parseMessageJSON(messageJSON);
+        processMessageFromRemote(fromRemote);
 
     }
 
     public void sendMessageToRemote(Message message){
         //generate JSON message
-
-        JsonObject messageJSON = MessageUtilities.writeMessageJSON(message);
-
-        try (JsonWriter outWriter = Json.createWriter(getDout())){
-            outWriter.writeObject(messageJSON);
-//            dout.writeUTF(jsonText);
-//            dout.flush();
-
+        jsonStringWriter = new StringWriter();
+        jsonGenerator = Json.createGenerator(jsonStringWriter);
+        MessageUtilities.writeMessageJSON(message, jsonGenerator);
+        System.out.println(jsonStringWriter.toString());
+        try {
+            getDout().writeUTF(jsonStringWriter.toString());
+            getDout().flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        //jsonWriter.writeObject(messageJSON);
+
+//            dout.writeUTF(jsonText);
+//        try {
+//            getDout().flush();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
