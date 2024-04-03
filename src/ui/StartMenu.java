@@ -7,6 +7,8 @@ import controller.action.game.GameStarted;
 import controller.action.menu.MenuClosed;
 import player.Player;
 import player.PlayerOptions;
+import server.ClientActionListener;
+import server.ServerActionListener;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -58,8 +60,12 @@ public class StartMenu extends Menu{
         JButton playAgainstAI = new JButton("Play Against AI");
         JButton playLocally = new JButton("Play Locally");
 
-        JButton createServer = renderer.createButton("Create Server", new ServerActionListener(), 150, 50);
-        JButton joinServer = renderer.createButton("Join Server", new ClientActionListener(), 150, 50);
+        ClientActionListener clientActionListener = new ClientActionListener(parentListener);
+        ServerActionListener serverActionListener = new ServerActionListener(parentListener, clientActionListener);
+
+
+        JButton createServer = renderer.createButton("Create Server", serverActionListener, 150, 50);
+        JButton joinServer = renderer.createButton("Join Server", clientActionListener, 150, 50);
 
 
         ActionListener playListener = new ActionListener(){
@@ -80,6 +86,8 @@ public class StartMenu extends Menu{
                 createServer.setVisible(true);
                 joinServer.setVisible(true);
                 back.setVisible(true);
+
+
             }
         };
 
@@ -188,13 +196,5 @@ public class StartMenu extends Menu{
             // Nimbus look and feel is unavailable, probably best to leave it at standard
         }
     }
-
-
-
-    /*
-    public static void main(String[] args) {
-        new StartMenu();
-    }
-    */
 
 }
