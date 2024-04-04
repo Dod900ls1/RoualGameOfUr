@@ -286,7 +286,7 @@ public class StartMenu extends Menu{
             case "Random":
                 settings[0] = false;
                 settings[1] = Agent.Agents.RANDOM;
-                settings[2] = null;
+                settings[2] = Metric.Metrics.MAXIMISE_ADVANCEMENT;
                 break;
             case "Greedy - Maximise Advancement":
                 settings[0] = false;

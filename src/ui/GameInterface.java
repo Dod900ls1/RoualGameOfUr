@@ -114,7 +114,7 @@ public class GameInterface extends JFrame{
         Random random = new Random();
         for(Integer i : dice){
             String location = "src/ui/diceStates/dice" + random.nextInt(3) + "_" + i.toString() + ".png";
-            JLabel label = new JLabel(new ImageIcon(location));
+            JLabel label = new JLabel(new ImageIcon(new ImageIcon(location).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
             label.setVisible(true);
             dicePanel.add(label);
         }
