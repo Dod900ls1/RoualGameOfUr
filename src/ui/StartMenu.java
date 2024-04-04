@@ -216,7 +216,9 @@ public class StartMenu extends Menu{
         instructions.setPreferredSize(preferedSize);
         textLabel.setPreferredSize(new Dimension(800,200));
         player1AISetting.setPreferredSize(new Dimension(250,50));
+        player1AISetting.setBackground(Color.GRAY);
         player2AISetting.setPreferredSize(new Dimension(250,50));
+        player2AISetting.setBackground(Color.DARK_GRAY);
 
         textLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
