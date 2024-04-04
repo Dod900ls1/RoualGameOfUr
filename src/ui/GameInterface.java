@@ -95,7 +95,7 @@ public class GameInterface extends JFrame{
         ActionListener instructionsListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 JOptionPane.showInternalMessageDialog(null,
-                    "<html>The Royal Game of Ur is played on a board consisting of 21 squares, divided into three rows. <br>Each player has 7 pieces, and the objective is to move all pieces off the board before your opponent does.<br>Players take turns rolling a set of 4 dice 4-sided dice, each with 2 corners marked.<br>A roll of the dice determines how many spaces a player can move their pieces.<br>Pieces can only move in one direction along the board, following the path indicated by the coloured squares.<br>If a player lands on a square occupied by an opponent's piece, the opponent's piece is sent back to the starting area,<br>but if a player lands on a square that displays a rosette, their piece is safe and cannot be sent back.<br>Multiple pieces cannot be placed on the same square<br>A player can only move their pieces off the board if they get exactly the right number, no more.<br>The first player to move all their pieces off the board wins the game.<br>Enjoy the Royal Game of Ur and may the best player win!</html>","Instructions",1);
+                    "<html>The Royal Game of Ur is played on a board consisting of 24 squares, divided into three rows. <br>Each player has 7 pieces, and the objective is to move all pieces off the board before your opponent does.<br>Players take turns rolling a set of 4 dice 4-sided dice, each with 2 corners marked.<br>A roll of the dice determines how many spaces a player can move their pieces.<br>Pieces can only move in one direction along the board, following the path indicated by the coloured squares.<br>If a player lands on a square occupied by an opponent's piece, the opponent's piece is sent back to the starting area,<br>but if a player lands on a square that displays a rosette, their piece is safe and cannot be sent back.<br>Multiple pieces cannot be placed on the same square<br>A player can only move their pieces off the board if they get exactly the right number, no more.<br>The first player to move all their pieces off the board wins the game.<br>Enjoy the Royal Game of Ur and may the best player win!</html>","Instructions",1);
 
             }
         };
@@ -153,10 +153,11 @@ public class GameInterface extends JFrame{
 
 
     public void showNoMovesMessage() {
-        JDialog noMovesDialogue = new JDialog(this, "No Moves");
-        noMovesDialogue.add(new JLabel("There are no valid moves you can make this turn"));
-        noMovesDialogue.pack();
-        noMovesDialogue.setVisible(true);
+        JOptionPane.showInternalMessageDialog(null,"There are no valid moves you can make this turn","No Moves",1);
+        //JDialog noMovesDialogue = new JDialog(this, "No Moves");
+        // noMovesDialogue.add(new JLabel(""));
+        // noMovesDialogue.pack();
+        // noMovesDialogue.setVisible(true);
         System.out.println("no moves");
 
     }
