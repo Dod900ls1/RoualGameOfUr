@@ -175,6 +175,10 @@ public class ServerActionListener extends NetworkActionListener {
             case GAME_STATE -> {
                 receiveGameState(message);
             }
+            case GAME_OVER -> {
+                receiveGameState(message);
+
+            }
         }
     }
 

@@ -92,6 +92,9 @@ public class ClientActionListener extends NetworkActionListener {
             case GAME_STATE -> {
                 receiveGameState(message);
             }
+            case GAME_OVER -> {
+                receiveGameState(message);
+            }
 
         }
 

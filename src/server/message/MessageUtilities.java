@@ -26,9 +26,10 @@ public abstract class MessageUtilities {
         Message parsedMessage  = null;
         MessageType messageType = MessageType.valueOf(messageJSON.get("messageType").toString());
         switch (messageType){
-            case GAME_STATE -> parsedMessage = readGameStateJSON(messageJSON);
+            case GAME_STATE -> parsedMessage = readGameStashJSON(messageJSON, MessageType.GAME_STATE);
             case ASSIGN_COLOR -> parsedMessage=readAssignColourJSON(messageJSON);
             case READY_TO_START -> parsedMessage=readReadyToStartJSON(messageJSON);
+            case GAME_OVER -> parsedMessage = readGameStashJSON(messageJSON, MessageType.GAME_OVER);
         }
 
         return parsedMessage;
@@ -50,7 +51,9 @@ public abstract class MessageUtilities {
             writeAssignColourJSON(messageObj, generator);
         }else if (messageObj.type().equals(MessageType.READY_TO_START)){
             writeReadyToStartJSON(messageObj, generator);
-        }else{
+        } else if (messageObj.type().equals(MessageType.GAME_OVER)) {
+            writeGameStashJSON(messageObj, generator);
+        } else{
             return;
         }
     }
@@ -103,18 +106,18 @@ public abstract class MessageUtilities {
         generator.flush();
     }
     
-    private static Message readGameStateJSON(JsonObject messageJSON) {
+    private static Message readGameStashJSON(JsonObject messageJSON, MessageType type) {
         int lastRoll = messageJSON.getInt("lastRoll");
     
         if (lastRoll == 0 || !messageJSON.containsKey("pieceMoved")) {
             return new Message(
-                    MessageType.GAME_STATE,
+                    type,
                     new GameStash(lastRoll, null)
             );
         } else {
             JsonObject pieceMoved = messageJSON.getJsonObject("pieceMoved");
             return new Message(
-                    MessageType.GAME_STATE,
+                    type,
                     new GameStash(
                             lastRoll,
                             new GameController.PieceMoveForStash(

@@ -179,4 +179,7 @@ public abstract class PlayerController implements ActionListener {
         return player;
     }
 
+    public int getPlayerColour() {
+        return player.getPlayerColour();
+    }
 }

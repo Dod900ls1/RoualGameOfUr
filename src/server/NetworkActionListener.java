@@ -37,7 +37,7 @@ public abstract class NetworkActionListener implements ActionListener {
             while (true){
                 if (getDin().available()>0){
                     String message = getDin().readUTF();
-                    System.out.println(message);
+                    System.out.println("RECEIVNG: "+message);
                     jsonStringReader = new StringReader(message);
                     jsonReader = Json.createReaderFactory(null).createReader(jsonStringReader);
                     receiveMessageFromRemote();
@@ -72,7 +72,6 @@ public abstract class NetworkActionListener implements ActionListener {
         this.playerRemoteController = playerRemoteController;
     }
 
-    //todo how does this get called?
     void receiveMessageFromRemote(){
         //parse JSON to Message
 
@@ -87,7 +86,7 @@ public abstract class NetworkActionListener implements ActionListener {
         jsonStringWriter = new StringWriter();
         jsonGenerator = Json.createGenerator(jsonStringWriter);
         MessageUtilities.writeMessageJSON(message, jsonGenerator);
-        System.out.println(jsonStringWriter.toString());
+        System.out.println("SENDING: "+jsonStringWriter.toString());
         try {
             getDout().writeUTF(jsonStringWriter.toString());
             getDout().flush();

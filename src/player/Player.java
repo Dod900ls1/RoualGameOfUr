@@ -18,7 +18,7 @@ public abstract class Player {
     public static final int LIGHT_PLAYER=1;
     public static final int DARK_PLAYER=2;
 
-    public static final int PIECE_START_COUNT = 7;
+    public static final int PIECE_START_COUNT = 1;
     /**
      * Player's colour. One of {@link Player#LIGHT_PLAYER} or {@link Player#DARK_PLAYER}
      */

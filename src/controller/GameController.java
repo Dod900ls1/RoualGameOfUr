@@ -30,8 +30,6 @@ public class GameController implements ActionListener {
     private GameInterface gameInterface;
     private GameStash gameStash;
     private Thread gameThread;
-    private volatile boolean gameExited;
-
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
      * @param controllers List of {@code PlayerController} instances to iterate over
@@ -100,9 +98,8 @@ public class GameController implements ActionListener {
     }
 
     public void gameClosed(){
-        turnInProgress = false;
-        gameExited = true;
-        this.parentListener.start();
+        endGame();
+        restartGameMenu();
     }
 
     /**
@@ -125,9 +122,12 @@ public class GameController implements ActionListener {
     public synchronized int beginGame(){
         int turnCount=0;
         play=true;
-        gameExited = false;
         turnInProgress = false;
-        while (!gameExited && play){
+        while (play){
+            gameInterface.resetForNewTurn(activePlayerController.requiresUserInput, activePlayerController.getPlayer().getPlayerColour());
+            turnInProgress = true;
+            turnCount++;
+            activePlayerController.startTurn();
             try {
                 if (turnInProgress){
                     synchronized (this){
@@ -139,10 +139,6 @@ public class GameController implements ActionListener {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            gameInterface.resetForNewTurn(activePlayerController.requiresUserInput, activePlayerController.getPlayer().getPlayerColour());
-            turnInProgress = true;
-            turnCount++;
-            activePlayerController.startTurn();
             //turnInProgress=true;
         }
         System.out.println("Player "+activePlayerController.getPlayer().getPlayerColour()+ " won");
@@ -235,16 +231,45 @@ public class GameController implements ActionListener {
         }
 
         stashGame(pieceMovesForStash);
-        if (!gameExited) { //user may have exited game during turn -- must check this before reassigning play
+        if (play) { //user may have exited game during turn -- must check this before reassigning play
             play = activePlayerController.endTurn();
             if (play) {
                 activePlayerController = playerControllerIterator.next();
+                turnInProgress =false;
+                notifyAll();
+            }else{
+                endGame();
             }
         }
-        turnInProgress =false;
-        notifyAll();
+
         //activePlayerController.startTurn();
     }
+
+    public void endGame(){
+        turnInProgress = false;
+        play = false;
+        gameInterface.disableRoll();
+        PlayerRemoteController remote = getRemotePlayerController();
+        if (remote!=null){
+            //remote.startTurn();
+            if (activePlayerController!=remote) {
+                remote.gameOver();
+            }
+        }
+        if (getHumanPlayerCount() == 1){
+            int humanPlayer = getHumanPlayerController().getPlayerColour();
+            gameInterface.showWinOrLoseMessage(humanPlayer == activePlayerController.getPlayerColour());
+        }else{
+            gameInterface.showWinAndLoseMessage(activePlayerController.getPlayerColour());
+        }
+        //this.parentListener.start();
+    }
+
+
+    public void restartGameMenu(){
+        this.parentListener.start();
+    }
+
 
     /**
      * Creates {@link GameStash} record containing information about last turn played on local.
@@ -377,6 +402,10 @@ public class GameController implements ActionListener {
 
     private PlayerHumanController getHumanPlayerController() {
         return (PlayerHumanController) playerControllers.stream().filter(pc -> pc instanceof PlayerHumanController).findFirst().orElse(null);
+
+    }
+    private int getHumanPlayerCount(){
+        return (int) playerControllers.stream().filter(pc -> pc instanceof PlayerHumanController).count();
 
     }
 

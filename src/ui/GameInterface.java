@@ -159,6 +159,53 @@ public class GameInterface extends JFrame{
         // noMovesDialogue.pack();
         // noMovesDialogue.setVisible(true);
         System.out.println("no moves");
+    }
+
+    public void showWinOrLoseMessage(boolean isWinner) {
+        String gameOverText;
+        if (isWinner) {
+            gameOverText = "Congratulations! You won";
+        } else {
+            gameOverText = "Better luck next time. You lost";
+        }
+        showGameOverDialog(gameOverText);
+    }
+
+    public void showWinAndLoseMessage(int winner){
+        String winnerString, loserString;
+        if (winner == Player.LIGHT_PLAYER){
+            winnerString = "LIGHT";
+            loserString = "DARK";
+        }else{
+            winnerString = "DARK";
+            loserString="LIGHT";
+        }
+        String gameOverText = String.format("Winner is %s, Loser is %s", winnerString, loserString);
+        showGameOverDialog(gameOverText);
+    }
+
+    private void showGameOverDialog(String gameOverText){
+        JDialog gameOverDialog = new JDialog(this, "Game Over");
+        gameOverDialog.add(new JLabel(gameOverText));
+        WindowAdapter gameOverListener = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                setVisible(false);
+                dispose();
+                controller.restartGameMenu();
+            }
+        };
+
+        gameOverDialog.addWindowListener(gameOverListener);
+
+        gameOverDialog.pack();
+        gameOverDialog.setVisible(true);
 
     }
+
+
+
+
+
+
 }

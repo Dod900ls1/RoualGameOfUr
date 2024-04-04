@@ -74,5 +74,10 @@ public class PlayerRemoteController extends PlayerAIController {
     }
 
 
-
+    public void gameOver() {
+        Object gameStash = parentListener.getStash();
+        if (gameStash!=null){
+            networkActionListener.sendMessageToRemote(new Message(MessageType.GAME_OVER, gameStash));
+        }
+    }
 }
