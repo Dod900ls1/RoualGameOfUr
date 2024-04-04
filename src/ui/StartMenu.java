@@ -88,7 +88,7 @@ public class StartMenu extends Menu{
                 playOnline.setVisible(true);
                 playAgainstAI.setVisible(true);
                 //playLocally.setVisible(true);
-                instructions.setVisible(false);
+                instructions.setVisible(true);
                 textLabel.setText("please choose your game mode");
 
             }
@@ -232,7 +232,7 @@ public class StartMenu extends Menu{
         joinServer.setVisible(false);
         player1AISetting.setVisible(false);
         player2AISetting.setVisible(false);
-        instructions.setVisible(true);
+        instructions.setVisible(false);
 
         add(back, CENTER_ALIGNMENT);
         add(play,CENTER_ALIGNMENT);
