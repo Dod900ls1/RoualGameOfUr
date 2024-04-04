@@ -31,7 +31,7 @@ public class Board {
                     "111",
                     2), //navigable tiles
                 new int[]{8, 3}, //dims
-                new int[]{1, 3, 11, 15, 17}, //rosette tiles
+                new int[]{1, 3, 11, 19, 21}, //rosette tiles
                 new int[]{13, 10, 7, 4, 1, 2, 5, 8, 11, 14, 17, 20, 23, 22, 19, 16}, //light path
                 new int[]{15, 12, 9, 6, 3, 2, 5, 8, 11, 14, 17, 20, 23, 24, 21, 18} //dark path
             )
