@@ -67,7 +67,6 @@ public class TileInterface extends JButton {
                     "src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + "-disabled.png").getImage()
                     .getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
             sb.append("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + ".png");
-            sb.append("src/ui/flowers/Tile1.png");
 
         }
 
