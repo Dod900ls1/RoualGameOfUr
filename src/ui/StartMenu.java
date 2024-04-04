@@ -147,9 +147,7 @@ public class StartMenu extends Menu{
                 
                 playOnline.setVisible(true);
                 playAgainstAI.setVisible(true);
-                //playLocally.setVisible(true);
-                instructions.setVisible(false);
-                //add any other objects shown in playAgainst AI, playLocally and Play Online
+                instructions.setVisible(true);
                 createServer.setVisible(false);
                 joinServer.setVisible(false);
                 back.setVisible(false);
