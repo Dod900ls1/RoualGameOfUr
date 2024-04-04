@@ -53,8 +53,8 @@ public class ClientActionListener extends NetworkActionListener {
      */
     public void connect() {
         // Show dialog to get host and port from user
-        JTextField hostField = new JTextField("127.0.0.1"); // Default IP address provided
-        JTextField portField = new JTextField("123");
+        JTextField hostField = new JTextField("localhost"); // Default IP address provided
+        JTextField portField = new JTextField("1111");
         Object[] message = { "Enter Host:", hostField, "Enter Port:", portField };
         int option = JOptionPane.showConfirmDialog(null, message, "Connect to Server", JOptionPane.OK_CANCEL_OPTION);
 

@@ -71,8 +71,8 @@ public class ServerActionListener extends NetworkActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        JTextField ipAddressField = new JTextField("138.251.29.207");
-        JTextField socketIdField = new JTextField("123");
+        JTextField ipAddressField = new JTextField("localhost");
+        JTextField socketIdField = new JTextField("1111");
         Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
         int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
 
