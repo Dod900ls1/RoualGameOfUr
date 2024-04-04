@@ -2,6 +2,7 @@ package ui;
 
 import controller.GameController;
 import controller.action.game.RollDice;
+import player.Player;
 import states.GameState;
 
 import javax.swing.*;
