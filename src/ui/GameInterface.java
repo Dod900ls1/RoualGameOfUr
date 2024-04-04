@@ -73,6 +73,7 @@ public class GameInterface extends JFrame{
             }
         };
         dicePanel = new JPanel();
+        add(dicePanel);
         roll = new JButton("Roll");
         exit = new JButton("Exit");
         roll.addActionListener(rollListener);
@@ -86,7 +87,7 @@ public class GameInterface extends JFrame{
 
     public void showRollResult(int rollResult) {
         System.out.println(rollResult);
-
+        dicePanel.removeAll();
         ArrayList<Integer> dice = new ArrayList<Integer>();
         for (int i = 0; i < 4; i++) {
             if(rollResult > 0){
@@ -105,7 +106,8 @@ public class GameInterface extends JFrame{
             dicePanel.add(label);
         }
         dicePanel.setLayout(new GridLayout(2,2));
-        add(dicePanel);
+        dicePanel.revalidate(); 
+        dicePanel.repaint();
     }
 
     public void disableRoll(){
