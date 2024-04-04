@@ -104,7 +104,6 @@ public class ClientActionListener extends NetworkActionListener {
      */
     private void receiveReadyToStart(Message message) {
 
-        //todo parse message data to player options
         //flip player options - client is now human, server is remote
 
         PlayerOptions[] playerOptions = new PlayerOptions[]{
@@ -123,7 +122,6 @@ public class ClientActionListener extends NetworkActionListener {
 
 
 
-        //TODO add a listening thread, otherwise client ends when createGameAsClientReturns
 
 
     }

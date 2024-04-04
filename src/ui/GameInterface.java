@@ -2,18 +2,15 @@ package ui;
 
 import controller.GameController;
 import controller.action.game.RollDice;
+import player.Player;
 import states.GameState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -23,6 +20,7 @@ public class GameInterface extends JFrame{
     private final GameController controller;
     private JPanel gamePanel = new JPanel();
     private JPanel dicePanel;
+    private JLabel playerTurnLabel;
 
     private BoardInterface boardInterface;
     private JButton roll;
@@ -39,13 +37,16 @@ public class GameInterface extends JFrame{
         configBoard();
     }
 
-   public void resetForNewTurn(boolean userInputRequired){
+   public void resetForNewTurn(boolean userInputRequired, int playerColour){
         boardInterface.resetForNewTurn();
         if (userInputRequired){
             enableRoll();
         }else{
             disableRoll();
         }
+        String playerTurnText = String.format("Current player: %s", (playerColour== Player.LIGHT_PLAYER?"LIGHT":"DARK"));
+        playerTurnLabel.setText(playerTurnText);
+        this.repaint();
    }
 
     private void configFrame() {
@@ -69,6 +70,9 @@ public class GameInterface extends JFrame{
     }
 
     private void configBoard() {
+        playerTurnLabel = new JLabel("");
+        add(playerTurnLabel);
+
         boardInterface = controller.getBoardController().getBoardInterface();
         add(boardInterface);
 
@@ -95,6 +99,8 @@ public class GameInterface extends JFrame{
         exit.setPreferredSize(new Dimension(150,50));
         add(roll);
         add(exit);
+
+
         setVisible(true);
     }
 
@@ -133,7 +139,10 @@ public class GameInterface extends JFrame{
 
 
     public void showNoMovesMessage() {
+        JDialog noMovesDialogue = new JDialog(this, "No Moves");
+        noMovesDialogue.add(new JLabel("No possible valid moves ths turn!"));
+        noMovesDialogue.pack();
+        noMovesDialogue.setVisible(true);
         System.out.println("no moves");
-        //TODO Show as dialog
     }
 }

@@ -4,7 +4,7 @@ import board.Tile;
 import player.Player;
 import player.PlayerAI;
 import player.PlayerRemote;
-import server.*;
+import server.NetworkActionListener;
 import server.message.GameStash;
 import server.message.Message;
 import server.message.MessageType;
@@ -61,7 +61,6 @@ public class PlayerRemoteController extends PlayerAIController {
      */
     public void endTurnFromRemote(GameStash remoteStash) {
         //get back state of game and turn made by remote and update
-        //TODO
 
         if (remoteStash.pieceMoved() != null) {
             Tile fromTile = parentListener.getTileFromNumber(remoteStash.pieceMoved().fromTileNumber());

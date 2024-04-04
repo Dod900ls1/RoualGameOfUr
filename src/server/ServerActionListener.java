@@ -152,12 +152,12 @@ public class ServerActionListener extends NetworkActionListener {
 //    }
 //
 //    private void sendGameState(Message messageToClient) {
-//        //TODO
+//
 //        //sends message wth current game state stash (JSON) to client - client updates their game from stash and then plays their turn
 //    }
 //
 //    private void sendReadyToStart(Message readyToStartMessage){
-//        //TODO
+//
 //        //send ready to start message with message data as a string with game info - readyToStartMessage needs data field to be this string
 //    }
 //
@@ -179,7 +179,7 @@ public class ServerActionListener extends NetworkActionListener {
     }
 
     private void receiveRemoteColourAssignment(Message remoteColourAssignmentMessage) {
-        serverColor = (Integer)remoteColourAssignmentMessage.data(); //todo parse data to int
+        serverColor = (Integer)remoteColourAssignmentMessage.data();
         int clientColor;
         if (serverColor == Player.LIGHT_PLAYER){
             clientColor = Player.DARK_PLAYER;
