@@ -60,8 +60,9 @@ public class TileInterface extends JButton{
         }
 
         if (sb.isEmpty()){
-            this.setDisabledIcon(new ImageIcon(new ImageIcon("src/ui/flowers/disabled.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-            sb.append("src/ui/flowers/tile1.png");
+            this.setDisabledIcon(new ImageIcon(new ImageIcon("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + "-disabled.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+            sb.append("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber()-1] + ".png");
+            sb.append("src/ui/flowers/Tile1.png");
 
         }
         
