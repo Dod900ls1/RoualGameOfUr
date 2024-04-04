@@ -20,7 +20,7 @@ public class ExpectiminimaxAgent extends Agent {
     /**
      * Depth of tree to explore by HARD difficulty agent
      */
-    private static final int HARD_DEPTH =4;
+    private static final int HARD_DEPTH = 4;
 
     /**
      * Factory method for new {@code ExpectminimaxAgent} a specified difficulty in {@code level}
