@@ -104,7 +104,7 @@ public class StartMenu extends Menu{
                 createServer.setVisible(true);
                 joinServer.setVisible(true);
                 back.setVisible(true);
-                textLabel.setText("either make or join a server on your network");
+                textLabel.setText("<html>either make or join a server on your network<br>to make a network please enter your IP address or <br>localhost (to play on two tabs in one monitor) and a port (any 4 digit number).<br>to join a server enter the other player's IP address or 'localhost'. <br>Note: to find your IP address enter 'curl ifconfig.me' into the terminal</html>");
             }
         };
 
