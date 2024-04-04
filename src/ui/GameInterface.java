@@ -23,10 +23,13 @@ public class GameInterface extends JFrame{
     private final GameController controller;
     private JPanel gamePanel = new JPanel();
     private JPanel dicePanel;
+    private JPanel otherButtonsPanel;
 
     private BoardInterface boardInterface;
     private JButton roll;
     private JButton exit;
+    private JButton instructions;
+    
 
     /**
      * Constructor for new game interface
@@ -60,7 +63,6 @@ public class GameInterface extends JFrame{
             }
         };
         addWindowListener(exitListener);
-        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     public GameState getGameState(){
@@ -85,16 +87,30 @@ public class GameInterface extends JFrame{
                 controller.gameClosed();
             }
         };
+
+        ActionListener instructionsListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                JOptionPane.showMessageDialog(null,
+                    "instructions" );
+
+            }
+        };
         dicePanel = new JPanel();
-        add(dicePanel);
+        otherButtonsPanel = new JPanel();
+        otherButtonsPanel.setLayout(new GridLayout(2,2));
+        otherButtonsPanel.add(dicePanel);
         roll = new JButton("Roll");
         exit = new JButton("Exit");
+        instructions = new JButton("Instructions");
         roll.addActionListener(rollListener);
         exit.addActionListener(exitListener);
+        instructions.addActionListener(instructionsListener);
         roll.setPreferredSize(new Dimension(150,50));
         exit.setPreferredSize(new Dimension(150,50));
-        add(roll);
-        add(exit);
+        otherButtonsPanel.add(roll);
+        otherButtonsPanel.add(exit);
+        otherButtonsPanel.add(instructions);
+        add(otherButtonsPanel);
         setVisible(true);
     }
 
@@ -134,6 +150,7 @@ public class GameInterface extends JFrame{
 
     public void showNoMovesMessage() {
         System.out.println("no moves");
-        //TODO Show as dialog
+        JOptionPane.showMessageDialog(null,
+            "There are currently no moves you can make");
     }
 }
