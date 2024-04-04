@@ -2,7 +2,6 @@ package ui;
 
 import controller.GameController;
 import controller.action.game.RollDice;
-import player.Player;
 import states.GameState;
 
 import javax.swing.*;
@@ -21,10 +20,13 @@ public class GameInterface extends JFrame{
     private JPanel gamePanel = new JPanel();
     private JPanel dicePanel;
     private JLabel playerTurnLabel;
+    private JPanel otherButtonsPanel;
 
     private BoardInterface boardInterface;
     private JButton roll;
     private JButton exit;
+    private JButton instructions;
+
 
     /**
      * Constructor for new game interface
@@ -61,7 +63,6 @@ public class GameInterface extends JFrame{
             }
         };
         addWindowListener(exitListener);
-        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     public GameState getGameState(){
@@ -89,18 +90,30 @@ public class GameInterface extends JFrame{
                 controller.gameClosed();
             }
         };
+
+        ActionListener instructionsListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                JOptionPane.showMessageDialog(null,
+                    "instructions" );
+
+            }
+        };
         dicePanel = new JPanel();
-        add(dicePanel);
+        otherButtonsPanel = new JPanel();
+        otherButtonsPanel.setLayout(new GridLayout(2,2));
+        otherButtonsPanel.add(dicePanel);
         roll = new JButton("Roll");
         exit = new JButton("Exit");
+        instructions = new JButton("Instructions");
         roll.addActionListener(rollListener);
         exit.addActionListener(exitListener);
+        instructions.addActionListener(instructionsListener);
         roll.setPreferredSize(new Dimension(150,50));
         exit.setPreferredSize(new Dimension(150,50));
-        add(roll);
-        add(exit);
-
-
+        otherButtonsPanel.add(roll);
+        otherButtonsPanel.add(exit);
+        otherButtonsPanel.add(instructions);
+        add(otherButtonsPanel);
         setVisible(true);
     }
 
@@ -140,9 +153,10 @@ public class GameInterface extends JFrame{
 
     public void showNoMovesMessage() {
         JDialog noMovesDialogue = new JDialog(this, "No Moves");
-        noMovesDialogue.add(new JLabel("No possible valid moves ths turn!"));
+        noMovesDialogue.add(new JLabel("There are no valid moves you can make this turn"));
         noMovesDialogue.pack();
         noMovesDialogue.setVisible(true);
         System.out.println("no moves");
+
     }
 }
