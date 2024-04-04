@@ -97,6 +97,10 @@ public class GameController implements ActionListener {
 
     }
 
+    public void gameClosed(){
+        this.parentListener.start();
+    }
+
     /**
      * Creates new {@code UrGame} as model component for ths controller
      * Creates new {@code GameInterface} as view component for this controller

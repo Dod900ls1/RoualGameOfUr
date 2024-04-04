@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -48,7 +51,16 @@ public class GameInterface extends JFrame{
     private void configFrame() {
         setSize(800, 600);
         setLayout(new FlowLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        WindowListener exitListener = new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e){
+                setVisible(false);
+                dispose();
+                controller.gameClosed();
+            }
+        };
+        addWindowListener(exitListener);
+        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     public GameState getGameState(){
@@ -70,6 +82,7 @@ public class GameInterface extends JFrame{
             public void actionPerformed(ActionEvent e){
                 setVisible(false);
                 dispose();
+                controller.gameClosed();
             }
         };
         dicePanel = new JPanel();

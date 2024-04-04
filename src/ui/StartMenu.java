@@ -62,8 +62,8 @@ public class StartMenu extends Menu{
         //these button need to be manually created as the actionlisteners are self-referential;
         JButton play = new JButton("Play");
         JButton playOnline = new JButton("Play Online");
-        JButton playAgainstAI = new JButton("Play Against AI");
-        JButton playLocally = new JButton("Play Locally");
+        JButton playAgainstAI = new JButton("Play Locally");
+        //JButton playLocally = new JButton("Play Locally");
 
         ClientActionListener clientActionListener = new ClientActionListener(parentListener);
         ServerActionListener serverActionListener = new ServerActionListener(parentListener, clientActionListener);
@@ -80,15 +80,15 @@ public class StartMenu extends Menu{
         JButton instructions = new JButton("Instructions");
         
         JLabel textLabel = new JLabel();
-        textLabel.setText("Game made by Emma Beveridge, Yehor Boiar, Ryan Britton, and Clara Elm Nettesheim");
+        textLabel.setText("Game made by Group 15");
 
         ActionListener playListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 play.setVisible(false);
                 playOnline.setVisible(true);
                 playAgainstAI.setVisible(true);
-                playLocally.setVisible(true);
-                instructions.setVisible(true);
+                //playLocally.setVisible(true);
+                instructions.setVisible(false);
                 textLabel.setText("please choose your game mode");
 
             }
@@ -98,7 +98,8 @@ public class StartMenu extends Menu{
             public void actionPerformed(ActionEvent e){
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
-                playLocally.setVisible(false);
+                //playLocally.setVisible(false);
+                instructions.setVisible(false);
 
                 createServer.setVisible(true);
                 joinServer.setVisible(true);
@@ -112,7 +113,8 @@ public class StartMenu extends Menu{
                 //add AI difficulty picker
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
-                playLocally.setVisible(false);
+                //playLocally.setVisible(false);
+                instructions.setVisible(false);
 
                 player1AISetting.setVisible(true);
                 player2AISetting.setVisible(true);
@@ -145,8 +147,8 @@ public class StartMenu extends Menu{
                 
                 playOnline.setVisible(true);
                 playAgainstAI.setVisible(true);
-                playLocally.setVisible(true);
-                instructions.setVisible(true);
+                //playLocally.setVisible(true);
+                instructions.setVisible(false);
                 //add any other objects shown in playAgainst AI, playLocally and Play Online
                 createServer.setVisible(false);
                 joinServer.setVisible(false);
@@ -158,15 +160,16 @@ public class StartMenu extends Menu{
             }
         };
 
-        ActionListener playLocallyListener = new ActionListener(){
+        /*ActionListener playLocallyListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 runGame(true, true, null, null,null,null);
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
                 playLocally.setVisible(false);
+                instructions.setVisible(false);
                 back.setVisible(true);
             }
-        };
+        };*/
 
         ActionListener startListener = new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -179,16 +182,17 @@ public class StartMenu extends Menu{
 
         ActionListener instructionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e){
+                play.setVisible(true);
                 playOnline.setVisible(false);
                 playAgainstAI.setVisible(false);
-                playLocally.setVisible(false);
+                //playLocally.setVisible(false);
                 instructions.setVisible(false);
                 createServer.setVisible(false);
                 joinServer.setVisible(false);
                 start.setVisible(false);
                 player1AISetting.setVisible(false);
                 player2AISetting.setVisible(false);
-                back.setVisible(true);
+                back.setVisible(false);
                 textLabel.setText("<html>Game Rules: <br>Each player roles the 4 sided dice...</html>");
             }
         };
@@ -197,7 +201,7 @@ public class StartMenu extends Menu{
         back.addActionListener(backListener);
         playOnline.addActionListener(playOnlineListener);
         playAgainstAI.addActionListener(playAgainstAIListener);
-        playLocally.addActionListener(playLocallyListener);
+        //playLocally.addActionListener(playLocallyListener);
         start.addActionListener(startListener);
         instructions.addActionListener(instructionListener);
 
@@ -207,7 +211,7 @@ public class StartMenu extends Menu{
         back.setPreferredSize(preferedSize);
         playOnline.setPreferredSize(preferedSize);
         playAgainstAI.setPreferredSize(preferedSize);
-        playLocally.setPreferredSize(preferedSize);
+        //playLocally.setPreferredSize(preferedSize);
         start.setPreferredSize(preferedSize);
         instructions.setPreferredSize(preferedSize);
         textLabel.setPreferredSize(new Dimension(800,200));
@@ -221,18 +225,18 @@ public class StartMenu extends Menu{
         start.setVisible(false);
         playOnline.setVisible(false);
         playAgainstAI.setVisible(false);
-        playLocally.setVisible(false);
+        //playLocally.setVisible(false);
         createServer.setVisible(false);
         joinServer.setVisible(false);
         player1AISetting.setVisible(false);
         player2AISetting.setVisible(false);
-        instructions.setVisible(false);
+        instructions.setVisible(true);
 
         add(back, CENTER_ALIGNMENT);
         add(play,CENTER_ALIGNMENT);
         add(playOnline, CENTER_ALIGNMENT);
         add(playAgainstAI,CENTER_ALIGNMENT);
-        add(playLocally, CENTER_ALIGNMENT);
+        //add(playLocally, CENTER_ALIGNMENT);
         add(instructions,CENTER_ALIGNMENT);
         add(createServer, CENTER_ALIGNMENT);
         add(joinServer, CENTER_ALIGNMENT);
@@ -332,6 +336,8 @@ public class StartMenu extends Menu{
      * @param metricTwo null if player is human, metric for AI otherwise
      */
     private void runGame(boolean playerOne, boolean playerTwo, Agent.Agents agentOne, Agent.Agents agentTwo, Metric.Metrics metricOne, Metric.Metrics metricTwo){
+        setVisible(false);
+        //dispose();
         StartMenu.this.parentListener.actionPerformed(
             new GameStarted(
                     new GameStarted.GameStartedEventSource(new PlayerOptions[]{
