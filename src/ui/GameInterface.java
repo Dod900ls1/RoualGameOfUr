@@ -19,7 +19,7 @@ import java.util.Random;
 public class GameInterface extends JFrame{
     private final GameController controller;
     private JPanel gamePanel = new JPanel();
-    private JPanel dicePanel = new JPanel();
+    private JPanel dicePanel;
 
     private BoardInterface boardInterface;
     private JButton roll;
@@ -57,47 +57,6 @@ public class GameInterface extends JFrame{
     }
 
     private void configBoard() {
-
-//        ActionListener buttonListener = new ActionListener(){
-//            public void actionPerformed(ActionEvent e){
-//                //normal button is pressed
-//                JButton button = (JButton)e.getSource();
-//                button.setBackground(Color.BLACK);
-//                getGameState();
-//            }
-//        };
-//
-//        ActionListener starListener = new ActionListener(){
-//            public void actionPerformed(ActionEvent e){
-//                JButton button = (JButton)e.getSource();
-//                button.setBackground(Color.PINK);
-//                getGameState();
-//            }
-//        };
-
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                if((i == 2 || i == 3) && (j == 0 || j == 2)){
-//                    gamePanel.add(new JLabel("out box"));
-//                }else if((i==4 && j==1) || (( i == 1 || i == 7) && ( j == 0 || j == 2))){
-//                    boardSpaces[i][j] = new JButton("✯");
-//                    boardSpaces[i][j].addActionListener(starListener);
-//
-//                    boardSpaces[i][j].setPreferredSize(new Dimension(150,50));
-//                    gamePanel.add(boardSpaces[i][j]);
-//                }else{
-//                    boardSpaces[i][j] = new JButton(" ");
-//                    boardSpaces[i][j].addActionListener(buttonListener);
-//
-//                    boardSpaces[i][j].setPreferredSize(new Dimension(150,50));
-//                    gamePanel.add(boardSpaces[i][j]);
-//                }
-//
-//            }
-//        }
-
-
-
         boardInterface = controller.getBoardController().getBoardInterface();
         add(boardInterface);
 
@@ -113,7 +72,7 @@ public class GameInterface extends JFrame{
                 dispose();
             }
         };
-
+        dicePanel = new JPanel();
         roll = new JButton("Roll");
         exit = new JButton("Exit");
         roll.addActionListener(rollListener);
@@ -127,8 +86,7 @@ public class GameInterface extends JFrame{
 
     public void showRollResult(int rollResult) {
         System.out.println(rollResult);
-        remove(dicePanel);
-        dicePanel = new JPanel();
+
         ArrayList<Integer> dice = new ArrayList<Integer>();
         for (int i = 0; i < 4; i++) {
             if(rollResult > 0){

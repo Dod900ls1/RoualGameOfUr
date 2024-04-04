@@ -103,12 +103,7 @@ public class StartMenu extends Menu{
                 createServer.setVisible(true);
                 joinServer.setVisible(true);
                 back.setVisible(true);
-<<<<<<< HEAD
                 textLabel.setText("either make or join a server on your network");
-=======
-
-
->>>>>>> ad11956dd3d2e0da247a5af755d30fb11fa88e4c
             }
         };
 
@@ -371,8 +366,4 @@ public class StartMenu extends Menu{
         }
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ad11956dd3d2e0da247a5af755d30fb11fa88e4c
 }
