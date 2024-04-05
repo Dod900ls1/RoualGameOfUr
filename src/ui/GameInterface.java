@@ -5,16 +5,16 @@ import controller.action.game.RollDice;
 import player.Player;
 import states.GameState;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -182,6 +182,10 @@ public class GameInterface extends JFrame{
         System.out.println("no moves");
     }
 
+    /**
+     * Shows if player is winner or loser in dialog box
+     * @param isWinner
+     */
     public void showWinOrLoseMessage(boolean isWinner) {
         String gameOverText;
         if (isWinner) {
@@ -192,6 +196,10 @@ public class GameInterface extends JFrame{
         showGameOverDialog(gameOverText);
     }
 
+    /**
+     * Shows winner and loser in same dialog
+     * @param winner
+     */
     public void showWinAndLoseMessage(int winner){
         String winnerString, loserString;
         if (winner == Player.LIGHT_PLAYER){
@@ -205,6 +213,10 @@ public class GameInterface extends JFrame{
         showGameOverDialog(gameOverText);
     }
 
+    /**
+     * Shows game over message in dialog box
+     * @param gameOverText
+     */
     private void showGameOverDialog(String gameOverText){
         JOptionPane.showInternalMessageDialog(null,gameOverText,"Game Over",1);
         setVisible(false);

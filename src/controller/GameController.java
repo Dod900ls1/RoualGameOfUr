@@ -30,6 +30,8 @@ public class GameController implements ActionListener {
     private GameInterface gameInterface;
     private GameStash gameStash;
     private Thread gameThread;
+    public boolean test;
+
     /**
      * Provides circular {@code Iterator} of {@code controllers}. Next {@link #activePlayerController} obtained by calling {@code next} on returned {@code Iterator}
      * @param controllers List of {@code PlayerController} instances to iterate over
@@ -120,13 +122,11 @@ public class GameController implements ActionListener {
      * Sets of turn loop calling {@link PlayerController#startTurn()} on {@code activePlayerController} when previous turn ends as indicated by state of {@code turnInProgress}
      */
     public synchronized int beginGame(){
-        int turnCount=0;
         play=true;
         turnInProgress = false;
         while (play){
             gameInterface.resetForNewTurn(activePlayerController.requiresUserInput, activePlayerController.getPlayer().getPlayerColour());
             turnInProgress = true;
-            turnCount++;
             activePlayerController.startTurn();
             try {
                 if (turnInProgress){
@@ -142,7 +142,7 @@ public class GameController implements ActionListener {
             //turnInProgress=true;
         }
         System.out.println("Player "+activePlayerController.getPlayer().getPlayerColour()+ " won");
-        return turnCount;
+        return activePlayerController.getPlayerColour();
     }
 
 
@@ -256,13 +256,18 @@ public class GameController implements ActionListener {
                 remote.gameOver();
             }
         }
-        if (getHumanPlayerCount() == 1){
-            int humanPlayer = getHumanPlayerController().getPlayerColour();
-            gameInterface.showWinOrLoseMessage(humanPlayer == activePlayerController.getPlayerColour());
-        }else{
-            gameInterface.showWinAndLoseMessage(activePlayerController.getPlayerColour());
+
+        if (!test) {
+            if (activePlayerController.getPiecePostBoardCount()==Player.PIECE_START_COUNT) { //game ended as won not due to input
+                if (getHumanPlayerCount() == 1) {
+                    int humanPlayer = getHumanPlayerController().getPlayerColour();
+                    gameInterface.showWinOrLoseMessage(humanPlayer == activePlayerController.getPlayerColour());
+                } else {
+                    gameInterface.showWinAndLoseMessage(activePlayerController.getPlayerColour());
+                }
+            }
+            restartGameMenu();
         }
-        restartGameMenu();
         //this.parentListener.start();
     }
 

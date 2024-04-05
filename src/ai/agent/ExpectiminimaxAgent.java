@@ -114,7 +114,7 @@ public class ExpectiminimaxAgent extends Agent {
             GameState stateForMove = currentGameState.copyState();
             stateForMove.evolve(possibleMove);
             if (usePruning){
-                moveWithWeight.put(possibleMove, expectiminimaxAlphaBeta(stateForMove, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, DEPTH, Double.NEGATIVE_INFINITY, true));
+                moveWithWeight.put(possibleMove, expectiminimaxPruned(stateForMove, DEPTH, Double.NEGATIVE_INFINITY, true));
             }
             else{
                 moveWithWeight.put(possibleMove, expectiminimax(stateForMove, DEPTH));
@@ -172,8 +172,18 @@ public class ExpectiminimaxAgent extends Agent {
    }
 
 
-
-    private double expectiminimaxAlphaBeta(GameState current, double alpha, double beta, int depth, double bestWeightForParentSoFar, boolean parentIsMaximiser){
+    /**
+     * Executes expectiminimax recursively, each no-base case recursion includes chance node and min/max nodes.
+     * Prunes chance nodes based on worst/best case expected values
+     * @param current Current state of game - just as the last player has moved
+     * @param depth Depth of tree reached (0 being deeper than 1 deeper than 2 etc.) Depth of 0 is terminal, base case depth
+     * @param bestWeightForParentSoFar 'Best' value of sibling chance node found so far
+     * @param parentIsMaximiser Boolean indicator if chance node is better for parent by having a higher value or a lower value
+     * @return If base case: evaluation of {@code current} for agent's {@code metric} with {@code METRIC_MULTIPLIER} applied
+     *         If backtracking through tree: The value of chance node which is weighted average of the roll weights.
+     *                                       The roll weights are the max/min value of the base case's game states resulting from further recursion of current state for each of the valid moves for a particular roll value
+     */
+    private double expectiminimaxPruned(GameState current, int depth, double bestWeightForParentSoFar, boolean parentIsMaximiser){
         //begins with state being just after last player has moved
         if (depth == 0){
             return METRIC_MULTIPLIER*metric.scoreForState(current); //how good is this state
@@ -196,17 +206,13 @@ public class ExpectiminimaxAgent extends Agent {
                     for (TileState[] possibleMoveForRoll : possibleMovesForRoll) { //children of chance node (maximiser or minimiser) :examine each of these possible new states that result from potential move - pick the 'best' as the value for this roll
                         GameState stateForMove = current.copyState();
                         stateForMove.evolve(possibleMoveForRoll);
-                        double rollMoveWeight= expectiminimaxAlphaBeta(stateForMove, alpha, beta,depth - 1, bestWeight, maximise);
+                        double rollMoveWeight= expectiminimaxPruned(stateForMove, depth - 1, bestWeight, maximise);
 
                         if (maximise){
                             bestWeight = Double.max(bestWeight, rollMoveWeight);
-                            alpha = Double.max(alpha, bestWeight);
-                            if (beta<=alpha){break;}
                         }
                         else{
                             bestWeight = Double.min(bestWeight, rollMoveWeight);
-                            beta = Double.min(beta, bestWeight);
-                            if (alpha<=beta){break;}
                         }
                     }
                     //double rollWeight = maximise ? weightsForMovesForRoll.stream().max(Double::compare).get() : weightsForMovesForRoll.stream().min(Double::compare).get();

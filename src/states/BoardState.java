@@ -39,7 +39,7 @@ public class BoardState {
                 .filter(tsIndexes -> tsIndexes[1]<tileStatesInPath.size())//end tile index outside of path
                 .map(tsIndexes -> new TileState[]{tileStatesInPath.get(tsIndexes[0]), tileStatesInPath.get(tsIndexes[1])})
                 .filter(ts -> ts[0].hasPieceForPlayer(player)) //start has piece
-                .filter(ts -> ts[1].canMoveTo(player)) //end can be moved to
+                .filter(ts -> (roll==0?true:ts[1].canMoveTo(player))) //end can be moved to or roll is 0
                 .collect(Collectors.toList());
 
     }
