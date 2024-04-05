@@ -90,29 +90,10 @@ public class TileInterface extends JButton {
 
 
     private void setButtonView() {
-        // String text = "";
-//        String location = "src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + ".png";
-//        String disabledLocation = "src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1]
-//                + "-disabled.png";
-//
-//        if (isNonWalkable) {
-//            // DEBUGGING VIEW
-//            setText(Integer.toString(controller.getTileNumber()));
-//            setVisible(false); // Button only there logically to not upset grid layout
-//        }
-//        setIcon(new ImageIcon(new ImageIcon(location).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-//        setDisabledIcon(new ImageIcon(
-//                new ImageIcon(disabledLocation).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-//
+
         setDisabledIcon(flowerIcons[0]);
         setIcon(flowerIcons[1]);
-        // if (isPreBoard||isPostBoard){
-        //     this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
-        //     this.setFont(new Font("Arial", Font.PLAIN, 8));
-        //     this.setForeground(Color.white);
-        //     this.setHorizontalTextPosition(JButton.CENTER);
-        //     this.setVerticalTextPosition(JButton.CENTER);
-        // }
+
         addActionListener(controller);
         setBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED));
     }
@@ -122,8 +103,6 @@ public class TileInterface extends JButton {
     }
 
     public void updateTile() {
-
-
 
         if (!isNonWalkable) {
             Map<Player, Integer> piecesByPlayer = controller.getPiecesByPlayer();
@@ -144,32 +123,8 @@ public class TileInterface extends JButton {
         } else if (isPreBoard||isPostBoard){
             this.setIcon(getIconFromFile("src/ui/numbers/" + controller.getPieceCount() + ".png"));
             this.setDisabledIcon(getIconFromFile("src/ui/numbers/" + controller.getPieceCount() + "-disabled.png"));
-            //this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
         }
 
-
-//        StringBuilder sb = new StringBuilder();
-//
-//        for (Map.Entry<Player, Integer> playerPiecesEntry : piecesByPlayer.entrySet()) {
-//            Integer playerColour = playerPiecesEntry.getKey().getPlayerColour();
-//            Integer pieceCount = playerPiecesEntry.getValue();
-//
-//            sb.append(String.format("src/ui/pieces/%d.png", playerColour));
-//            this.setDisabledIcon(new ImageIcon(
-//                    new ImageIcon(sb.toString()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-//
-//        }
-//
-//        if (sb.isEmpty()) {
-//            this.setDisabledIcon(new ImageIcon(new ImageIcon(
-//                    "src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + "-disabled.png").getImage()
-//                    .getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-//            sb.append("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + ".png");
-//
-//        }
-//
-//        this.setIcon(
-//                new ImageIcon(new ImageIcon(sb.toString()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         this.repaint();
     }
 }
