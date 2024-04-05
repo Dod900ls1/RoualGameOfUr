@@ -71,6 +71,7 @@ public class ServerActionListener extends NetworkActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        this.parentListener.closeStartMenu();
         JTextField ipAddressField = new JTextField("localhost");
         JTextField socketIdField = new JTextField("1111");
         Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
@@ -88,6 +89,8 @@ public class ServerActionListener extends NetworkActionListener {
             } else {
                 showInvalidSocketIdError();
             }
+        }else{
+            this.parentListener.openStartMenu();
         }
     }
 
