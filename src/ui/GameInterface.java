@@ -109,8 +109,10 @@ public class GameInterface extends JFrame{
         roll.addActionListener(rollListener);
         exit.addActionListener(exitListener);
         instructions.addActionListener(instructionsListener);
-        roll.setPreferredSize(new Dimension(150,50));
-        exit.setPreferredSize(new Dimension(150,50));
+        Dimension buttonDimension = new Dimension(200,200);
+        roll.setPreferredSize(buttonDimension);
+        exit.setPreferredSize(buttonDimension);
+        instructions.setPreferredSize(buttonDimension);
         otherButtonsPanel.add(roll);
         otherButtonsPanel.add(exit);
         otherButtonsPanel.add(instructions);
