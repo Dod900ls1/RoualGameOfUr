@@ -32,8 +32,15 @@ public class TileInterface extends JButton {
 
         if (isNonWalkable) {
             // DEBUGGING VIEW
-            setText(Integer.toString(controller.getTileNumber()));
-            setVisible(false); // Button only there logically to not upset grid layout
+            if(controller.getTileNumber()==13 || controller.getTileNumber() == 15){
+                disabledLocation = "src/ui/numbers/7-disabled.png";
+                location = "src/ui/numbers/7.png";
+            }else{
+                disabledLocation = "src/ui/numbers/0-disabled.png";
+                location = "src/ui/numbers/0.png";
+            }
+
+            setVisible(true); // Button only there logically to not upset grid layout
         }
         setIcon(new ImageIcon(new ImageIcon(location).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         setDisabledIcon(new ImageIcon(
@@ -56,20 +63,33 @@ public class TileInterface extends JButton {
             Integer playerColour = playerPiecesEntry.getKey().getPlayerColour();
             Integer pieceCount = playerPiecesEntry.getValue();
 
-            sb.append(String.format("src/ui/pieces/%d.png", playerColour));
-            this.setDisabledIcon(new ImageIcon(
-                    new ImageIcon(sb.toString()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+            
 
+            if(isNonWalkable){
+                sb.append("src/ui/numbers/" + pieceCount + ".png");
+                this.setDisabledIcon(new ImageIcon(
+                    new ImageIcon("src/ui/numbers/" + pieceCount + "-disabled.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+            }else{
+                sb.append(String.format("src/ui/pieces/%d.png", playerColour));
+                this.setDisabledIcon(new ImageIcon(
+                        new ImageIcon(sb.toString()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+            }
         }
 
         if (sb.isEmpty()) {
-            this.setDisabledIcon(new ImageIcon(new ImageIcon(
+            if(isNonWalkable){
+                this.setDisabledIcon(new ImageIcon(
+                    new ImageIcon("src/ui/numbers/0-disabled.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                sb.append("src/ui/numbers/0.png");
+            }else{
+                this.setDisabledIcon(new ImageIcon(new ImageIcon(
                     "src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + "-disabled.png").getImage()
                     .getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
-            sb.append("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + ".png");
+                sb.append("src/ui/flowers/flower" + flowerTypes[controller.getTileNumber() - 1] + ".png");
+            }
+
 
         }
-
         this.setIcon(
                 new ImageIcon(new ImageIcon(sb.toString()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         this.repaint();
