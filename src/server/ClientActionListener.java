@@ -125,11 +125,6 @@ public class ClientActionListener extends NetworkActionListener {
         );
         gameController = mainController.getGameController();
 
-
-
-
-
-
     }
 
 
