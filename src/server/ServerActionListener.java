@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 // TODO - add a default option in here and clients
@@ -41,12 +42,13 @@ public class ServerActionListener extends NetworkActionListener {
      *
      * @param socketId  the socket ID on which the server will listen
      */
-    private void start(String ipAdderss, int socketId) {
+    private void start(int socketId) {
         try {
+            InetAddress address = InetAddress.getLocalHost();
             serverSocket = new ServerSocket(socketId);
             JOptionPane.showMessageDialog(null,
-                    "Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
-            System.out.println("Server started on " + ipAdderss + " : " + socketId + ". Waiting for client to connect...");
+                    "Server started on " + address.getHostAddress() + " : " + socketId + ". Waiting for client to connect...");
+            System.out.println("Server started on " + address.getHostAddress() + " : " + socketId + ". Waiting for client to connect...");
             remoteSocket = serverSocket.accept();
 
             System.out.println("Client connected.");
@@ -71,16 +73,14 @@ public class ServerActionListener extends NetworkActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        JTextField ipAddressField = new JTextField("localhost");
         JTextField socketIdField = new JTextField("1111");
-        Object[] message = { "Enter IP Address:", ipAddressField, "Enter Socket ID:", socketIdField };
+        Object[] message = { "Enter Socket ID:", socketIdField };
         int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
-            String ipAddress = ipAddressField.getText();
             int socketId = parseSocketId(socketIdField.getText());
             if (socketId != -1) {
-                start(ipAddress, socketId);
+                start(socketId);
 
                 //passInfo(this.din, this.dout);
 
