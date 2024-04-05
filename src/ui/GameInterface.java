@@ -6,11 +6,15 @@ import player.Player;
 import states.GameState;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * StartMenu class ought to create start menu for the player where they would be
@@ -47,8 +51,21 @@ public class GameInterface extends JFrame{
         }else{
             disableRoll();
         }
-        String playerTurnText = String.format("Current player: %s", (playerColour== Player.LIGHT_PLAYER?"LIGHT":"DARK"));
-        playerTurnLabel.setText(playerTurnText);
+        
+        try{
+            String playerTurnText = String.format("Current player: %s", (playerColour== Player.LIGHT_PLAYER?"light":"dark"));
+            playerTurnLabel.setIcon(new ImageIcon(ImageIO.read(new File("src/ui/pieces/"+ (playerColour== Player.LIGHT_PLAYER?"1":"2") + "-noBg.png")).getScaledInstance(70, 70, Image.SCALE_DEFAULT)));
+            playerTurnLabel.setHorizontalTextPosition(JLabel.CENTER);
+            playerTurnLabel.setVerticalTextPosition(JLabel.BOTTOM);
+            playerTurnLabel.setText(playerTurnText);
+            playerTurnLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createSoftBevelBorder(BevelBorder.RAISED),
+                BorderFactory.createEmptyBorder(10,10,10,10)));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        
         this.repaint();
    }
 
@@ -155,12 +172,13 @@ public class GameInterface extends JFrame{
 
 
     public void showNoMovesMessage() {
-        playerTurnLabel.setText("turn skipped: no legal moves");
-        try{
-            Thread.sleep(2000);
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
+        // playerTurnLabel.setText("turn skipped: no legal moves");
+        // try{
+        //     playerTurnLabel.setIcon(new ImageIcon(ImageIO.read(new File("src/ui/pieces/0-noBg.png")).getScaledInstance(70, 70, Image.SCALE_DEFAULT)));
+        // }catch(IOException e){
+        //     e.printStackTrace();
+        // }
+
         System.out.println("no moves");
     }
 
