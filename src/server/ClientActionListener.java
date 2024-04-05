@@ -14,7 +14,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Socket;
-import java.lang.Thread;
 
 public class ClientActionListener extends NetworkActionListener {
     private Socket socket;

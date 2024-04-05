@@ -49,7 +49,6 @@ public class MenuController implements ActionListener {
 
     }
 
-    private Thread startMenuThread;
     private StartMenu menu;
 
     /**

@@ -47,7 +47,9 @@ public class MainController implements ActionListener {
         this.menuController.showStartMenu();
     }
 
-
+    public void openMenu(){
+        this.menuController.openStartMenu();
+    }
 
     /**
      * {@code ActionListener} override. Responds to events fired from {@link #gameController} and {@link #menuController} instances that need to be relayed between them
