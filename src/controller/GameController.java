@@ -262,6 +262,7 @@ public class GameController implements ActionListener {
         }else{
             gameInterface.showWinAndLoseMessage(activePlayerController.getPlayerColour());
         }
+        restartGameMenu();
         //this.parentListener.start();
     }
 
