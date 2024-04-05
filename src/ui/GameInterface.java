@@ -153,18 +153,12 @@ public class GameInterface extends JFrame{
 
 
     public void showNoMovesMessage() {
-        //JOptionPane.showInternalMessageDialog(null,"There are no valid moves you can make this turn","No Moves",1);
         playerTurnLabel.setText("turn skipped: no legal moves");
         try{
-            Thread.sleep(10);
-            System.out.println(true);
+            Thread.sleep(2000);
         }catch(InterruptedException e){
             e.printStackTrace();
         }
-        //JDialog noMovesDialogue = new JDialog(this, "No Moves");
-        // noMovesDialogue.add(new JLabel(""));
-        // noMovesDialogue.pack();
-        // noMovesDialogue.setVisible(true);
         System.out.println("no moves");
     }
 
