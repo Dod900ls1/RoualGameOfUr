@@ -143,4 +143,15 @@ public class Tile {
     public int getTileType() {
         return this.tileType;
     }
+
+    public int getPieceCount() {
+        return this.piecesOnTile.size();
+    }
+
+    public boolean isPreBoard() {
+        return false;
+    }
+    public boolean isPostBoard() {
+        return false;
+    }
 }

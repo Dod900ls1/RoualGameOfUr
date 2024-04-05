@@ -53,7 +53,7 @@ public class GameInterface extends JFrame{
    }
 
     private void configFrame() {
-        setSize(800, 600);
+        setSize(1000, 800);
         setLayout(new FlowLayout());
         WindowListener exitListener = new WindowAdapter(){
             @Override

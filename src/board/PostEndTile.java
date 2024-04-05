@@ -10,4 +10,9 @@ public class PostEndTile extends Tile{
         canContainMultiplePieces=true;
         isNonWalkable=true;
     }
+
+    @Override
+    public boolean isPostBoard() {
+        return true;
+    }
 }

@@ -10,4 +10,9 @@ public class PreStartTile extends Tile{
         canContainMultiplePieces=true;
         isNonWalkable=true;
     }
+
+    @Override
+    public boolean isPreBoard() {
+        return true;
+    }
 }

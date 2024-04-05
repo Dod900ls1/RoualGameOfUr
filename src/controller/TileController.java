@@ -106,4 +106,15 @@ public class TileController implements ActionListener {
     public int getTileType() {
         return tile.getTileType();
     }
+
+    public int getPieceCount() {
+        return tile.getPieceCount();
+    }
+
+    public boolean isPreBoard() {
+        return tile.isPreBoard();
+    }
+    public boolean isPostBoard() {
+        return tile.isPostBoard();
+    }
 }

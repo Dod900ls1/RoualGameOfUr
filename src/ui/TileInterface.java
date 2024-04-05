@@ -28,6 +28,8 @@ public class TileInterface extends JButton {
     final TileController controller;
     // 1,2, or 3 : 0 if rosette or out
     private static int[] flowerTypes = { 0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 0, 3, 0, 1, 0, 0, 2, 0, 0, 3, 0, 3, 1, 3 };
+    private final boolean isPostBoard;
+    private final boolean isPreBoard;
     boolean isRosette;
 
     boolean isNonWalkable;
@@ -36,7 +38,7 @@ public class TileInterface extends JButton {
 
     static ImageIcon getIconFromFile(String filePath){
         try {
-            return new ImageIcon(ImageIO.read(new File(filePath)).getScaledInstance(50, 50, Image.SCALE_DEFAULT));
+            return new ImageIcon(ImageIO.read(new File(filePath)).getScaledInstance(70, 70, Image.SCALE_DEFAULT));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,11 +50,13 @@ public class TileInterface extends JButton {
         this.controller = controller;
         isRosette = controller.isRosette();
         isNonWalkable = controller.isNonWalkable();
+        isPreBoard = controller.isPreBoard();
+        isPostBoard = controller.isPostBoard();
         String enabledIconPath = "src/ui/flowers/";
-        String diabledIconPath;
+        String disabledIconPath;
         if (isNonWalkable) {
             enabledIconPath += "disabled.png";
-            diabledIconPath = enabledIconPath;
+            disabledIconPath = enabledIconPath;
 
 
         } else {
@@ -65,14 +69,14 @@ public class TileInterface extends JButton {
             } else {
                 enabledIconPath += "flower3";
             }
-            diabledIconPath = enabledIconPath + "-disabled.png";
+            disabledIconPath = enabledIconPath + "-disabled.png";
             enabledIconPath +=".png";
 
         }
 
         flowerIcons = new ImageIcon[2];
 
-        flowerIcons[0] = getIconFromFile(diabledIconPath);
+        flowerIcons[0] = getIconFromFile(disabledIconPath);
         flowerIcons[1] = getIconFromFile(enabledIconPath);
 
         setButtonView();
@@ -96,7 +100,13 @@ public class TileInterface extends JButton {
 //
         setDisabledIcon(flowerIcons[0]);
         setIcon(flowerIcons[1]);
-
+        if (isPreBoard||isPostBoard){
+            this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
+            this.setFont(new Font("Arial", Font.PLAIN, 8));
+            this.setForeground(Color.white);
+            this.setHorizontalTextPosition(JButton.CENTER);
+            this.setVerticalTextPosition(JButton.CENTER);
+        }
         addActionListener(controller);
         setBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED));
     }
@@ -125,6 +135,8 @@ public class TileInterface extends JButton {
                 this.setDisabledIcon(flowerIcons[0]);
                 this.setIcon(flowerIcons[1]);
             }
+        } else if (isPreBoard||isPostBoard){
+            this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
         }
 
 
