@@ -191,7 +191,27 @@ public class StartMenu extends Menu{
                 player1AISetting.setVisible(false);
                 player2AISetting.setVisible(false);
                 back.setVisible(false);
-                textLabel.setText("<html>Game Rules: <br>The Royal Game of Ur is played on a board consisting of 24 squares, divided into three rows. <br>Each player has 7 pieces, and the objective is to move all pieces off the board before your opponent does.<br>Players take turns rolling a set of 4 dice 4-sided dice, each with 2 corners marked.<br>A roll of the dice determines how many spaces a player can move their pieces.<br>Pieces can only move in one direction along the board, following the path indicated by the coloured squares.<br>If a player lands on a square occupied by an opponent's piece, the opponent's piece is sent back to the starting area,<br>but if a player lands on a square that displays a thistle, their piece is safe and cannot be sent back.<br>Multiple pieces cannot be placed on the same square<br>A player can only move their pieces off the board if they get exactly the right number, no more.<br>The first player to move all their pieces off the board wins the game.<br>Enjoy the Royal Game of Ur and may the best player win!</html>");
+                String htmlContent = "<html>" +
+        "Game Rules: <br>" +
+        "The Royal Game of Ur is played on a board consisting of 24 squares, divided into three rows. <br>" +
+        "Each player has 7 pieces, and the objective is to move all pieces off the board before your opponent does.<br>" +
+        "Players take turns rolling a set of 4 dice, each with 2 corners marked.<br>" +
+        "A roll of the dice determines how many spaces a player can move their pieces.<br>" +
+        "Pieces can only move in one direction along the board, following the path indicated by the colored squares.<br>" +
+        "If a player lands on a square occupied by an opponent's piece, the opponent's piece is sent back to the starting area,<br>" +
+        "but if a player lands on a square that displays a thistle, their piece is safe and cannot be sent back.<br>" +
+        "Multiple pieces cannot be placed on the same square unless it's a rosette.<br>" +
+        "A player can only move their pieces off the board if they get exactly the right number, no more.<br>" +
+        "The first player to move all their pieces off the board wins the game.<br>" +
+        "Enjoy the Royal Game of Ur and may the best player win!<br><br>" +
+        "Play Online:<br>" +
+        "In order to play online with your friends, you would need to connect to the same network and specify the ID of that network.<br>" +
+        "To get your ID, you can type \"curl ifconfig.me\" for Linux or \"ipconfig\" for Windows and Mac.<br>" +
+        "After you have obtained your ID, one of your friends shall create the server using the 'Create Server' button, and the other one shall connect to the server using the 'Join Server' button and pasting the ID you have.</html>";
+
+                textLabel.setText(
+                        htmlContent);
+                textLabel.setPreferredSize(new Dimension(800, 400));
             }
         };
 
