@@ -103,5 +103,7 @@ public class TileController implements ActionListener {
     }
 
 
-
+    public int getTileType() {
+        return tile.getTileType();
+    }
 }

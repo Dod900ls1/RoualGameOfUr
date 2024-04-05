@@ -27,6 +27,8 @@ public class Rosette extends Tile{
     public void addPiece(Piece piece) throws IllegalMoveException {
         if (canAddPieceForPlayer(piece.getPlayer())){
             piecesOnTile.add(piece);
+            System.out.println("Added piece to rosette for "+piece.getPlayer().getPlayerColour());
+
         }else{
             throw new IllegalMoveException();
         }

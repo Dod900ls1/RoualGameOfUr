@@ -52,6 +52,7 @@ public class Tile {
      */
     public void removePiece(Piece piece) {
         piecesOnTile.remove(piece);
+        System.out.println("Removed piece from tile"+ tileNum+ "for "+piece.getPlayer().getPlayerColour());
     }
 
     /**
@@ -64,6 +65,7 @@ public class Tile {
     public void addPiece(Piece piece) throws IllegalMoveException {
         if (canAddPieceForPlayer(piece.getPlayer())){
             piecesOnTile.add(piece);
+            System.out.println("Added piece to tile"+tileNum+"for "+piece.getPlayer().getPlayerColour());
         }else{
             throw new IllegalMoveException();
         }
@@ -136,5 +138,9 @@ public class Tile {
      */
     public int getPieceCountForPlayer(Player player) {
       return (int) piecesOnTile.stream().filter(p-> p.getPlayer().equals(player)).count();
+    }
+
+    public int getTileType() {
+        return this.tileType;
     }
 }
