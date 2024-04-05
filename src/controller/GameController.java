@@ -267,7 +267,7 @@ public class GameController implements ActionListener {
 
 
     public void restartGameMenu(){
-        this.parentListener.start();
+        this.parentListener.openMenu();
     }
 
 

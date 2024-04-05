@@ -73,6 +73,13 @@ public class ServerActionListener extends NetworkActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+<<<<<<< HEAD
+||||||| cbd6090
+        JTextField ipAddressField = new JTextField("localhost");
+=======
+        this.parentListener.closeStartMenu();
+        JTextField ipAddressField = new JTextField("localhost");
+>>>>>>> refs/remotes/origin/main
         JTextField socketIdField = new JTextField("1111");
         Object[] message = { "Enter Socket ID:", socketIdField };
         int option = JOptionPane.showConfirmDialog(null, message, "Server Configuration", JOptionPane.OK_CANCEL_OPTION);
@@ -88,6 +95,8 @@ public class ServerActionListener extends NetworkActionListener {
             } else {
                 showInvalidSocketIdError();
             }
+        }else{
+            this.parentListener.openStartMenu();
         }
     }
 

@@ -44,6 +44,7 @@ public class ClientActionListener extends NetworkActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        this.parentListener.closeStartMenu();
         connect();
     }
 
@@ -80,6 +81,8 @@ public class ClientActionListener extends NetworkActionListener {
                 // System.err.println("Please make sure the server is running and try again.");
                 System.err.println(e.fillInStackTrace());
             }
+        }else{
+            this.parentListener.openStartMenu();
         }
     }
 

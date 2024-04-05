@@ -49,15 +49,25 @@ public class MenuController implements ActionListener {
 
     }
 
+    private StartMenu menu;
+
     /**
      * Creates and shows start menu in a new thread
      */
     public void showStartMenu() {
-        Thread startMenuThread = new Thread(() -> new StartMenu(this));
-        startMenuThread.start();
+        menu = new StartMenu(this);
+        //startMenuThread = new Thread(() -> new StartMenu(this));
+        //startMenuThread.start();
 
     }
 
+    public void openStartMenu(){
+        menu.setVisible(true);
+    }
+
+    public void closeStartMenu(){
+        menu.setVisible(false);
+    }
 
     private void respondToMenuClosed(MenuClosedEventSource closedMenu){
         System.out.println("Menu closed");

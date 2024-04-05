@@ -185,8 +185,9 @@ public class GameInterface extends JFrame{
     }
 
     private void showGameOverDialog(String gameOverText){
-        JDialog gameOverDialog = new JDialog(this, "Game Over");
-        gameOverDialog.add(new JLabel(gameOverText));
+        //JDialog gameOverDialog = new JDialog(this, "Game Over");
+        //gameOverDialog.add(new JLabel(gameOverText));
+        JOptionPane.showInternalMessageDialog(null,gameOverText,"Game Over",1);
         WindowAdapter gameOverListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -196,10 +197,10 @@ public class GameInterface extends JFrame{
             }
         };
 
-        gameOverDialog.addWindowListener(gameOverListener);
+        //gameOverDialog.addWindowListener(gameOverListener);
 
-        gameOverDialog.pack();
-        gameOverDialog.setVisible(true);
+        //gameOverDialog.pack();
+        //gameOverDialog.setVisible(true);
 
     }
 
