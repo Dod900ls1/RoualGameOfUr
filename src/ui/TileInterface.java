@@ -55,8 +55,14 @@ public class TileInterface extends JButton {
         String enabledIconPath = "src/ui/flowers/";
         String disabledIconPath;
         if (isNonWalkable) {
-            enabledIconPath += "disabled.png";
-            disabledIconPath = enabledIconPath;
+            if(isPreBoard){
+                enabledIconPath = "src/ui/numbers/7.png";
+                disabledIconPath = "src/ui/numbers/7-disabled.png";
+            }else{
+                enabledIconPath = "src/ui/numbers/0.png";
+                disabledIconPath = "src/ui/numbers/0-disabled.png";
+            }
+
 
 
         } else {
@@ -100,13 +106,13 @@ public class TileInterface extends JButton {
 //
         setDisabledIcon(flowerIcons[0]);
         setIcon(flowerIcons[1]);
-        if (isPreBoard||isPostBoard){
-            this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
-            this.setFont(new Font("Arial", Font.PLAIN, 8));
-            this.setForeground(Color.white);
-            this.setHorizontalTextPosition(JButton.CENTER);
-            this.setVerticalTextPosition(JButton.CENTER);
-        }
+        // if (isPreBoard||isPostBoard){
+        //     this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
+        //     this.setFont(new Font("Arial", Font.PLAIN, 8));
+        //     this.setForeground(Color.white);
+        //     this.setHorizontalTextPosition(JButton.CENTER);
+        //     this.setVerticalTextPosition(JButton.CENTER);
+        // }
         addActionListener(controller);
         setBorder(BorderFactory.createSoftBevelBorder(BevelBorder.RAISED));
     }
@@ -136,7 +142,9 @@ public class TileInterface extends JButton {
                 this.setIcon(flowerIcons[1]);
             }
         } else if (isPreBoard||isPostBoard){
-            this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
+            this.setIcon(getIconFromFile("src/ui/numbers/" + controller.getPieceCount() + ".png"));
+            this.setDisabledIcon(getIconFromFile("src/ui/numbers/" + controller.getPieceCount() + "-disabled.png"));
+            //this.setText(String.format("%s:\n%d", (isPreBoard?"PREBOARD":"POSTBOARD"), controller.getPieceCount()));
         }
 
 
