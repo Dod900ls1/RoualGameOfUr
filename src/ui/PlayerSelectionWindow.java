@@ -48,7 +48,9 @@ public class PlayerSelectionWindow extends JFrame {
         JPanel panel = new JPanel(new GridLayout(1, 2, 10, 10));
 
         JButton darkButton = new JButton("DARK");
+        darkButton.setBackground(Color.darkGray);
         JButton lightButton = new JButton("LIGHT");
+        darkButton.setBackground(Color.gray);
 
         darkButton.addActionListener(new ActionListener() {
             @Override

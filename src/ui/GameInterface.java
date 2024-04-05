@@ -153,7 +153,14 @@ public class GameInterface extends JFrame{
 
 
     public void showNoMovesMessage() {
-        JOptionPane.showInternalMessageDialog(null,"There are no valid moves you can make this turn","No Moves",1);
+        //JOptionPane.showInternalMessageDialog(null,"There are no valid moves you can make this turn","No Moves",1);
+        playerTurnLabel.setText("turn skipped: no legal moves");
+        try{
+            Thread.sleep(10);
+            System.out.println(true);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
         //JDialog noMovesDialogue = new JDialog(this, "No Moves");
         // noMovesDialogue.add(new JLabel(""));
         // noMovesDialogue.pack();
@@ -185,22 +192,9 @@ public class GameInterface extends JFrame{
     }
 
     private void showGameOverDialog(String gameOverText){
-        //JDialog gameOverDialog = new JDialog(this, "Game Over");
-        //gameOverDialog.add(new JLabel(gameOverText));
         JOptionPane.showInternalMessageDialog(null,gameOverText,"Game Over",1);
-        WindowAdapter gameOverListener = new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                setVisible(false);
-                dispose();
-                controller.restartGameMenu();
-            }
-        };
-
-        //gameOverDialog.addWindowListener(gameOverListener);
-
-        //gameOverDialog.pack();
-        //gameOverDialog.setVisible(true);
+        setVisible(false);
+        dispose();
 
     }
 
